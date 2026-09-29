@@ -22,7 +22,7 @@ export interface NavItem {
 /** Navegação principal do sistema (seção 22, item 15 do briefing). */
 export const NAV_ITEMS: NavItem[] = [
   { label: "Painel", href: "/painel", icon: LayoutDashboard },
-  { label: "Voz da Direita", href: "/integracao", icon: Network },
+  { label: "Integração IBFC", href: "/integracao", icon: Network },
   { label: "Pessoas", href: "/pessoas", icon: Users },
   { label: "Aprovações", href: "/aprovacoes", icon: CheckSquare },
   { label: "Ponto", href: "/ponto", icon: Clock },

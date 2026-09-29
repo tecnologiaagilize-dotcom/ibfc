@@ -29,7 +29,7 @@ export default async function IntegracaoPage() {
   return <div className="mx-auto max-w-6xl space-y-8">
     <header>
       <span className="text-xs font-semibold uppercase tracking-wide text-emerald-700">Tr@de Tecnologia</span>
-      <h1 className="mt-2 text-3xl font-bold">Voz da Direita</h1>
+      <h1 className="mt-2 text-3xl font-bold">Instituto Brasileiro da Família Cristã</h1>
       <p className="mt-2 text-slate-600 dark:text-slate-400">
         Catálogo de candidaturas, estudos, equipes e eventos do CRM.
       </p>

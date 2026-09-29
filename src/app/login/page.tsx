@@ -11,7 +11,7 @@ import {
 import { LoginForm } from "./login-form";
 
 export const metadata: Metadata = {
-  title: "Entrar — RH Eleitoral",
+  title: "Entrar",
 };
 
 export default function LoginPage() {
@@ -20,7 +20,7 @@ export default function LoginPage() {
       <Card className="w-full max-w-sm">
         <CardHeader>
           <CardTitle className="text-xl font-semibold text-slate-900 dark:text-slate-50">
-            RH Eleitoral
+            Instituto Brasileiro da Família Cristã
           </CardTitle>
           <CardDescription>
             Entre com sua conta para acessar o painel da campanha.

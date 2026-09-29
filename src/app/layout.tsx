@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "RH Eleitoral",
-    template: "%s — RH Eleitoral",
+    default: "Instituto Brasileiro da Família Cristã — IBFC",
+    template: "%s — IBFC",
   },
   description:
     "Sistema de gestão de pessoas, operações e pagamentos para campanha eleitoral.",
