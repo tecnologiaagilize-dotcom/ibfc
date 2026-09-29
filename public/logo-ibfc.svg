@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title">
+  <title id="title">IBFC</title>
+  <rect width="128" height="128" rx="26" fill="#07583a"/>
+  <circle cx="64" cy="39" r="16" fill="#e5b94d"/>
+  <path d="M30 76c10-16 22-24 34-24s24 8 34 24v19H30z" fill="#f7faf6"/>
+  <path d="M46 76h36M64 56v40" stroke="#07583a" stroke-width="6" stroke-linecap="round"/>
+  <text x="64" y="117" fill="#f7faf6" font-family="Arial,sans-serif" font-size="15" font-weight="700" text-anchor="middle" letter-spacing="2">IBFC</text>
+</svg>
