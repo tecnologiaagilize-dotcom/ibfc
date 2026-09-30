@@ -1,43 +1,61 @@
 import Link from "next/link";
 import Image from "next/image";
-import { BookOpen, HeartHandshake, MapPin, MessageCircleMore } from "lucide-react";
+import { ArrowRight, BookOpen, HeartHandshake, MapPin, MessageCircleMore, ShieldCheck, UsersRound } from "lucide-react";
 import { Header } from "@/components/Header";
+
+const paths = [
+  { Icon: HeartHandshake, number: "01", title: "Faça parte", text: "Conte quem você é, onde mora e de que forma deseja colaborar com as ações do instituto." },
+  { Icon: BookOpen, number: "02", title: "Aprenda", text: "Acesse uma trilha de aprendizagem com conteúdos sobre família, cidadania e vida em comunidade." },
+  { Icon: MapPin, number: "03", title: "Atue perto de você", text: "Conheça encontros, atividades e oportunidades de participação na sua região." },
+  { Icon: MessageCircleMore, number: "04", title: "Acompanhe", text: "Entre na sua área de membro para acompanhar suas atividades e falar com a equipe." },
+];
 
 export default function Home() {
   return <>
     <Header />
-    <main className="mfb-home">
-      <section className="hero">
-        <div className="container mfb-hero-grid" style={{padding:"80px 0",display:"grid",gridTemplateColumns:"1.15fr .85fr",gap:40,alignItems:"center"}}>
-          <div>
-            <span style={{display:"inline-block",padding:"7px 12px",border:"1px solid rgba(255,255,255,.35)",borderRadius:999,fontSize:12,fontWeight:800}}>IBFC · PARTICIPAÇÃO VOLUNTÁRIA</span>
-            <h1 style={{fontSize:"clamp(38px,6vw,70px)",lineHeight:1.04,margin:"20px 0"}}>Instituto Brasileiro da Família Cristã</h1>
-            <p style={{fontSize:20,lineHeight:1.65,color:"#d9f4e7",maxWidth:680}}>Uma rede de cidadania e voluntariado em Brasília. Escolha sua região e como deseja participar de cursos, ações comunitárias e atividades do instituto.</p>
-            <div style={{display:"flex",gap:12,marginTop:28,flexWrap:"wrap"}}>
-              <Link href="/cadastro?origem=portal_ibfc" className="btn btn-primary">Quero participar</Link>
-              <Link href="/#missao" className="btn btn-secondary">Conheça o instituto</Link>
+    <main className="ibfc-home">
+      <section className="ibfc-hero">
+        <div className="ibfc-hero-glow" aria-hidden="true" />
+        <div className="container ibfc-hero-grid">
+          <div className="ibfc-hero-copy">
+            <div className="ibfc-eyebrow"><span /> FAMÍLIA · FÉ · CIDADANIA</div>
+            <h1>Uma família que <em>transforma</em> a comunidade.</h1>
+            <p>O Instituto Brasileiro da Família Cristã reúne pessoas dispostas a aprender, servir e fazer a diferença onde vivem. Seu primeiro passo começa aqui.</p>
+            <div className="ibfc-hero-actions">
+              <Link href="/cadastro?origem=portal_ibfc" className="ibfc-action ibfc-action-yellow">Quero participar <ArrowRight size={20} /></Link>
+              <Link href="#missao" className="ibfc-action ibfc-action-outline">Conheça o instituto</Link>
             </div>
+            <div className="ibfc-hero-note"><span className="ibfc-note-icon"><ShieldCheck size={18} /></span> Cadastro voluntário. Você escolhe como deseja participar.</div>
           </div>
-          <div className="mfb-hero-visual" style={{display:"flex",justifyContent:"center"}}><Image src="/logo-ibfc.svg" alt="IBFC" width={320} height={320} priority /></div>
+          <div className="ibfc-hero-art">
+            <div className="ibfc-art-orbit ibfc-art-orbit-one" aria-hidden="true" />
+            <div className="ibfc-art-orbit ibfc-art-orbit-two" aria-hidden="true" />
+            <div className="ibfc-art-panel">
+              <Image src="/logo-ibfc.png" alt="Instituto Brasileiro da Família Cristã: família sob um teto dourado, sobre uma Bíblia" width={1086} height={362} priority className="ibfc-hero-logo" />
+              <div className="ibfc-art-line" />
+              <p>Juntos pela família.<br /><strong>Presentes na comunidade.</strong></p>
+            </div>
+            <div className="ibfc-art-caption">IBFC <span>·</span> BRASÍLIA</div>
+          </div>
+        </div>
+        <div className="ibfc-hero-stripe" aria-hidden="true"><span /><span /><span /></div>
+      </section>
+
+      <section className="ibfc-intro" id="missao">
+        <div className="container ibfc-intro-grid">
+          <div><span className="ibfc-section-label">QUEM SOMOS</span><h2>Um lugar para servir, aprender e <em>caminhar juntos.</em></h2></div>
+          <div className="ibfc-intro-body"><p>O IBFC nasce do compromisso com a família cristã e com a participação cidadã. Conectamos pessoas a iniciativas de educação, esporte, ação social e formação, valorizando o cuidado com o próximo.</p><Link href="/cadastro?origem=portal_ibfc" className="ibfc-text-link">Faça parte dessa história <ArrowRight size={18} /></Link></div>
         </div>
       </section>
-      <section className="section" id="missao"><div className="container" style={{maxWidth:900}}>
-        <span className="badge">NOSSA MISSÃO</span>
-        <h2 style={{fontSize:"clamp(30px,4vw,44px)",margin:"14px 0"}}>Sua participação começa na sua comunidade</h2>
-        <p style={{fontSize:18,lineHeight:1.8,color:"#475467"}}>O IBFC reúne pessoas interessadas em fortalecer as famílias, aprender sobre cidadania e contribuir com iniciativas de educação, ação social, esporte e participação comunitária. Sua inscrição é voluntária; a equipe entrará em contato apenas conforme as opções que você escolher.</p>
-      </div></section>
-      <section className="section" id="atuacao" style={{background:"#f5faf7"}}><div className="container">
-        <span className="badge">SUA JORNADA</span><h2 style={{fontSize:"clamp(30px,4vw,44px)",margin:"14px 0 30px"}}>Uma missão, diferentes formas de participar</h2>
-        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:18}}>
-          {[
-            [HeartHandshake,"Participe","Conte como gostaria de colaborar e escolha sua região."],
-            [BookOpen,"Aprenda","Acesse cursos e trilhas de formação na sua área de membro."],
-            [MapPin,"Aja na sua região","Conheça atividades e eventos disponíveis perto de você."],
-            [MessageCircleMore,"Acompanhe","Veja sua inscrição e converse com a equipe quando precisar."],
-          ].map(([Icon,title,description]) => {const Symbol=Icon as typeof HeartHandshake;return <article className="card" key={title as string} style={{padding:24}}><Symbol size={30} color="#087f50"/><h3 style={{fontSize:21,margin:"14px 0 8px"}}>{title as string}</h3><p style={{lineHeight:1.65,color:"#475467"}}>{description as string}</p></article>})}
+
+      <section className="ibfc-path" id="atuacao">
+        <div className="container">
+          <div className="ibfc-section-head"><div><span className="ibfc-section-label">SUA JORNADA NO IBFC</span><h2>Existe um caminho para a sua participação.</h2></div><p>Comece pelo cadastro e descubra como suas habilidades e seu tempo podem contribuir.</p></div>
+          <div className="ibfc-path-grid">{paths.map(({ Icon, number, title, text }) => <article className="ibfc-path-card" key={number}><span className="ibfc-path-number">{number}</span><div className="ibfc-path-icon"><Icon size={27} strokeWidth={1.8} /></div><h3>{title}</h3><p>{text}</p></article>)}</div>
         </div>
-        <div style={{marginTop:30}}><Link href="/cadastro?origem=portal_ibfc" className="btn btn-primary">Iniciar minha participação</Link></div>
-      </div></section>
+      </section>
+
+      <section className="ibfc-invite"><div className="container ibfc-invite-inner"><div className="ibfc-invite-icon"><UsersRound size={34} /></div><div><span className="ibfc-section-label">O PRÓXIMO PASSO É SEU</span><h2>Vamos construir essa jornada juntos?</h2><p>Cadastre-se e escolha os assuntos e atividades que fazem sentido para você.</p></div><Link href="/cadastro?origem=portal_ibfc" className="ibfc-action ibfc-action-yellow">Quero participar <ArrowRight size={20} /></Link></div></section>
     </main>
   </>;
 }

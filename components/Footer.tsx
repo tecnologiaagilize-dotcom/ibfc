@@ -1,5 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { VisitCounter } from "@/components/VisitCounter";
+import Image from "next/image";
+import Link from "next/link";
 
 const defaults = {
   company_name: "Agilize Tecnologia",
@@ -32,22 +34,23 @@ export async function Footer() {
   }
 
   return (
-    <footer style={{background:"#071b2b",color:"#d0d5dd",padding:"40px 0"}}>
-      <div className="container" style={{display:"flex",justifyContent:"space-between",gap:20,flexWrap:"wrap"}}>
-        <div>
-          <strong style={{color:"white"}}>IBFC — Instituto Brasileiro da Família Cristã</strong>
-          <div style={{marginTop:8,fontSize:14}}>Portal institucional</div>
+    <footer className="ibfc-footer">
+      <div className="container ibfc-footer-grid">
+        <div className="ibfc-footer-brand">
+          <Image src="/logo-ibfc.png" alt="Instituto Brasileiro da Família Cristã" width={315} height={105} />
+          <p>Família, fé e cidadania. Um espaço para aprender, servir e caminhar juntos.</p>
           <VisitCounter initialTotal={visitTotal} />
         </div>
-        <div style={{fontSize:13,maxWidth:520}}>
-          <div>Informações sobre atividades e projetos são atualizadas pela equipe do instituto.</div>
+        <div className="ibfc-footer-links"><strong>EXPLORE</strong><Link href="/#missao">Quem somos</Link><Link href="/#atuacao">Como participar</Link><Link href="/entrar">Área do membro</Link><Link href="/cadastro?origem=portal_ibfc">Quero participar</Link></div>
+        <div className="ibfc-footer-info">
+          <strong>INSTITUCIONAL</strong>
+          <p>Informações sobre atividades e projetos são atualizadas pela equipe do instituto.</p>
           <div style={{marginTop:12}}>
             Todos os direitos reservados para {development.company_name} — CNPJ: {development.cnpj}.{" "}
             <a
               href={development.website_url}
               target="_blank"
               rel="noreferrer"
-              style={{color:"#ffffff",textDecoration:"underline"}}
             >
               {development.website_url}
             </a>

@@ -19,7 +19,7 @@ const items = [
 export function AdminShell({ children, email }: { children: React.ReactNode; email?: string | null }) {
   return <div className="admin-shell">
     <aside className="admin-sidebar">
-      <Link href="/" className="admin-brand"><Image src="/logo-ibfc.svg" alt="IBFC" width={54} height={54}/><span><b>IBFC</b><small>Central de Gestão</small></span></Link>
+      <Link href="/" className="admin-brand"><Image src="/logo-ibfc.png" alt="IBFC" width={125} height={42}/><span><small>Central de Gestão</small></span></Link>
       <nav>{items.map(([label, href, Icon]) => <Link key={href} href={href}><Icon size={19}/><span>{label}</span></Link>)}</nav>
       <Link href="/" className="admin-site-link"><ExternalLink size={18}/> Ver portal</Link>
     </aside>

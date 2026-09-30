@@ -6,6 +6,7 @@ import {
 } from "react";
 
 import Link from "next/link";
+import Image from "next/image";
 import { createClient } from "@/lib/supabase/browser";
 
 type Mode =
@@ -235,6 +236,7 @@ export function MemberAuthForm({
             ← Voltar ao IBFC
           </Link>
 
+          <Image src="/logo-ibfc.png" alt="Instituto Brasileiro da Família Cristã" width={410} height={137} className="ibfc-auth-logo" />
           <div className="member-kicker">
             COMUNIDADE IBFC
           </div>
@@ -277,9 +279,7 @@ export function MemberAuthForm({
           onSubmit={submit}
         >
           <div className="member-auth-title">
-            <div className="member-mark">
-              IBFC
-            </div>
+            <div className="member-mark">IBFC</div>
 
             <h2>
               {signup

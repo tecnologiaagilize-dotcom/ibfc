@@ -101,6 +101,118 @@ button, input, select, textarea { font: inherit; }
 .state-shape { cursor: pointer; transition: fill .18s ease, stroke .18s ease; }
 .state-shape:hover { fill: #7bcf9f !important; stroke: #075d3b !important; }
 
+/* IBFC: azul profundo, detalhes dourados e verde discreto nas áreas públicas. */
+.ibfc-nav{background:#07183a;border-bottom:1px solid rgba(255,255,255,.12)}
+.ibfc-nav-inner{min-height:88px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+.ibfc-brand{display:block;width:clamp(180px,24vw,295px);flex:none}
+.ibfc-brand img{display:block;width:100%;height:auto}
+.ibfc-desktop-nav{display:flex;align-items:center;gap:clamp(15px,2vw,34px)}
+.ibfc-desktop-nav>a{color:#edf3ff;font-size:14px;font-weight:650}
+.ibfc-desktop-nav>a:hover{color:#f8c842}
+.ibfc-desktop-nav .ibfc-nav-cta{background:#f9cd37;color:#091b3d;padding:13px 20px;border-radius:99px;font-weight:850;white-space:nowrap}
+.ibfc-desktop-nav .ibfc-nav-cta:hover{color:#091b3d;background:#ffdd64}
+.ibfc-mobile-nav{display:none;color:white}
+.ibfc-hero{position:relative;isolation:isolate;overflow:hidden;background:radial-gradient(circle at 89% 28%,#143a75 0,transparent 34%),linear-gradient(115deg,#071633 4%,#09265b 57%,#0c3970 100%);color:white}
+.ibfc-hero:before{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 40%,rgba(43,89,151,.24) 40.2%,transparent 57%),repeating-linear-gradient(134deg,transparent 0,transparent 103px,rgba(255,255,255,.022) 104px,transparent 106px);z-index:-1}
+.ibfc-hero-glow{position:absolute;right:-120px;bottom:-350px;width:760px;height:760px;border:1px solid rgba(249,205,55,.23);border-radius:50%;box-shadow:0 0 0 85px rgba(249,205,55,.035),0 0 0 175px rgba(249,205,55,.025);pointer-events:none}
+.ibfc-hero-grid{min-height:630px;padding-top:70px;padding-bottom:76px;display:grid;grid-template-columns:minmax(0,1.06fr) minmax(0,.94fr);align-items:center;gap:clamp(24px,5vw,70px)}
+.ibfc-hero-copy{position:relative;z-index:1}
+.ibfc-eyebrow,.ibfc-section-label{font-size:12px;font-weight:900;letter-spacing:.16em}
+.ibfc-eyebrow{display:inline-flex;align-items:center;gap:10px;color:#f8cd3e}
+.ibfc-eyebrow span{width:20px;height:4px;border-radius:10px;background:#148b61;box-shadow:10px 0 0 #f8cd3e}
+.ibfc-hero h1{font-size:clamp(43px,5.2vw,74px);line-height:1.045;letter-spacing:-.045em;max-width:710px;margin:25px 0 22px;font-weight:850}
+.ibfc-hero h1 em{font-style:normal;color:#ffcf3c}
+.ibfc-hero-copy>p{font-size:clamp(17px,1.65vw,20px);line-height:1.65;color:#d6e4f6;max-width:610px;margin:0}
+.ibfc-hero-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:34px}
+.ibfc-action{display:inline-flex;gap:16px;align-items:center;justify-content:center;min-height:54px;padding:0 26px;border-radius:99px;font-size:15px;font-weight:850;transition:transform .2s,background .2s}
+.ibfc-action:hover{transform:translateY(-2px)}
+.ibfc-action-yellow{background:#ffcf3c;color:#0a1b3c;box-shadow:0 10px 28px rgba(0,0,0,.15)}
+.ibfc-action-yellow:hover{background:#ffe077}
+.ibfc-action-outline{border:1px solid rgba(255,255,255,.43);color:#fff}
+.ibfc-action-outline:hover{background:rgba(255,255,255,.1)}
+.ibfc-hero-note{display:flex;align-items:center;gap:10px;margin-top:45px;color:#c6d6ec;font-size:13px;line-height:1.5}
+.ibfc-note-icon{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:rgba(55,172,128,.2);color:#7cdbac;flex:none}
+.ibfc-hero-art{position:relative;min-height:410px;display:grid;place-items:center}
+.ibfc-art-panel{position:relative;width:100%;max-width:520px;padding:clamp(24px,3vw,42px);border:1px solid rgba(244,202,69,.35);border-radius:29px;background:linear-gradient(150deg,rgba(5,23,53,.92),rgba(15,42,85,.79));box-shadow:0 28px 80px rgba(0,9,30,.3);text-align:center}
+.ibfc-hero-logo{width:100%;height:auto;display:block;filter:drop-shadow(0 12px 20px rgba(0,0,0,.24))}
+.ibfc-art-line{height:1px;width:72%;margin:23px auto;background:linear-gradient(90deg,transparent,#bd9141,transparent)}
+.ibfc-art-panel p{margin:0;color:#d7e6f7;font-size:17px;line-height:1.45}
+.ibfc-art-panel p strong{color:#ffcf3c}
+.ibfc-art-orbit{position:absolute;inset:25px 7%;border-radius:50%;border:1px solid rgba(253,208,76,.17);transform:rotate(-25deg);pointer-events:none}
+.ibfc-art-orbit-two{inset:55px 0;transform:rotate(30deg);border-color:rgba(255,255,255,.09)}
+.ibfc-art-caption{position:absolute;right:18px;bottom:-8px;color:#c2d1e7;font-size:11px;font-weight:800;letter-spacing:.22em}
+.ibfc-art-caption span{color:#f5c83d}
+.ibfc-hero-stripe{height:5px;display:grid;grid-template-columns:42% 20% 38%}
+.ibfc-hero-stripe span:nth-child(1){background:#17875e}.ibfc-hero-stripe span:nth-child(2){background:#f6ca39}.ibfc-hero-stripe span:nth-child(3){background:#133e7e}
+.ibfc-intro{background:#fffcf2;padding:clamp(70px,8vw,112px) 0}
+.ibfc-intro-grid{display:grid;grid-template-columns:1fr .85fr;align-items:center;gap:clamp(35px,9vw,135px)}
+.ibfc-section-label{color:#a77b14}
+.ibfc-intro h2,.ibfc-path h2,.ibfc-invite h2{letter-spacing:-.035em;line-height:1.15}
+.ibfc-intro h2{font-size:clamp(35px,3.5vw,52px);margin:16px 0 0;color:#102550}
+.ibfc-intro h2 em{font-style:normal;color:#af8421}
+.ibfc-intro-body{padding-left:30px;border-left:3px solid #eac455}
+.ibfc-intro-body p{margin:0 0 22px;color:#394a5f;font-size:18px;line-height:1.78}
+.ibfc-text-link{display:inline-flex;align-items:center;gap:12px;color:#123b72;font-weight:850;border-bottom:2px solid #e8ba2f;padding-bottom:5px}
+.ibfc-path{background:#f3f5f9;padding:clamp(68px,7vw,100px) 0}
+.ibfc-section-head{display:flex;align-items:end;justify-content:space-between;gap:40px;margin-bottom:35px}
+.ibfc-section-head h2{max-width:660px;font-size:clamp(34px,3.4vw,49px);color:#102550;margin:15px 0 0}
+.ibfc-section-head>p{max-width:320px;color:#506078;line-height:1.65;margin:0 0 4px}
+.ibfc-path-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.ibfc-path-card{background:#fff;border:1px solid #e2e7f0;border-radius:22px;min-height:295px;padding:26px;box-shadow:0 9px 32px rgba(9,34,75,.045);transition:transform .2s,box-shadow .2s}
+.ibfc-path-card:hover{transform:translateY(-5px);box-shadow:0 16px 35px rgba(9,34,75,.1)}
+.ibfc-path-number{color:#b3bed1;font-size:12px;font-weight:800;letter-spacing:.17em}
+.ibfc-path-icon{width:58px;height:58px;border-radius:18px;display:grid;place-items:center;background:#eaf2fc;color:#16477e;margin:25px 0 22px}
+.ibfc-path-card:nth-child(2) .ibfc-path-icon{background:#fff4cf;color:#a87600}
+.ibfc-path-card:nth-child(3) .ibfc-path-icon{background:#e5f5ec;color:#157a52}
+.ibfc-path-card:nth-child(4) .ibfc-path-icon{background:#e9effb;color:#16477e}
+.ibfc-path-card h3{color:#102550;font-size:20px;margin:0 0 9px}
+.ibfc-path-card p{color:#57657b;line-height:1.6;font-size:15px;margin:0}
+.ibfc-invite{background:#195435;color:white;padding:60px 0}
+.ibfc-invite-inner{display:flex;align-items:center;gap:25px}
+.ibfc-invite-icon{display:grid;place-items:center;flex:none;width:68px;height:68px;border:1px solid rgba(255,255,255,.3);border-radius:20px;color:#ffe173}
+.ibfc-invite .ibfc-section-label{color:#ffdb69}
+.ibfc-invite h2{font-size:clamp(28px,3vw,38px);margin:10px 0 7px}
+.ibfc-invite p{color:#d9e8de;margin:0}
+.ibfc-invite .ibfc-action{margin-left:auto;white-space:nowrap}
+.ibfc-footer{background:#071633;color:#ccd8ed;padding:56px 0 42px;border-top:3px solid #d4a934}
+.ibfc-footer-grid{display:grid;grid-template-columns:1.2fr .6fr 1fr;gap:clamp(25px,6vw,80px)}
+.ibfc-footer-brand img{width:min(290px,100%);height:auto}
+.ibfc-footer-brand p{font-size:14px;line-height:1.65;max-width:290px}
+.ibfc-footer-links,.ibfc-footer-info{font-size:13px;line-height:1.7}
+.ibfc-footer-links{display:flex;flex-direction:column;gap:9px}
+.ibfc-footer-links strong,.ibfc-footer-info strong{font-size:11px;color:#f4c84a;letter-spacing:.15em;margin-bottom:8px}
+.ibfc-footer-links a,.ibfc-footer-info a{color:#d7e2f3}
+.ibfc-footer-links a:hover,.ibfc-footer-info a:hover{color:#ffd75d;text-decoration:underline}
+.ibfc-footer-info p{margin:0}
+@media(max-width:920px){
+  .ibfc-desktop-nav{display:none}.ibfc-mobile-nav{display:block;position:relative}
+  .ibfc-mobile-nav summary{list-style:none;cursor:pointer;border:1px solid rgba(255,255,255,.3);border-radius:9px;padding:10px 14px;font-weight:700}
+  .ibfc-mobile-nav summary::-webkit-details-marker{display:none}
+  .ibfc-mobile-nav summary span{margin-left:8px}
+  .ibfc-mobile-nav nav{position:absolute;right:0;top:calc(100% + 12px);width:min(270px,calc(100vw - 32px));background:#0a2350;box-shadow:0 18px 35px rgba(0,0,0,.25);border:1px solid #425878;border-radius:14px;padding:9px;display:grid;z-index:2}
+  .ibfc-mobile-nav nav a{padding:12px 14px;color:white;border-radius:7px}
+  .ibfc-mobile-nav nav a:hover{background:#173763}
+  .ibfc-path-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:700px){
+  .ibfc-nav-inner{min-height:70px}.ibfc-brand{width:200px}
+  .ibfc-hero-grid{grid-template-columns:1fr;min-height:unset;padding-top:55px;padding-bottom:60px;gap:38px}
+  .ibfc-hero h1{font-size:clamp(42px,9vw,60px)}.ibfc-hero-art{min-height:260px}
+  .ibfc-art-panel{max-width:490px;padding:24px}.ibfc-art-panel p{font-size:15px}
+  .ibfc-art-caption{bottom:-19px}
+  .ibfc-intro-grid{grid-template-columns:1fr;gap:28px}.ibfc-intro-body{padding-left:20px}
+  .ibfc-section-head{display:block}.ibfc-section-head>p{margin:17px 0 0}
+  .ibfc-invite-inner{flex-wrap:wrap}.ibfc-invite .ibfc-action{margin-left:0}
+  .ibfc-footer-grid{grid-template-columns:1fr 1fr}.ibfc-footer-brand{grid-column:1 / -1}
+}
+@media(max-width:490px){
+  .ibfc-hero-actions{align-items:stretch;flex-direction:column}.ibfc-hero-actions .ibfc-action{width:100%}
+  .ibfc-hero-note{align-items:flex-start;margin-top:30px}
+  .ibfc-path-grid{grid-template-columns:1fr}.ibfc-path-card{min-height:unset}
+  .ibfc-footer-grid{grid-template-columns:1fr}.ibfc-footer-brand{grid-column:auto}
+}
+@media(prefers-reduced-motion:reduce){.ibfc-action,.ibfc-path-card{transition:none}}
+
 /* Certificado de apoio: foto, justificativa e selo compõem uma peça única. */
 .mfb-certificate{position:relative;isolation:isolate;padding:clamp(24px,3.4vw,42px);border:2px solid #ba8e47;border-radius:28px;background:#fffcf6;box-shadow:0 18px 44px rgba(53,49,37,.10)}
 .mfb-certificate::before{position:absolute;inset:12px;border:1px solid #d9c196;border-radius:19px;content:"";pointer-events:none}
@@ -327,3 +439,24 @@ button, input, select, textarea { font: inherit; }
   .colinha-poster .colinha-poster-row:not(.colinha-executive-row) .colinha-preview-row{min-height:175px}
   .colinha-poster .colinha-poster-row:not(.colinha-executive-row) .colinha-preview-row img{min-height:165px}
 }
+
+/* Cadastro e acesso com a mesma identidade visual da página inicial. */
+.member-auth-page{background:#fffcf2}
+.member-auth-brand{background:radial-gradient(circle at 85% 78%,rgba(35,97,160,.5),transparent 36%),linear-gradient(145deg,#071633,#0b2b60 78%,#123e7c);padding:clamp(30px,5vw,70px)}
+.member-auth-copy{max-width:600px}
+.member-back{color:#e9d392}
+.member-back:hover{color:#ffdb5c}
+.ibfc-auth-logo{width:min(410px,100%);height:auto;display:block;margin:clamp(30px,6vw,85px) 0 15px}
+.member-kicker{margin-top:0;color:#f8cb3d}
+.member-auth-copy h1{font-size:clamp(38px,4.4vw,58px);letter-spacing:-.04em}
+.member-auth-copy p{color:#dbe6f5}
+.member-benefits{color:#f9d86f}
+.member-auth-form-wrap{background:#fffcf2;padding:clamp(24px,5vw,55px)}
+.member-auth-card{background:white;border:1px solid #ece8da;border-radius:23px;box-shadow:0 25px 60px rgba(14,37,79,.09);padding:clamp(24px,4vw,44px);width:min(570px,100%)}
+.member-mark{background:#0b2959;color:#ffcf3c;border-radius:15px}
+.member-auth-title h2{color:#102550}
+.member-auth-card .field:focus{border-color:#b38d30;box-shadow:0 0 0 3px rgba(246,202,57,.2)}
+.member-auth-card .btn-primary{background:#f8cc3b;color:#091b3b;font-weight:850;min-height:54px;border-radius:99px}
+.member-auth-card .btn-primary:hover{background:#ffe075}
+.member-auth-switch a{color:#16477e;font-weight:850}
+@media(max-width:900px){.member-auth-page{grid-template-columns:1fr}.member-auth-brand{padding:35px 24px}.ibfc-auth-logo{width:270px;margin:20px 0 12px}.member-auth-copy h1{font-size:clamp(34px,7vw,52px)}.member-benefits{margin-top:20px}}
