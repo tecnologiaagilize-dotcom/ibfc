@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" role="img" aria-labelledby="title desc">
+  <title id="title">Aprovado pela Família Brasileira</title>
+  <desc id="desc">Brasão institucional do Movimento Família Brasileira, com escudo, família e ramos dourados</desc>
+  <defs>
+    <linearGradient id="gold" x2="1" y2="1"><stop stop-color="#b98632"/><stop offset=".5" stop-color="#f3d98e"/><stop offset="1" stop-color="#ad772b"/></linearGradient>
+    <linearGradient id="green" x2=".8" y2="1"><stop stop-color="#135b42"/><stop offset="1" stop-color="#073b2c"/></linearGradient>
+  </defs>
+  <g fill="none" stroke="url(#gold)" stroke-width="8" stroke-linecap="round">
+    <path d="M95 312C29 266 26 175 78 97"/><path d="M305 312c66-46 69-137 17-215"/>
+  </g>
+  <g fill="url(#gold)">
+    <path d="M60 247l-30-17 32-2zM48 209l-25-25 31 6zM48 167l-15-29 28 17zM64 125l-4-32 21 26zM89 96l5-31 10 29z"/>
+    <path d="M340 247l30-17-32-2zM352 209l25-25-31 6zM352 167l15-29-28 17zM336 125l4-32-21 26zM311 96l-5-31-10 29z"/>
+    <path d="m200 22 8 18 20 2-15 13 4 20-17-10-17 10 4-20-15-13 20-2z"/>
+  </g>
+  <path d="M200 83c46 30 106 37 106 37v110c0 69-47 112-106 142-59-30-106-73-106-142V120s60-7 106-37z" fill="url(#gold)"/>
+  <path d="M200 98c41 27 92 32 92 32v100c0 59-40 97-92 124-52-27-92-65-92-124V130s51-5 92-32z" fill="url(#green)" stroke="#fff4d5" stroke-width="3"/>
+  <circle cx="163" cy="191" r="16" fill="#ffe5a0"/><circle cx="235" cy="191" r="16" fill="#ffe5a0"/><circle cx="200" cy="220" r="13" fill="#ffe5a0"/>
+  <path d="M137 252c1-30 10-43 26-43s25 13 26 43l-13 0-5 44h-16l-5-44zm72 0c1-30 10-43 26-43s25 13 26 43l-13 0-5 44h-16l-5-44zm-29 40c0-32 6-51 20-51s20 19 20 51z" fill="#ffe5a0"/>
+  <path d="M156 275c18-22 31-26 44-26 13 0 26 4 44 26" fill="none" stroke="#ffe5a0" stroke-width="5" stroke-linecap="round"/>
+  <path d="M49 318c37 17 79 16 106-2l45 26 45-26c27 18 69 19 106 2l-19 45c-51-5-89-3-132 19-43-22-81-24-132-19z" fill="url(#gold)"/>
+  <path d="M64 334c48 3 89-1 136 27 47-28 88-24 136-27" fill="none" stroke="#77551e" stroke-width="2"/>
+  <text x="200" y="351" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="13" font-weight="900" letter-spacing=".3" fill="#173e2f">APROVADO PELA FAMÍLIA BRASILEIRA</text>
+</svg>
