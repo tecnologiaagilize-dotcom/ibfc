@@ -2,7 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/browser";
+import { loginAdmin } from "./actions";
 
 export default function AdminLoginPage() {
   const [loading, setLoading] = useState(false);
@@ -25,66 +25,21 @@ export default function AdminLoginPage() {
     const password = String(form.get("password") || "");
 
     try {
-      const supabase = createClient();
+      let timeout: ReturnType<typeof setTimeout> | undefined;
+      const result = await Promise.race([
+        loginAdmin(email, password),
+        new Promise<{ error: string }>((resolve) => {
+          timeout = setTimeout(() => resolve({
+            error: "O servidor não respondeu em 30 segundos. Recarregue a página e tente novamente.",
+          }), 30000);
+        }),
+      ]).finally(() => { if (timeout) clearTimeout(timeout); });
 
-      const {
-        data,
-        error: loginError,
-      } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-
-      if (loginError) {
-        setError(loginError.message);
+      if (result.error) {
+        setError(result.error);
         return;
       }
 
-      if (!data.user || !data.session) {
-        setError(
-          "Não foi possível estabelecer uma sessão válida. Tente novamente."
-        );
-        return;
-      }
-
-      /*
-       * Confirma que o usuário autenticado possui
-       * acesso à Central Administrativa.
-       */
-      const {
-        data: adminProfile,
-        error: profileError,
-      } = await supabase
-        .from("admin_profiles")
-        .select("role")
-        .eq("id", data.user.id)
-        .maybeSingle();
-
-      if (profileError) {
-        await supabase.auth.signOut();
-
-        setError(
-          "Não foi possível verificar sua permissão administrativa."
-        );
-        return;
-      }
-
-      if (
-        adminProfile?.role !== "admin" &&
-        adminProfile?.role !== "editor"
-      ) {
-        await supabase.auth.signOut();
-
-        setError(
-          "Este usuário não possui acesso à Central Administrativa."
-        );
-        return;
-      }
-
-      /*
-       * Recarregamento completo para que o servidor
-       * receba a sessão/cookies recém-criados.
-       */
       window.location.assign("/admin");
     } catch (err) {
       console.error("Erro no login administrativo:", err);
@@ -129,7 +84,7 @@ export default function AdminLoginPage() {
             textDecoration: "none",
           }}
         >
-          ← Voltar ao site MFB
+          ← Voltar ao portal IBFC
         </Link>
 
         <div
@@ -151,7 +106,7 @@ export default function AdminLoginPage() {
             color: "#101828",
           }}
         >
-          Administração MFB
+          Administração IBFC
         </h1>
 
         <p
@@ -275,7 +230,7 @@ export default function AdminLoginPage() {
             fontSize: 12,
           }}
         >
-          Movimento Família Brasileira
+          Instituto Brasileiro da Família Cristã
           <br />
           Acesso restrito à equipe autorizada
         </div>
