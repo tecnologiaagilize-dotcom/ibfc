@@ -4,9 +4,9 @@
 
 1. Copie os arquivos deste pacote para a raiz do repositório **ibfc** respeitando as pastas. O MFB não é alterado.
 2. No SQL Editor do Supabase do IBFC, execute somente `supabase/migrations/20261009_ibfc_map_and_tse_sync.sql`. O projeto deve ter a tabela `admin_profiles` da base atual. O SQL consolidado cria ou atualiza as tabelas e funções, preservando os dados anteriores do DF e Entorno. A estrutura contém cinco tabelas de resultados públicos, funções e regras de acesso; não altera os cadastros de afiliados.
-3. No Google Cloud, habilite Maps JavaScript API, configure uma chave de navegador e o faturamento exigido pelo Google. Restrinja a chave aos domínios do IBFC (inclua o endereço de preview somente se for usado) e à API necessária. Na Vercel, acrescente `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` e, preferencialmente, `NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID`. Veja `.env.electoral.example`. Faça novo deployment após mudar variáveis `NEXT_PUBLIC_*`.
+3. O mapa usa **Leaflet 1.9.4 + OpenStreetMap**, sem chave Google, cartão ou alteração das dependências npm. Copie também `public/vendor/leaflet-1.9.4/`, incluindo CSS, JavaScript, imagens e licença. As variáveis de `.env.electoral.example` são opcionais; deixe vazias para o mapa padrão. Faça novo deployment após copiar os arquivos.
 4. Acesse **Administrador → Mapa eleitoral DF e Entorno**, em `/admin/mapa-eleitoral`.
-5. Configure a sincronização automática conforme `docs/IBFC-SINCRONIZACAO-TSE.md` e use o botão **Sincronizar bases oficiais**. A importação manual dos arquivos descritos abaixo continua disponível. Sem dados reais importados, não haverá votação para consultar. Sem chave Google válida, a tabela, a comparação e os relatórios continuam disponíveis, mas o mapa não carrega.
+5. Configure a sincronização automática conforme `docs/IBFC-SINCRONIZACAO-TSE.md` e use o botão **Sincronizar bases oficiais**. A importação manual dos arquivos descritos abaixo continua disponível. Sem dados reais importados, não haverá votação para consultar. O mapa funciona independentemente das credenciais da sincronização TSE. Sem resultados importados, poderá mostrar apenas os locais disponíveis.
 
 Não há credenciais ou dados eleitorais fictícios pré-carregados neste pacote. A automação requer configuração dos Secrets GitHub e variáveis de servidor Vercel.
 
@@ -46,7 +46,7 @@ Locais: `SG_UF`, `NM_MUNICIPIO`, `AA_ELEICAO` ou `ANO_ELEICAO` quando presente, 
 
 ## Uso do mapa e da comparação
 
-- Os marcadores representam **locais de votação**, agrupando suas seções. Não representam o número de série de cada urna física. Todos os locais de 2026 importados entram na visualização; somente aqueles com coordenadas válidas podem ser desenhados no Google Maps.
+- Os marcadores representam **locais de votação**, agrupando suas seções. Não representam o número de série de cada urna física. Todos os locais de 2026 importados entram na visualização; somente aqueles com coordenadas válidas podem ser desenhados no OpenStreetMap.
 - Escolha cargo, turno e a candidatura de 2026 dentre os dados importados — independentemente de apoio institucional. Pode consultar apenas 2026 ou escolher uma candidatura de 2022 para comparação.
 - A correspondência entre candidatos é uma escolha explícita. Número de urna sozinho não identifica a mesma pessoa entre eleições. Nomes diferentes geram aviso; nomes iguais também não substituem verificação de identidade.
 - O mapa/tabela pode ser filtrado por UF, município, zona e nome/endereço/código do local. Clique no marcador ou no nome do local para ver as seções e os votos.
@@ -69,7 +69,7 @@ O relatório mede **evolução da votação agregada**, não crescimento ou qued
 
 ## Validação e limites desta entrega
 
-Build de produção e testes de cálculo/importação passaram. Também foram verificadas em navegador a seleção das candidaturas, a comparação, a exportação CSV, a impressão e a largura de tela mobile, com dados de teste isolados que não integram este pacote. A migração foi executada em PostgreSQL local de teste (PGlite), verificando permissões, snapshots incompletos, denominadores, nulos, mudança de local e consulta sem comparação. Não houve acesso nem aplicação no Supabase/Vercel de produção. O Google Maps real precisa ser validado com a chave e o domínio do seu projeto.
+Build de produção e testes de cálculo/importação passaram. Também foram verificadas em navegador a seleção das candidaturas, a comparação, a exportação CSV, a impressão e a largura de tela mobile, com dados de teste isolados que não integram este pacote. A migração foi executada em PostgreSQL local de teste (PGlite), verificando permissões, snapshots incompletos, denominadores, nulos, mudança de local e consulta sem comparação. Não houve acesso nem aplicação no Supabase/Vercel de produção. O fundo OpenStreetMap depende da conexão e da disponibilidade do serviço de tiles.
 
 O pacote adiciona o mapa e a comparação; não conclui as integrações de fiscalização parlamentar da Câmara/Senado. A sincronização automática do TSE está descrita em `docs/IBFC-SINCRONIZACAO-TSE.md`; as integrações de fiscalização Câmara/Senado seguem como etapas próprias.
 
@@ -90,3 +90,11 @@ Para ampliar a base já importada, carregue os CSVs completos de GO e, se deseja
 Não importe um arquivo filtrado apenas para uma cidade: a versão mais recente de uma combinação UF/ano/eleição/turno/cargo substitui a anterior nessa UF. Use o recurso oficial completo, que será filtrado para a cobertura regional. A ampliação do envelope de coordenadas cobre a RIDE, mas não confirma a precisão geográfica da coordenada original.
 
 Verificação desta ampliação: 9 testes de leitura e cálculo; PostgreSQL de teste confirmou preservação do DF, separação de candidaturas com o mesmo número entre UFs, coordenadas do Entorno, permissões e repetição da migração. Interface verificada em navegador: troca de UF, filtros por município, cálculo, exportação CSV do recorte e largura de celular. Build de produção aprovado. Não foi aplicada em GitHub, Supabase ou Vercel de produção e não inclui arquivos eleitorais reais pré-importados.
+
+## Atualização para Leaflet + OpenStreetMap
+
+Se o SQL consolidado já foi instalado, esta troca de mapa **não exige nova migração**. Copie os arquivos e faça novo deployment. As antigas variáveis Google podem ser removidas; não são mais utilizadas pelo módulo. As credenciais Supabase e GitHub da sincronização permanecem.
+
+Leaflet é servido pelo próprio portal. O fundo usa `https://tile.openstreetmap.org/{z}/{x}/{y}.png`, com créditos visíveis e cache normal do navegador. Os tiles públicos não têm disponibilidade garantida nem capacidade ilimitada. Para maior volume, configure um provedor compatível em `NEXT_PUBLIC_ELECTORAL_TILE_URL` e seus créditos em `NEXT_PUBLIC_ELECTORAL_TILE_ATTRIBUTION`; o endereço deve ser HTTPS. Não há download offline nem coleta antecipada de tiles. Política: https://operations.osmfoundation.org/policies/tiles/ .
+
+A biblioteca real foi verificada em navegador com tiles simulados, sem requisições automatizadas ao servidor público: filtros, marcadores, cores, seleção, segurança dos textos do popup, CSV e largura de celular. A disponibilização em produção depende de copiar os arquivos e redeployar.

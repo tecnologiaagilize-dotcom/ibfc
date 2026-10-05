@@ -1,38 +1,33 @@
-IBFC — MAPA DF/ENTORNO + SINCRONIZAÇÃO AUTOMÁTICA TSE
+IBFC — ATUALIZAÇÃO CONSOLIDADA: MAPA LEAFLET + OPENSTREETMAP E SINCRONIZAÇÃO TSE
 
-PACOTE ÚNICO CONSOLIDADO
-Reúne o mapa, a ampliação do Entorno e a automação. Contém apenas arquivos do módulo novos/alterados. Não é uma substituição completa do portal IBFC.
-Não precisa aplicar os ZIPs anteriores. Se já os instalou, aplique este por cima, preservando as pastas.
+Este ZIP contém os arquivos do módulo atualizado, não o portal completo.
+Copie as pastas na raiz do repositório IBFC, preservando os caminhos.
+Inclua public/vendor/leaflet-1.9.4: biblioteca local, estilos, imagens e licença.
+Inclua .github/workflows/ibfc-tse-sync.yml caso ainda não esteja instalado.
 
-PASSO A PASSO
-1. Extraia e copie as pastas na raiz do GitHub IBFC. Inclua as pastas ocultas .github e o arquivo .npmrc.
-2. No Supabase usado pelo IBFC → SQL Editor, execute SOMENTE o SQL completo:
-   supabase/migrations/20261009_ibfc_map_and_tse_sync.sql
-   Ele instala/atualiza o mapa e a automação, preserva dados existentes e recarrega o schema cache. Requer admin_profiles da base do portal.
-3. GitHub → Settings → Secrets and variables → Actions → New repository secret:
-   SUPABASE_URL = URL do mesmo Supabase do IBFC.
-   SUPABASE_SERVICE_ROLE_KEY = chave JWT service_role desse projeto (não use chave anon/publicável).
-4. Crie um token GitHub fine-grained restrito ao repositório IBFC com permissão Actions: Read and write.
-5. Vercel → Settings → Environment Variables:
-   GITHUB_TSE_TOKEN = token do passo anterior (somente servidor).
-   GITHUB_TSE_REPOSITORY = tecnologiaagilize-dotcom/ibfc (ajuste se necessário).
-   GITHUB_TSE_REF = main (ajuste à branch padrão com o workflow instalado).
-   Mantenha as variáveis atuais do Supabase e Google Maps. Nenhum token deve ter prefixo NEXT_PUBLIC.
-6. Faça novo deployment. Em Administrador → Mapa eleitoral DF e Entorno, selecione 2022, DF + GO e clique em Sincronizar bases oficiais. Depois solicite 2026.
+MAPA
+Não exige chave Google, cartão ou nova dependência npm.
+As variáveis antigas NEXT_PUBLIC_GOOGLE_MAPS_API_KEY/MAP_ID não são utilizadas.
+As variáveis .env.electoral.example são opcionais; vazias usam o OpenStreetMap.
+Faça commit e novo deployment na Vercel; acesse /admin/mapa-eleitoral.
+Conserva locais/seções, filtros DF/GO/MG, cores, comparação 2022/2026 e CSV/PDF.
+Locais sem coordenadas continuam na tabela. O fundo usa tiles públicos OSM,
+com atribuição visível e cache do navegador; capacidade não é ilimitada.
 
-EXECUÇÃO
-A Vercel inicia a tarefa e o GitHub Actions baixa/extrai/processa os arquivos. Você pode fechar a página. O painel acompanha progresso, histórico e cancelamento. A carga anterior permanece consultável se a nova falhar. Dados incompletos não entram no mapa. Recursos ainda não publicados são sinalizados como pendência/carga parcial.
-Não é uma sincronização recorrente agendada: cada carga é iniciada pelo administrador. A importação manual continua opcional.
+BANCO
+Se já executou 20261009_ibfc_map_and_tse_sync.sql, NÃO precisa executá-lo
+novamente para trocar o mapa. Nenhuma migração nova nesta atualização.
+Para a primeira instalação do módulo, execute esse único SQL consolidado
+no Supabase correto; requer admin_profiles e auth.users da base do portal.
 
-VERIFICAÇÃO DESTA ENTREGA
-- Build Next.js, 9 testes de leitura/cálculos e 5 testes do worker aprovados.
-- PostgreSQL de teste: permissões, token privado, fila, cancelamento, carga atômica, preservação da versão anterior após falha e repetição do SQL aprovados.
-- Navegador: iniciar sem upload, persistência após recarregar a página, progresso, cancelar, recarga do catálogo e largura mobile aprovados.
-- Catálogo real TSE: recursos de votação 2022 e locais 2026 localizados; votação por seção 2026 ainda não localizada nesta consulta do catálogo. Nenhum resultado real foi importado no Supabase de produção.
-- GitHub/Vercel/Supabase de produção não foram alterados. O botão só inicia a carga após a configuração dos passos acima.
+SINCRONIZAÇÃO TSE
+Permanece no mesmo fluxo: Vercel inicia, GitHub Actions processa em segundo plano.
+Requer Secrets GitHub SUPABASE_URL e SUPABASE_SERVICE_ROLE_KEY (JWT service_role)
+e variáveis de servidor Vercel GITHUB_TSE_TOKEN, GITHUB_TSE_REPOSITORY,
+GITHUB_TSE_REF. Consulte docs/IBFC-SINCRONIZACAO-TSE.md.
+Não substitua suas variáveis Supabase atuais por arquivos de exemplo.
+Só estarão disponíveis votos publicados e importados; não há dados reais
+pré-carregados nem mudança aplicada automaticamente à produção.
 
-DOCUMENTAÇÃO
-Leia docs/IBFC-SINCRONIZACAO-TSE.md para configuração e diagnóstico.
-Leia docs/IBFC-MAPA-ELEITORAL.md para cobertura, cálculos e uso do mapa.
-
-O processamento usa recursos/minutos do GitHub Actions e espaço no Supabase, conforme o plano contratado. Os marcadores são locais de votação que agrupam seções; não identificam eleitores ou votos individuais. Este pacote não conclui a sincronização parlamentar Câmara/Senado.
+Documentação completa: docs/IBFC-MAPA-ELEITORAL.md.
+Este pacote substitui os ZIPs anteriores deste módulo; não copie versões antigas por cima.

@@ -4,7 +4,7 @@ import { Download, MapPinned, Printer, RefreshCw } from "lucide-react";
 import { csvCell, groupLocations, number, percentage, summarize } from "@/lib/electoral/analysis";
 import { candidateKey, type Catalogue, type Comparison, type ElectionCandidate, type LocalComparison } from "@/lib/electoral/types";
 import { REGION_NAMES } from "@/lib/electoral/region";
-import { GoogleElectionMap } from "./GoogleElectionMap";
+import { LeafletElectionMap } from "./LeafletElectionMap";
 import { ElectoralSync } from "./ElectoralSync";
 import { ElectoralImport } from "./ElectoralImport";
 import "./electoral.css";
@@ -82,6 +82,7 @@ export function ElectoralDashboard() {
   return <div className="electoral-dashboard">
     <div className="electoral-heading"><div><span className="electoral-eyebrow">OBSERVATÓRIO IBFC · DF E ENTORNO</span><h1>Mapa eleitoral</h1><p>Locais de votação, seções e evolução dos resultados públicos.</p></div>
       <button className="no-print" onClick={()=>void refresh()} disabled={loading||busy}><RefreshCw size={17}/> Atualizar bases carregadas</button></div>
+    <ElectoralSync onDone={()=>void refresh()}/>
     <div className="electoral-controls electoral-panel no-print"><label>UF<select value={uf} disabled={busy} onChange={e=>{setUf(e.target.value);setMunicipality("");setZone("");setSearch("");setNewId("");setOldId("");if(office==="8"||office==="7")setOffice(e.target.value==="DF"?"8":"7");reset();}}><option value="DF">Distrito Federal</option><option value="GO">Goiás — Entorno</option><option value="MG">Minas Gerais — RIDE</option></select></label><label>Cargo<select value={office} disabled={busy} onChange={e=>{setOffice(e.target.value);setNewId("");setOldId("");reset();}}>
       <option value="1">Presidente</option><option value="3">Governador</option><option value="5">Senador</option><option value="6">Deputado federal</option>{uf==="DF"?<option value="8">Deputado distrital</option>:<option value="7">Deputado estadual</option>}</select></label>
       <label>Turno<select value={turn} disabled={busy} onChange={e=>{setTurn(e.target.value);setNewId("");setOldId("");reset();}}><option value="1">1º turno</option><option value="2">2º turno</option></select></label>
@@ -113,7 +114,7 @@ export function ElectoralDashboard() {
     {report?.old&&<p className="electoral-notice">Nas chaves coincidentes: {number(commonStats.oldVotes)} votos em 2022 e {number(commonStats.newVotes)} em 2026 ({percentage(commonStats.percent)}). Uma chave coincidente não confirma que a composição da seção permaneceu igual.</p>}
     <section className="electoral-panel no-print"><div className="electoral-map-heading"><h2><MapPinned size={20}/> Locais de votação do DF e Entorno</h2><span>{places.length} locais · {places.filter(p=>p.latitude!==null&&p.longitude!==null).length} no mapa · {places.filter(p=>p.latitude===null||p.longitude===null).length} sem coordenadas</span></div>
       <p className="electoral-caption">Planaltina do DF é uma região administrativa de Brasília. Jardim ABC pertence a Cidade Ocidental/GO. Use município e pesquisa por nome/endereço para localizar escolas; uma busca textual não delimita toda a região administrativa ou bairro.</p>
-      <GoogleElectionMap places={places} onSelect={onSelect}/>
+      <LeafletElectionMap places={places} onSelect={onSelect}/>
       <p className="electoral-caption">Verde: aumento de votos · terracota: redução · azul: mesma quantidade · cinza: sem comparação. Coordenadas preservadas por ano. Seções de 2022 sem correspondente em 2026 aparecem em seus locais históricos.</p>
     </section>
     {selectedPlace&&<section className="electoral-panel no-print"><h2>{selectedPlace.name}</h2><p>{selectedPlace.municipality_name}/{selectedPlace.uf} · {selectedPlace.address} · Zona {selectedPlace.zone} · coordenadas de {selectedPlace.coordinate_year??"ano não disponível"}</p>
@@ -126,7 +127,6 @@ export function ElectoralDashboard() {
       <table className="print-only"><thead><tr><th>Local</th><th>2022</th><th>2026</th><th>Diferença</th><th>Variação</th><th>Participação</th></tr></thead><tbody>{renderRows(places)}</tbody></table>
     </section>
     <p className="electoral-notice">Este painel descreve resultados públicos agregados. Crescimento da votação não comprova aumento de eleitores fiéis nem identifica quem votou em quem. Locais sem coordenadas continuam na tabela; falta de dados não significa zero voto.</p>
-    <ElectoralSync onDone={()=>void refresh()}/>
     <ElectoralImport onDone={()=>void refresh()}/>
     <details className="electoral-import no-print"><summary>Histórico de importações e cobertura</summary>{catalogue.imports.map(i=><p key={i.id}><b>{i.year} · {i.kind==="votes"?"Votação":"Locais"}</b> · {i.filename} · {i.status==="completed"?"Concluído":i.status==="running"?"Em andamento / interrompido":"Falhou"} · {number(i.rows_saved)} registros{ i.error?` · ${i.error}`:""}</p>)}<p>“Concluído” significa que o arquivo foi processado, não que todas as seções do DF e Entorno estão cobertas. Arquivos parciais devem ser identificados e substituídos por arquivos oficiais completos.</p></details>
   </div>;

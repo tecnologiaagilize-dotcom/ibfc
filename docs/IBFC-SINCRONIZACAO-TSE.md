@@ -18,10 +18,10 @@ A Vercel inicia a tarefa; o GitHub Actions executa a carga Python. A página pod
    - `GITHUB_TSE_TOKEN`: o token GitHub do passo anterior.
    - `GITHUB_TSE_REPOSITORY`: `tecnologiaagilize-dotcom/ibfc` (ajuste se o repositório tiver outro proprietário/nome).
    - `GITHUB_TSE_REF`: `main` (ou a branch padrão onde o workflow foi instalado).
-   Use `.env.tse-sync.example` apenas como referência; não substitua as variáveis atuais do Supabase ou Google Maps.
+   Use `.env.tse-sync.example` apenas como referência; não substitua as variáveis atuais do Supabase.
 6. Faça novo deployment. Na página do mapa, escolha **2022** e **DF + GO** para a primeira carga. Clique em **Sincronizar bases oficiais**. Depois solicite 2026. MG é opcional para cobrir também os quatro municípios mineiros da RIDE.
 
-Não é necessário passar a chave service_role para a Vercel por causa deste worker: ela fica nos Secrets do GitHub. O token de disparo GitHub fica na Vercel. As chaves públicas já usadas no portal e a chave de navegador Google Maps permanecem como antes.
+Não é necessário passar a chave service_role para a Vercel por causa deste worker: ela fica nos Secrets do GitHub. O token de disparo GitHub fica na Vercel. As chaves públicas já usadas no portal permanecem como antes. O mapa Leaflet + OpenStreetMap não exige chave Google.
 
 ## Progresso e publicação
 
