@@ -1,27 +1,38 @@
-IBFC — MAPA ELEITORAL DF E ENTORNO — PACOTE CONSOLIDADO
+IBFC — MAPA DF/ENTORNO + SINCRONIZAÇÃO AUTOMÁTICA TSE
 
-Um único pacote reúne o mapa inicial e a ampliação do Entorno. Contém apenas arquivos novos/alterados do módulo, com a versão mais recente de cada arquivo.
+PACOTE ÚNICO CONSOLIDADO
+Reúne o mapa, a ampliação do Entorno e a automação. Contém apenas arquivos do módulo novos/alterados. Não é uma substituição completa do portal IBFC.
+Não precisa aplicar os ZIPs anteriores. Se já os instalou, aplique este por cima, preservando as pastas.
 
-INSTALAÇÃO OU ATUALIZAÇÃO
-1. Extraia este ZIP. Copie as pastas e arquivos na raiz do repositório IBFC, respeitando os caminhos existentes. Inclua .npmrc (arquivo oculto em alguns gerenciadores).
-2. No SQL Editor do Supabase do IBFC, execute SOMENTE:
-   supabase/migrations/20261007_ibfc_electoral_map_consolidated.sql
-   Serve para instalação nova do módulo ou atualização de qualquer um dos dois pacotes anteriores. Preserva os dados do mapa. Requer a base do portal com admin_profiles.
-3. Na Vercel, mantenha as variáveis existentes do Supabase. Acrescente as variáveis Google Maps indicadas em .env.electoral.example, se ainda não configuradas. Não substitua o arquivo .env do projeto por esse exemplo.
-4. Faça novo deployment e acesse Administrador → Mapa eleitoral DF e Entorno (/admin/mapa-eleitoral).
-5. Importe arquivos oficiais completos de votação por seção DF/GO (e MG para toda a RIDE), Presidente BR e locais de votação de 2022 e 2026.
+PASSO A PASSO
+1. Extraia e copie as pastas na raiz do GitHub IBFC. Inclua as pastas ocultas .github e o arquivo .npmrc.
+2. No Supabase usado pelo IBFC → SQL Editor, execute SOMENTE o SQL completo:
+   supabase/migrations/20261009_ibfc_map_and_tse_sync.sql
+   Ele instala/atualiza o mapa e a automação, preserva dados existentes e recarrega o schema cache. Requer admin_profiles da base do portal.
+3. GitHub → Settings → Secrets and variables → Actions → New repository secret:
+   SUPABASE_URL = URL do mesmo Supabase do IBFC.
+   SUPABASE_SERVICE_ROLE_KEY = chave JWT service_role desse projeto (não use chave anon/publicável).
+4. Crie um token GitHub fine-grained restrito ao repositório IBFC com permissão Actions: Read and write.
+5. Vercel → Settings → Environment Variables:
+   GITHUB_TSE_TOKEN = token do passo anterior (somente servidor).
+   GITHUB_TSE_REPOSITORY = tecnologiaagilize-dotcom/ibfc (ajuste se necessário).
+   GITHUB_TSE_REF = main (ajuste à branch padrão com o workflow instalado).
+   Mantenha as variáveis atuais do Supabase e Google Maps. Nenhum token deve ter prefixo NEXT_PUBLIC.
+6. Faça novo deployment. Em Administrador → Mapa eleitoral DF e Entorno, selecione 2022, DF + GO e clique em Sincronizar bases oficiais. Depois solicite 2026.
 
-NÃO É NECESSÁRIO instalar os dois ZIPs anteriores ou executar seus SQLs. Se já foram instalados, basta aplicar este pacote e o SQL consolidado.
+EXECUÇÃO
+A Vercel inicia a tarefa e o GitHub Actions baixa/extrai/processa os arquivos. Você pode fechar a página. O painel acompanha progresso, histórico e cancelamento. A carga anterior permanece consultável se a nova falhar. Dados incompletos não entram no mapa. Recursos ainda não publicados são sinalizados como pendência/carga parcial.
+Não é uma sincronização recorrente agendada: cada carga é iniciada pelo administrador. A importação manual continua opcional.
 
-FUNCIONALIDADES
-- Filtros UF, município, zona e local de votação.
-- Resultados agregados por seção e local; comparação 2022 × 2026.
-- Relatórios CSV com download direto e impressão/salvar PDF pelo navegador.
-- DF e municípios da RIDE-DF, com candidaturas separadas por UF.
-- Planaltina/DF dentro de Brasília, separada de Planaltina/GO.
-- Jardim ABC dentro de Cidade Ocidental; pesquisa textual por escola/endereço, sem delimitação automática de bairros ou RA.
+VERIFICAÇÃO DESTA ENTREGA
+- Build Next.js, 9 testes de leitura/cálculos e 5 testes do worker aprovados.
+- PostgreSQL de teste: permissões, token privado, fila, cancelamento, carga atômica, preservação da versão anterior após falha e repetição do SQL aprovados.
+- Navegador: iniciar sem upload, persistência após recarregar a página, progresso, cancelar, recarga do catálogo e largura mobile aprovados.
+- Catálogo real TSE: recursos de votação 2022 e locais 2026 localizados; votação por seção 2026 ainda não localizada nesta consulta do catálogo. Nenhum resultado real foi importado no Supabase de produção.
+- GitHub/Vercel/Supabase de produção não foram alterados. O botão só inicia a carga após a configuração dos passos acima.
 
-LIMITES
-Nenhum resultado eleitoral real ou credencial está incluído. Os pontos representam locais de votação que agrupam seções, não o número de série de urnas físicas. O Google Maps real depende de chave e domínio configurados. O pacote não inclui sincronização automática TSE, nem encerra as integrações Câmara/Senado. O banco/Vercel/GitHub de produção não foram alterados por esta entrega.
+DOCUMENTAÇÃO
+Leia docs/IBFC-SINCRONIZACAO-TSE.md para configuração e diagnóstico.
+Leia docs/IBFC-MAPA-ELEITORAL.md para cobertura, cálculos e uso do mapa.
 
-Documentação detalhada: docs/IBFC-MAPA-ELEITORAL.md
+O processamento usa recursos/minutos do GitHub Actions e espaço no Supabase, conforme o plano contratado. Os marcadores são locais de votação que agrupam seções; não identificam eleitores ou votos individuais. Este pacote não conclui a sincronização parlamentar Câmara/Senado.

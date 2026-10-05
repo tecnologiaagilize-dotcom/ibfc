@@ -3,7 +3,7 @@ import { electoralStaff } from "@/lib/electoral/auth";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
-const failure = (error: {message: string}) => NextResponse.json({error: `Não foi possível consultar a base eleitoral: ${error.message}. Confira a migração 20261007_ibfc_electoral_map_consolidated.sql.`}, {status:500});
+const failure = (error: {message: string}) => NextResponse.json({error: `Não foi possível consultar a base eleitoral: ${error.message}. Confira a migração 20261009_ibfc_map_and_tse_sync.sql.`}, {status:500});
 export async function GET() {
   const {db, allowed} = await electoralStaff();
   if (!allowed) return NextResponse.json({error:"Acesso administrativo necessário."},{status:403});

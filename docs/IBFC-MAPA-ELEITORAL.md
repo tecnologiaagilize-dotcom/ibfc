@@ -3,12 +3,12 @@
 ## Instalação
 
 1. Copie os arquivos deste pacote para a raiz do repositório **ibfc** respeitando as pastas. O MFB não é alterado.
-2. No SQL Editor do Supabase do IBFC, execute somente `supabase/migrations/20261007_ibfc_electoral_map_consolidated.sql`. O projeto deve ter a tabela `admin_profiles` da base atual. O SQL consolidado cria ou atualiza as tabelas e funções, preservando os dados anteriores do DF e Entorno. A estrutura contém cinco tabelas de resultados públicos, funções e regras de acesso; não altera os cadastros de afiliados.
+2. No SQL Editor do Supabase do IBFC, execute somente `supabase/migrations/20261009_ibfc_map_and_tse_sync.sql`. O projeto deve ter a tabela `admin_profiles` da base atual. O SQL consolidado cria ou atualiza as tabelas e funções, preservando os dados anteriores do DF e Entorno. A estrutura contém cinco tabelas de resultados públicos, funções e regras de acesso; não altera os cadastros de afiliados.
 3. No Google Cloud, habilite Maps JavaScript API, configure uma chave de navegador e o faturamento exigido pelo Google. Restrinja a chave aos domínios do IBFC (inclua o endereço de preview somente se for usado) e à API necessária. Na Vercel, acrescente `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` e, preferencialmente, `NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID`. Veja `.env.electoral.example`. Faça novo deployment após mudar variáveis `NEXT_PUBLIC_*`.
 4. Acesse **Administrador → Mapa eleitoral DF e Entorno**, em `/admin/mapa-eleitoral`.
-5. Importe os arquivos oficiais descritos abaixo. Sem dados reais importados, não haverá votação para consultar. Sem chave Google válida, a tabela, a comparação e os relatórios continuam disponíveis, mas o mapa não carrega.
+5. Configure a sincronização automática conforme `docs/IBFC-SINCRONIZACAO-TSE.md` e use o botão **Sincronizar bases oficiais**. A importação manual dos arquivos descritos abaixo continua disponível. Sem dados reais importados, não haverá votação para consultar. Sem chave Google válida, a tabela, a comparação e os relatórios continuam disponíveis, mas o mapa não carrega.
 
-Não há credenciais ou dados eleitorais fictícios pré-carregados neste pacote.
+Não há credenciais ou dados eleitorais fictícios pré-carregados neste pacote. A automação requer configuração dos Secrets GitHub e variáveis de servidor Vercel.
 
 ## Bases oficiais necessárias
 
@@ -71,7 +71,7 @@ O relatório mede **evolução da votação agregada**, não crescimento ou qued
 
 Build de produção e testes de cálculo/importação passaram. Também foram verificadas em navegador a seleção das candidaturas, a comparação, a exportação CSV, a impressão e a largura de tela mobile, com dados de teste isolados que não integram este pacote. A migração foi executada em PostgreSQL local de teste (PGlite), verificando permissões, snapshots incompletos, denominadores, nulos, mudança de local e consulta sem comparação. Não houve acesso nem aplicação no Supabase/Vercel de produção. O Google Maps real precisa ser validado com a chave e o domínio do seu projeto.
 
-O pacote adiciona o mapa e a comparação; não conclui as integrações de fiscalização parlamentar da Câmara/Senado nem cria download automático dos arquivos eleitorais. Estes seguem como etapas próprias do projeto.
+O pacote adiciona o mapa e a comparação; não conclui as integrações de fiscalização parlamentar da Câmara/Senado. A sincronização automática do TSE está descrita em `docs/IBFC-SINCRONIZACAO-TSE.md`; as integrações de fiscalização Câmara/Senado seguem como etapas próprias.
 
 Este pacote reúne as duas atualizações anteriores em uma única instalação. Não exige aplicar os ZIPs anteriores, nem executar as migrações antigas. Se já foram aplicadas, execute apenas o SQL consolidado, que preserva os registros existentes. Os arquivos da aplicação contêm sempre a versão mais recente; nenhum pacote anterior deve ser copiado por cima depois desta instalação.
 

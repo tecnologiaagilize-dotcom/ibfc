@@ -1,7 +1,7 @@
 // Run with: node --test tests/electoral.test.cjs (uses the project's TypeScript dependency).
 const fs=require('node:fs'),path=require('node:path'),Module=require('node:module');
 const ts=require('typescript'),test=require('node:test'),assert=require('node:assert/strict');
-require.extensions['.ts']=(module,filename)=>module._compile(ts.transpileModule(fs.readFileSync(filename,'utf8'),{compilerOptions:{target:ts.ScriptTarget.ES2020,module:ts.ModuleKind.CommonJS}}).outputText,filename);
+require.extensions['.ts']=(module,filename)=>module._compile(ts.transpileModule(fs.readFileSync(filename,'utf8'),{compilerOptions:{target:ts.ScriptTarget.ES2020,esModuleInterop:true,module:ts.ModuleKind.CommonJS}}).outputText,filename);
 const {summarize,csvCell,groupLocations}=require('../lib/electoral/analysis.ts');
 const {readCsv,normalizeCsvRow}=require('../lib/electoral/csv.ts');
 const row=(v={})=>({uf:"DF",municipality_name:"Brasília",municipality:97012,zone:1,section:1,old_votes:100,new_votes:80,old_valid:200,new_valid:200,old_local:1001,new_local:1002,old_name:'Escola antiga',new_name:'Escola nova',latitude:-15.8,longitude:-47.9,address:'DF',coordinate_year:2026,...v});

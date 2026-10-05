@@ -5,6 +5,7 @@ import { csvCell, groupLocations, number, percentage, summarize } from "@/lib/el
 import { candidateKey, type Catalogue, type Comparison, type ElectionCandidate, type LocalComparison } from "@/lib/electoral/types";
 import { REGION_NAMES } from "@/lib/electoral/region";
 import { GoogleElectionMap } from "./GoogleElectionMap";
+import { ElectoralSync } from "./ElectoralSync";
 import { ElectoralImport } from "./ElectoralImport";
 import "./electoral.css";
 
@@ -89,7 +90,7 @@ export function ElectoralDashboard() {
       <button className="electoral-primary" onClick={compare} disabled={!selectedNew||busy}>{busy?"Consultando…":"Consultar votação"}</button>
     </div>
     {error&&<p className="electoral-notice electoral-error" role="alert">{error}</p>}
-    {!loading&&!catalogue.candidates.length&&<div className="electoral-notice">Ainda não há resultados importados. Use “Importar bases oficiais do TSE” abaixo. O mapa pode exibir os locais antes da importação dos votos.</div>}
+    {!error&&!loading&&!catalogue.candidates.length&&<div className="electoral-notice">Ainda não há resultados importados. Use “Sincronizar com o TSE” ou a importação manual abaixo. O mapa pode exibir os locais antes da importação dos votos.</div>}
     {report&&<div className="electoral-report-title"><h2>{report.current.name} · {report.current.number}</h2><p>{report.current.office_name} · {report.current.turn}º turno · {uf}<br/>{report.old?`Comparação com ${report.old.name} · ${report.old.number} em 2022.`:"Consulta de 2026; candidatura de 2022 não selecionada."}</p>
       {report.old&&report.old.name!==report.current.name&&<p className="electoral-notice">As candidaturas têm nomes diferentes. Confira que pertencem à mesma pessoa antes de interpretar como evolução individual.</p>}
       <p className="electoral-caption">Recorte: {municipality||"Todos os municípios da cobertura"} · {zone?`Zona ${zone}`:"todas as zonas importadas"} · {search?`local: ${search}`:"todos os locais"} · {commonOnly?"somente chaves coincidentes":"todas as chaves disponíveis"}.</p>
@@ -125,6 +126,7 @@ export function ElectoralDashboard() {
       <table className="print-only"><thead><tr><th>Local</th><th>2022</th><th>2026</th><th>Diferença</th><th>Variação</th><th>Participação</th></tr></thead><tbody>{renderRows(places)}</tbody></table>
     </section>
     <p className="electoral-notice">Este painel descreve resultados públicos agregados. Crescimento da votação não comprova aumento de eleitores fiéis nem identifica quem votou em quem. Locais sem coordenadas continuam na tabela; falta de dados não significa zero voto.</p>
+    <ElectoralSync onDone={()=>void refresh()}/>
     <ElectoralImport onDone={()=>void refresh()}/>
     <details className="electoral-import no-print"><summary>Histórico de importações e cobertura</summary>{catalogue.imports.map(i=><p key={i.id}><b>{i.year} · {i.kind==="votes"?"Votação":"Locais"}</b> · {i.filename} · {i.status==="completed"?"Concluído":i.status==="running"?"Em andamento / interrompido":"Falhou"} · {number(i.rows_saved)} registros{ i.error?` · ${i.error}`:""}</p>)}<p>“Concluído” significa que o arquivo foi processado, não que todas as seções do DF e Entorno estão cobertas. Arquivos parciais devem ser identificados e substituídos por arquivos oficiais completos.</p></details>
   </div>;
