@@ -266,13 +266,35 @@ class Worker:
             raise SystemExit(1) from None
 
 
+def scheduled_job(url, key, owner, scopes):
+    """Service-only enqueue; an active job is left untouched."""
+    uuid.UUID(owner)
+    if not scopes or any(s not in ('DF', 'GO', 'MG') for s in scopes):
+        raise ValueError('Cobertura inválida')
+    if urllib.parse.urlsplit(url).scheme != 'https':
+        raise ValueError('Supabase deve usar HTTPS')
+    body = json.dumps({'p_owner': owner, 'p_scopes': scopes}).encode()
+    req = urllib.request.Request(url.rstrip('/') + '/rest/v1/rpc/ibfc_electoral_sync_schedule', data=body,
+        headers={'apikey': key, 'Authorization': 'Bearer ' + key, 'Content-Type': 'application/json'})
+    with urllib.request.urlopen(req, timeout=90) as response:
+        return json.load(response)
+
+
 if __name__ == '__main__':
     job = os.environ.get('IBFC_TSE_JOB_ID', '')
     try:
-        uuid.UUID(job)
         url, key = os.environ['SUPABASE_URL'], os.environ['SUPABASE_SERVICE_ROLE_KEY']
         if not key:
             raise ValueError()
-    except (ValueError, KeyError):
-        raise SystemExit('Configure ID da tarefa e os Secrets SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY.')
+        if not job:
+            owner = os.environ.get('IBFC_TSE_AUTO_OWNER_ID', '')
+            scopes = [s.strip().upper() for s in (os.environ.get('IBFC_TSE_AUTO_SCOPES') or 'DF,GO').split(',')]
+            result = scheduled_job(url, key, owner, scopes)
+            if result.get('existing'):
+                print('Há uma tarefa ativa; agendamento não inicia outra.')
+                raise SystemExit(0)
+            job = result['id']
+        uuid.UUID(job)
+    except (ValueError, KeyError, urllib.error.URLError, TimeoutError):
+        raise SystemExit('Confira o ID da tarefa ou UUID do administrador, a migração e os Secrets do worker.')
     Worker(job, url, key).run()

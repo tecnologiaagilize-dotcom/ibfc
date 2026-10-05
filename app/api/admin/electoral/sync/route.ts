@@ -8,7 +8,8 @@ export async function GET(){
  const {db,allowed}=await electoralStaff();if(!allowed)return NextResponse.json({error:"Acesso administrativo necessário."},{status:403});
  const {data,error}=await db.from("ibfc_electoral_sync_jobs").select("id,year,scopes,status,message,files_total,files_done,rows_processed,bytes_downloaded,created_at,updated_at,finished_at").order("created_at",{ascending:false}).limit(10);
  if(error)return NextResponse.json({error:"Execute o SQL de instalação da sincronização automática no Supabase do IBFC."},{status:500});
- return NextResponse.json({configured:configured(),jobs:data},{headers:{"Cache-Control":"no-store"}});
+ const missing=[];if(!process.env.GITHUB_TSE_TOKEN)missing.push("GITHUB_TSE_TOKEN");if(!/^[\w.-]+\/[\w.-]+$/.test(process.env.GITHUB_TSE_REPOSITORY||""))missing.push("GITHUB_TSE_REPOSITORY");
+ return NextResponse.json({configured:configured(),missing,jobs:data},{headers:{"Cache-Control":"no-store"}});
 }
 export async function POST(request:NextRequest){
  const {db,allowed}=await electoralStaff();if(!allowed)return NextResponse.json({error:"Acesso administrativo necessário."},{status:403});

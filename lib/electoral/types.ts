@@ -1,6 +1,6 @@
 export type ElectionCandidate = {
   uf: string; year: number; election: number; turn: number; office: number;
-  number: string; name: string; office_name: string;
+  number: string; name: string; office_name: string; kind?: "candidate" | "party";
 };
 export type SectionComparison = {
   uf: string; municipality_name: string; municipality: number; zone: number; section: number;
@@ -13,11 +13,11 @@ export type SectionComparison = {
 };
 export type ImportLog = { id: string; kind: string; year: number; filename: string; status: string; rows_saved: number; created_at: string; error: string | null };
 export type ElectionLocation = {uf:string; municipality_name:string; municipality: number; zone: number; local: number; name: string; address: string; latitude: number | null; longitude: number | null};
-export type Catalogue = { candidates: ElectionCandidate[]; imports: ImportLog[]; locations: ElectionLocation[] };
+export type Catalogue = { candidates: ElectionCandidate[]; parties?: ElectionCandidate[]; imports: ImportLog[]; locations: ElectionLocation[] };
 export type Comparison = { rows: SectionComparison[]; generated_at: string; sources?: {year:number;filename:string;source_url:string;finished_at:string}[] };
 export type LocalComparison = {
   key: string; uf:string; municipality:number; municipality_name:string; zone: number; local: number | null; name: string; address: string;
   latitude: number | null; longitude: number | null; coordinate_year: number | null;
   sections: SectionComparison[];
 };
-export const candidateKey = (c: ElectionCandidate) => [c.uf, c.year, c.election, c.turn, c.office, c.number].join(":");
+export const candidateKey = (c: ElectionCandidate) => [c.uf, c.year, c.election, c.turn, c.office, c.number, ...(c.kind==="party"?["party"]:[])].join(":");

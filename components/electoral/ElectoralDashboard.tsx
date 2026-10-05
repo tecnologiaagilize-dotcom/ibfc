@@ -19,6 +19,7 @@ export function ElectoralDashboard() {
   const [loading,setLoading]=useState(false),[busy,setBusy]=useState(false);
   const [uf,setUf]=useState("DF"),[municipality,setMunicipality]=useState("");
   const [office,setOffice]=useState("6"),[turn,setTurn]=useState("1");
+  const [mode,setMode]=useState<"candidate"|"party">("candidate"),[party,setParty]=useState("");
   const [newId,setNewId]=useState(""),[oldId,setOldId]=useState("");
   const [report,setReport]=useState<Report | null>(null),[zone,setZone]=useState(""),[search,setSearch]=useState("");
   const [commonOnly,setCommonOnly]=useState(false),[selectedKey,setSelectedKey]=useState("");
@@ -30,9 +31,11 @@ export function ElectoralDashboard() {
     finally{setLoading(false);}
   },[]);
   useEffect(()=>{void refresh();},[refresh]);
-  const choices=(year:number)=>catalogue.candidates.filter(c=>c.uf===uf && c.year===year && c.office===Number(office) && c.turn===Number(turn));
-  const selectedNew=catalogue.candidates.find(c=>candidateKey(c)===newId);
-  const selectedOld=catalogue.candidates.find(c=>candidateKey(c)===oldId);
+  const entries=mode==="party"?(catalogue.parties??[]):catalogue.candidates;
+  const partyOptions=(catalogue.parties??[]).filter(c=>c.uf===uf&&c.year===2026&&c.office===Number(office)&&c.turn===Number(turn));
+  const choices=(year:number)=>entries.filter(c=>c.uf===uf && c.year===year && c.office===Number(office) && c.turn===Number(turn)&& (mode==="party"||year===2022||!party||c.number.startsWith(party)));
+  const selectedNew=entries.find(c=>candidateKey(c)===newId);
+  const selectedOld=entries.find(c=>candidateKey(c)===oldId);
   async function compare(){
     if(!selectedNew)return;setBusy(true);setError("");setSelectedKey("");
     try {const res=await fetch("/api/admin/electoral",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({old:selectedOld??null,new:selectedNew})});
@@ -68,6 +71,7 @@ export function ElectoralDashboard() {
       ["IBFC — Relatório eleitoral agregado do DF e Entorno"],
       ["2022",report.old?.name??"Não selecionado",report.old?.number??"",report.old?.office_name??""],
       ["2026",report.current.name,report.current.number,report.current.office_name],
+      ["Tipo de consulta",report.current.kind==="party"?"Total do partido (nominais + legenda)":"Candidato"],
       ["UF",uf,"Município",municipality||"Todos"],
       ["Turno",report.current.turn,"Filtro zona",zone||"Todas","Local",search||"Todos"],
       ["Gerado em",report.data.generated_at,"Somente chaves coincidentes",commonOnly?"Sim":"Não"],
@@ -83,17 +87,20 @@ export function ElectoralDashboard() {
     <div className="electoral-heading"><div><span className="electoral-eyebrow">OBSERVATÓRIO IBFC · DF E ENTORNO</span><h1>Mapa eleitoral</h1><p>Locais de votação, seções e evolução dos resultados públicos.</p></div>
       <button className="no-print" onClick={()=>void refresh()} disabled={loading||busy}><RefreshCw size={17}/> Atualizar bases carregadas</button></div>
     <ElectoralSync onDone={()=>void refresh()}/>
-    <div className="electoral-controls electoral-panel no-print"><label>UF<select value={uf} disabled={busy} onChange={e=>{setUf(e.target.value);setMunicipality("");setZone("");setSearch("");setNewId("");setOldId("");if(office==="8"||office==="7")setOffice(e.target.value==="DF"?"8":"7");reset();}}><option value="DF">Distrito Federal</option><option value="GO">Goiás — Entorno</option><option value="MG">Minas Gerais — RIDE</option></select></label><label>Cargo<select value={office} disabled={busy} onChange={e=>{setOffice(e.target.value);setNewId("");setOldId("");reset();}}>
+    <div className="electoral-controls electoral-panel no-print"><label>UF<select value={uf} disabled={busy} onChange={e=>{setUf(e.target.value);setParty("");setMunicipality("");setZone("");setSearch("");setNewId("");setOldId("");if(office==="8"||office==="7")setOffice(e.target.value==="DF"?"8":"7");reset();}}><option value="DF">Distrito Federal</option><option value="GO">Goiás — Entorno</option><option value="MG">Minas Gerais — RIDE</option></select></label><label>Cargo<select value={office} disabled={busy} onChange={e=>{setOffice(e.target.value);setParty("");setNewId("");setOldId("");reset();}}>
       <option value="1">Presidente</option><option value="3">Governador</option><option value="5">Senador</option><option value="6">Deputado federal</option>{uf==="DF"?<option value="8">Deputado distrital</option>:<option value="7">Deputado estadual</option>}</select></label>
-      <label>Turno<select value={turn} disabled={busy} onChange={e=>{setTurn(e.target.value);setNewId("");setOldId("");reset();}}><option value="1">1º turno</option><option value="2">2º turno</option></select></label>
-      <label className="electoral-candidate">Candidatura 2026<select value={newId} disabled={busy} onChange={e=>{setNewId(e.target.value);reset();}}><option value="">Selecione nos resultados importados</option>{choices(2026).map(c=><option key={candidateKey(c)} value={candidateKey(c)}>{c.name} · {c.number} · eleição {c.election}</option>)}</select></label>
-      <label className="electoral-candidate">Candidatura 2022 para comparação<select value={oldId} disabled={busy} onChange={e=>{setOldId(e.target.value);reset();}}><option value="">Consultar apenas 2026</option>{choices(2022).map(c=><option key={candidateKey(c)} value={candidateKey(c)}>{c.name} · {c.number} · eleição {c.election}</option>)}</select></label>
+      <label>Turno<select value={turn} disabled={busy} onChange={e=>{setTurn(e.target.value);setParty("");setNewId("");setOldId("");reset();}}><option value="1">1º turno</option><option value="2">2º turno</option></select></label>
+      <label>Consultar<select value={mode} disabled={busy} onChange={e=>{setMode(e.target.value as "candidate"|"party");setParty("");setNewId("");setOldId("");reset();}}><option value="candidate">Candidato específico</option><option value="party">Total do partido</option></select></label>
+      {mode==="candidate"&&<label>Partido do candidato 2026<select value={party} disabled={busy} onChange={e=>{setParty(e.target.value);setNewId("");reset();}}><option value="">Todos os partidos</option>{partyOptions.map(c=><option key={candidateKey(c)} value={c.number}>{c.name} · {c.number}</option>)}</select></label>}
+      <label className="electoral-candidate">{mode==="party"?"Partido 2026":"Candidatura 2026"}<select value={newId} disabled={busy} onChange={e=>{setNewId(e.target.value);reset();}}><option value="">Selecione nos resultados importados</option>{choices(2026).map(c=><option key={candidateKey(c)} value={candidateKey(c)}>{c.name} · {c.number} · eleição {c.election}</option>)}</select></label>
+      <label className="electoral-candidate">{mode==="party"?"Partido 2022 para comparação":"Candidatura 2022 para comparação"}<select value={oldId} disabled={busy} onChange={e=>{setOldId(e.target.value);reset();}}><option value="">Consultar apenas 2026</option>{choices(2022).map(c=><option key={candidateKey(c)} value={candidateKey(c)}>{c.name} · {c.number} · eleição {c.election}</option>)}</select></label>
       <button className="electoral-primary" onClick={compare} disabled={!selectedNew||busy}>{busy?"Consultando…":"Consultar votação"}</button>
     </div>
     {error&&<p className="electoral-notice electoral-error" role="alert">{error}</p>}
     {!error&&!loading&&!catalogue.candidates.length&&<div className="electoral-notice">Ainda não há resultados importados. Use “Sincronizar com o TSE” ou a importação manual abaixo. O mapa pode exibir os locais antes da importação dos votos.</div>}
-    {report&&<div className="electoral-report-title"><h2>{report.current.name} · {report.current.number}</h2><p>{report.current.office_name} · {report.current.turn}º turno · {uf}<br/>{report.old?`Comparação com ${report.old.name} · ${report.old.number} em 2022.`:"Consulta de 2026; candidatura de 2022 não selecionada."}</p>
-      {report.old&&report.old.name!==report.current.name&&<p className="electoral-notice">As candidaturas têm nomes diferentes. Confira que pertencem à mesma pessoa antes de interpretar como evolução individual.</p>}
+    {mode==="party"&&<p className="electoral-notice">Total por partido: votos nominais dos candidatos e votos de legenda, quando existentes, no cargo e turno selecionados. Não soma a coligação ou federação. A comparação entre partidos de anos diferentes exige conferir identidade, fusões e mudanças de nome.</p>}
+    {report&&<div className="electoral-report-title"><h2>{report.current.name} · {report.current.number}</h2><p>{report.current.office_name} · {report.current.turn}º turno · {uf}<br/>{report.old?`Comparação com ${report.old.name} · ${report.old.number} em 2022.`:"Consulta de 2026; comparação de 2022 não selecionada."}</p>
+      {report.old&&report.old.name!==report.current.name&&<p className="electoral-notice">As candidaturas têm nomes diferentes. Confira a identidade do candidato ou do partido antes de interpretar a evolução.</p>}
       <p className="electoral-caption">Recorte: {municipality||"Todos os municípios da cobertura"} · {zone?`Zona ${zone}`:"todas as zonas importadas"} · {search?`local: ${search}`:"todos os locais"} · {commonOnly?"somente chaves coincidentes":"todas as chaves disponíveis"}.</p>
       <small>Relatório gerado em {new Date(report.data.generated_at).toLocaleString("pt-BR")} · resultados restritos às bases importadas.</small>
       {(report.data.sources??[]).map(s=><p className="electoral-caption" key={`${s.year}:${s.filename}`}>Fonte {s.year}: {s.filename} · importado em {new Date(s.finished_at).toLocaleString("pt-BR")}.</p>)}</div>}

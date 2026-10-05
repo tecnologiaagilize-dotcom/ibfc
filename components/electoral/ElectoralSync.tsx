@@ -4,10 +4,11 @@ type Job={id:string;year:number;scopes:string[];status:string;message:string;fil
 const labels:Record<string,string>={queued:"Na fila",running:"Em processamento",completed:"Concluída",partial:"Carga parcial",waiting:"Aguardando publicação do TSE",failed:"Falhou",cancelled:"Cancelada"};
 export function ElectoralSync({onDone}:{onDone:()=>void}){
  const [year,setYear]=useState(2026),[scopes,setScopes]=useState(["DF","GO"]),[jobs,setJobs]=useState<Job[]>([]);
+ const [missing,setMissing]=useState<string[]>([]);
  const [configured,setConfigured]=useState(false),[error,setError]=useState(""),[message,setMessage]=useState(""),[busy,setBusy]=useState(false);
  const previous=useRef<Map<string,string>>(new Map()),loaded=useRef(false),done=useRef(onDone);done.current=onDone;
  const refresh=useCallback(async()=>{
-  try{const r=await fetch("/api/admin/electoral/sync",{cache:"no-store"});const d=await r.json();if(!r.ok)throw new Error(d.error);setError("");setConfigured(d.configured);setJobs(d.jobs);
+  try{const r=await fetch("/api/admin/electoral/sync",{cache:"no-store"});const d=await r.json();if(!r.ok)throw new Error(d.error);setError("");setConfigured(d.configured);setMissing(d.missing??[]);setJobs(d.jobs);
    const changed=(d.jobs as Job[]).some(j=>loaded.current&&["completed","partial"].includes(j.status)&&previous.current.get(j.id)!==j.status);
    previous.current=new Map((d.jobs as Job[]).map(j=>[j.id,j.status]));loaded.current=true;if(changed)done.current();
   }catch(e){setError(e instanceof Error?e.message:"Falha ao consultar sincronização.");}
@@ -21,9 +22,11 @@ export function ElectoralSync({onDone}:{onDone:()=>void}){
    <button className="electoral-primary" disabled={busy||!configured||!scopes.length||Boolean(active)} onClick={()=>void send({action:"start",year,scopes})}>{busy?"Solicitando…":"Sincronizar bases oficiais"}</button>
    <button disabled={busy} onClick={()=>void refresh()}>Atualizar progresso</button>
   </div>
-  {!configured&&!error&&<p className="electoral-notice">A sincronização exige uma configuração inicial no GitHub e na Vercel. Consulte as instruções do pacote; não é necessário enviar arquivos manualmente depois de ativar.</p>}
+  {!configured&&!error&&<p className="electoral-notice">Sincronização automática ainda não configurada na Vercel: {missing.length?missing.join(", "):"confira as variáveis de servidor"}. Inclua o workflow do pacote no GitHub, configure SUPABASE_URL e SUPABASE_SERVICE_ROLE_KEY nos Secrets e faça novo deployment. Depois, este botão baixa e importa diretamente do TSE, sem upload manual.</p>}
   {error&&<p role="alert" className="electoral-notice electoral-error">{error}</p>}{message&&<p role="status" className="electoral-notice">{message}</p>}
   {active&&<div role="status"><p><strong>{labels[active.status]} · {active.year}</strong> · {active.scopes.join(" / ")}<br/>{active.message}</p><p>{active.files_done} de {active.files_total||"—"} arquivos preparados · {active.rows_processed.toLocaleString("pt-BR")} registros enviados · {(active.bytes_downloaded/1024**2).toLocaleString("pt-BR",{maximumFractionDigits:1})} MB baixados</p><small>Última atualização: {new Date(active.updated_at).toLocaleString("pt-BR")}. Se ficar sem atualização por mais de 30 minutos, cancele e inicie uma nova sincronização.</small><p><button disabled={busy} onClick={()=>void send({action:"cancel",id:active.id})}>Cancelar sincronização</button></p></div>}
+  <p className="electoral-caption">A carga oficial inclui os turnos disponíveis; não é preciso baixar um arquivo por turno. Selecione 1º ou 2º turno nos filtros de consulta. O 2º turno só aparece após publicação/importação de seus resultados.</p>
+  <details><summary>Ativar atualização diária automática de 2026</summary><p>No GitHub → Settings → Secrets and variables → Actions → Variables, configure <b>IBFC_TSE_AUTO_ENABLED=true</b>, <b>IBFC_TSE_AUTO_OWNER_ID</b> com o UUID de um administrador ativo e, opcionalmente, <b>IBFC_TSE_AUTO_SCOPES=DF,GO</b>. Instale a migração 20261010 e os Secrets do worker. O workflow agenda a busca para 03h17 de Brasília, com horário sujeito à fila do GitHub. Não precisa deixar o portal aberto. Para desativar, mude IBFC_TSE_AUTO_ENABLED para false.</p></details>
   <details><summary>Histórico de sincronizações</summary>{jobs.filter(j=>j!==active).map(j=><p key={j.id}><strong>{j.year} · {labels[j.status]}</strong> · {j.scopes.join(" / ")}<br/>{j.message}<br/><small>{new Date(j.updated_at).toLocaleString("pt-BR")} · tarefa {j.id}</small></p>)}</details>
   <p className="electoral-caption">A carga anterior continua disponível até a publicação da atualização. Se o TSE ainda não disponibilizar um recurso no catálogo, o sistema indica a pendência. Sincronizar não reconstrói bairros/RA nem vincula votos individuais.</p>
  </section>;

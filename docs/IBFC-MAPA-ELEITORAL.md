@@ -98,3 +98,13 @@ Se o SQL consolidado já foi instalado, esta troca de mapa **não exige nova mig
 Leaflet é servido pelo próprio portal. O fundo usa `https://tile.openstreetmap.org/{z}/{x}/{y}.png`, com créditos visíveis e cache normal do navegador. Os tiles públicos não têm disponibilidade garantida nem capacidade ilimitada. Para maior volume, configure um provedor compatível em `NEXT_PUBLIC_ELECTORAL_TILE_URL` e seus créditos em `NEXT_PUBLIC_ELECTORAL_TILE_ATTRIBUTION`; o endereço deve ser HTTPS. Não há download offline nem coleta antecipada de tiles. Política: https://operations.osmfoundation.org/policies/tiles/ .
 
 A biblioteca real foi verificada em navegador com tiles simulados, sem requisições automatizadas ao servidor público: filtros, marcadores, cores, seleção, segurança dos textos do popup, CSV e largura de celular. A disponibilização em produção depende de copiar os arquivos e redeployar.
+
+## Consulta por candidato ou partido
+
+Nos filtros, “Consultar” permite escolher **Candidato específico** ou **Total do partido**. No modo candidato, “Partido do candidato 2026” restringe a lista de 2026; a lista de 2022 permanece independente para permitir conferir mudança de partido entre eleições. No modo partido, escolha separadamente partido de 2026 e partido de 2022 para comparação.
+
+Os partidos são identificados pelos dois primeiros dígitos do número eleitoral, na UF, ano, eleição, turno e cargo selecionados. Quando o arquivo contém nome da legenda, esse nome aparece; caso contrário, a lista mostra “Partido XX”. Não se atribuem siglas atuais aos dados históricos sem fonte. Sigla ou número idênticos não resolvem automaticamente fusões, incorporações ou alterações de identidade entre anos.
+
+O total partidário soma os votos nominais dos candidatos desse número partidário e os votos de legenda presentes no arquivo, excluindo códigos 95 a 99. Os votos são agregados por seção antes da comparação, sem duplicar locais ou denominadores. Nos cargos majoritários, representa as candidaturas do partido; não inclui a votação de outros partidos de uma coligação. Não é total de federação nem cálculo de cadeiras, quociente ou votação juridicamente validada: vale a base por seção importada, conforme as limitações anteriores.
+
+A identificação da consulta acompanha o relatório e o CSV. Os campos são preenchidos a partir de resultados importados, não do cadastro de políticos apoiados. Se uma lista estiver vazia, confira turno, cargo e publicação/carga dos recursos oficiais.

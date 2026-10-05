@@ -57,4 +57,19 @@ class Tests(unittest.TestCase):
   with patch.object(m,'plan',return_value=([{}],[])),self.assertRaises(SystemExit):Fake('job','https://test.supabase.co','fake').run()
   self.assertIn('fail',calls);self.assertNotIn('finish',calls)
 
+class ScheduleTests(unittest.TestCase):
+ def test_service_enqueue_scopes_and_response(self):
+  owner='00000000-0000-0000-0000-000000000001'
+  with patch.object(m.urllib.request,'urlopen',return_value=io.BytesIO(b'{"id":"job","existing":false}')) as request:
+   self.assertEqual(m.scheduled_job('https://test.supabase.co','fake',owner,['DF','GO'])['id'],'job')
+   req=request.call_args.args[0]
+   self.assertTrue(req.full_url.endswith('/rpc/ibfc_electoral_sync_schedule'))
+   self.assertEqual(json.loads(req.data),{'p_owner':owner,'p_scopes':['DF','GO']})
+  with self.assertRaises(ValueError):m.scheduled_job('https://test.supabase.co','fake','invalid',['DF'])
+  with self.assertRaises(ValueError):m.scheduled_job('https://test.supabase.co','fake',owner,['SP'])
+ def test_both_turns_kept_separate(self):
+  row=dict(SG_UF='DF',NM_MUNICIPIO='BRASILIA',ANO_ELEICAO='2026',CD_MUNICIPIO='97012',NR_ZONA='1',NR_LOCAL_VOTACAO='1001',CD_ELEICAO='2026',NR_TURNO='2',CD_CARGO='1',DS_CARGO='PRESIDENTE',NR_SECAO='1',NR_VOTAVEL='22',NM_VOTAVEL='Candidato',QT_VOTOS='40')
+  self.assertEqual(m.normalize(row,'votes',2026,['DF'],m.coverage())['turn'],2)
+  self.assertEqual(m.normalize(dict(row,NR_TURNO='1'),'votes',2026,['DF'],m.coverage())['turn'],1)
+
 if __name__=='__main__':unittest.main()

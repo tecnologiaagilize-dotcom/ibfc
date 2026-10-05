@@ -4,7 +4,7 @@
 
 No administrador → Mapa eleitoral DF e Entorno, o botão **Sincronizar bases oficiais** consulta o catálogo oficial, baixa os ZIPs, lê os CSVs, filtra Brasília e os municípios da RIDE e atualiza o banco. Não há upload manual nessa operação. A importação manual continua como alternativa.
 
-A Vercel inicia a tarefa; o GitHub Actions executa a carga Python. A página pode ser fechada. Ao voltar, o histórico e o progresso são consultados no Supabase. Não é atualização automática recorrente: cada carga é iniciada pelo administrador. Não há cron oculto nem disparo de mensagem a afiliados.
+A Vercel inicia a tarefa; o GitHub Actions executa a carga Python. A página pode ser fechada. Ao voltar, o histórico e o progresso são consultados no Supabase. Há dois modos: carga direta iniciada pelo administrador e agendamento diário opcional de 2026, explicitamente habilitado nas Variables do GitHub. Não há disparo de mensagem a afiliados.
 
 ## Instalação única
 
@@ -64,3 +64,27 @@ Referências oficiais:
 - https://dadosabertos.tse.jus.br/dataset/eleitorado-2026
 - https://docs.github.com/en/rest/actions/workflows#create-a-workflow-dispatch-event
 - https://docs.github.com/en/actions/reference/limits
+
+## Atualização: partidos e agendamento diário
+
+Se já instalou o SQL 20261009, execute **somente** `20261010_ibfc_party_auto_sync.sql` para esta atualização. Ele substitui as funções de catálogo/comparação e acrescenta a função do agendador, sem apagar importações. Para primeira instalação, o SQL consolidado 20261009 deste ZIP já contém ambas as funcionalidades.
+
+O botão “Sincronizar bases oficiais” inicia download e importação diretamente do TSE. Não pede arquivo. Se estiver desativado, o painel agora lista as variáveis ausentes da Vercel; não basta copiar o código para conectar contas externas. Configure Secrets GitHub e variáveis Vercel conforme os passos anteriores. A alternativa manual permanece recolhida abaixo do relatório.
+
+O worker lê `NR_TURNO` de cada registro. Uma carga importa os turnos presentes no recurso oficial e os mantém separados. Na consulta, escolha primeiro ou segundo turno. Não se criam votos de um turno ainda não publicado; não é apuração em tempo real.
+
+### Ativação do agendamento
+
+Na branch padrão do GitHub, instale o workflow atualizado. Em Settings → Secrets and variables → Actions → **Variables**, configure:
+
+- `IBFC_TSE_AUTO_ENABLED`: `true` para ativar; `false` para suspender.
+- `IBFC_TSE_AUTO_OWNER_ID`: UUID de um administrador ativo do IBFC. No SQL Editor, consulte `select p.id,u.email from public.admin_profiles p join auth.users u on u.id=p.id where p.role='admin';` e escolha o responsável. Não informe email ou senha nesse campo.
+- `IBFC_TSE_AUTO_SCOPES`: `DF,GO`, ou `DF,GO,MG`; opcional, padrão DF/GO.
+
+Os Secrets `SUPABASE_URL` e `SUPABASE_SERVICE_ROLE_KEY` continuam obrigatórios. O agendamento não precisa do token de disparo da Vercel; o botão no portal continua precisando dele. O horário previsto é **03h17 de Brasília**, diariamente (06h17 UTC), sujeito a atrasos da fila do GitHub. Em repositórios públicos inativos, o GitHub pode suspender agendas; acompanhe Actions. Fontes: https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule .
+
+O agendamento busca apenas 2026; a carga de 2022 é iniciada no portal. Inclui os turnos publicados no catálogo quando o recurso os contiver. A função de agendamento aceita apenas service_role, atribui a execução ao administrador informado e não inicia outra enquanto uma tarefa estiver ativa. Se esse administrador for removido ou perder o perfil, o agendamento é recusado. Credenciais não vão para o navegador.
+
+Cada execução baixa novamente os recursos e reprocessa a cobertura selecionada. Não é carga incremental por bytes ou por seção. Avalie minutos GitHub, banda e armazenamento do banco antes de ativar a agenda contínua. As importações históricas são preservadas; acompanhe retenção. Enquanto o TSE não publicar os resultados por seção, o sistema informa a pendência e mantém os dados anteriores.
+
+Verificado localmente: soma partidária, separação dos turnos, restrições de acesso do agendador e importador. Nenhuma credencial externa, workflow de produção ou banco de produção foi configurado nesta entrega.
