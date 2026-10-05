@@ -4,6 +4,7 @@ import { BarChart3, Users, GraduationCap, FileText, Settings, ExternalLink, Cale
 
 const items = [
   ["Painel", "/admin", BarChart3],
+  ["Mapa eleitoral DF e Entorno", "/admin/mapa-eleitoral", Vote],
   ["Projeto partidário", "/admin/apoiamento", ShieldCheck],
   ["Membros", "/admin/membros", Users],
   ["Captação", "/admin/captacao", Users],
