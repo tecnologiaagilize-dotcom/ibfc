@@ -1,10 +1,11 @@
+import "./admin-science-menu.css";
 import Image from "next/image";
 import Link from "next/link";
 import { BarChart3, Users, GraduationCap, FileText, Settings, ExternalLink, CalendarDays, Vote, Bell, ShieldCheck, ScrollText } from "lucide-react";
 
 const items = [
   ["Painel", "/admin", BarChart3],
-  ["Mapa eleitoral DF e Entorno", "/admin/mapa-eleitoral", Vote],
+  ["Ciência Eleitoral", "/admin/ciencia-eleitoral", Vote],
   ["Projeto partidário", "/admin/apoiamento", ShieldCheck],
   ["Membros", "/admin/membros", Users],
   ["Captação", "/admin/captacao", Users],
@@ -21,7 +22,7 @@ export function AdminShell({ children, email }: { children: React.ReactNode; ema
   return <div className="admin-shell">
     <aside className="admin-sidebar">
       <Link href="/" className="admin-brand"><Image src="/logo-ibfc.png" alt="IBFC" width={125} height={42}/><span><small>Central de Gestão</small></span></Link>
-      <nav>{items.map(([label, href, Icon]) => <Link key={href} href={href}><Icon size={19}/><span>{label}</span></Link>)}</nav>
+      <nav>{items.map(([label, href, Icon]) => href==='/admin/ciencia-eleitoral'?<details key={href} className="admin-science-menu" open><summary><Icon size={19}/><span>Ciência Eleitoral</span></summary><div><Link href="/admin/ciencia-eleitoral"><span>Visão geral</span></Link><Link href="/admin/ciencia-eleitoral/mapa"><span>Mapa e territórios</span></Link><Link href="/admin/ciencia-eleitoral/cargos"><span>Comparação de cargos</span></Link><Link href="/admin/ciencia-eleitoral/investigacoes"><span>Investigações e evidências</span></Link><Link href="/admin/ciencia-eleitoral/relatorios"><span>Relatórios</span></Link><Link href="/admin/ciencia-eleitoral/modelos"><span>Estatística e tendências</span></Link><Link href="/admin/ciencia-eleitoral/integracoes"><span>Sincronização e instalação</span></Link></div></details>:<Link key={href} href={href}><Icon size={19}/><span>{label}</span></Link>)}</nav>
       <Link href="/" className="admin-site-link"><ExternalLink size={18}/> Ver portal</Link>
     </aside>
     <section className="admin-main">

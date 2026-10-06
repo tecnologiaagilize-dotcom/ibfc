@@ -104,13 +104,16 @@ def coord(text, low, high):
         return None
 
 
-def normalize(row, kind, year, scopes, names):
+def normalize(row, kind, year, scopes, names, national=False):
     uf = row.get('SG_UF', '').strip().upper()
-    if uf not in scopes:
+    if uf not in scopes or uf not in ('AC','AL','AP','AM','BA','CE','DF','ES','GO','MA','MT','MS','MG','PA','PB','PR','PE','PI','RJ','RN','RS','RO','RR','SC','SP','SE','TO'):
         return None
-    municipality_name = next((n for n in names[uf] if folded(n) == folded(row.get('NM_MUNICIPIO', ''))), None)
+    municipality_name = next((n for n in names.get(uf, []) if folded(n) == folded(row.get('NM_MUNICIPIO', ''))), None)
     if municipality_name is None:
-        return None
+        if national and row.get('NM_MUNICIPIO', '').strip():
+            municipality_name = row['NM_MUNICIPIO'].strip()[:500]
+        else:
+            return None
     value = row.get('ANO_ELEICAO') or row.get('AA_ELEICAO')
     if not value or int(value) != year:
         raise ValueError('Ano do arquivo diverge da tarefa')
@@ -120,8 +123,8 @@ def normalize(row, kind, year, scopes, names):
         name = row.get('NM_LOCAL_VOTACAO') or row.get('DS_LOCAL_VOTACAO') or row.get('NM_LOCAL')
         if not name:
             raise ValueError('Local de votação sem nome')
-        lat = coord(row.get('NR_LATITUDE') or row.get('LATITUDE'), -18.5, -13)
-        lon = coord(row.get('NR_LONGITUDE') or row.get('LONGITUDE'), -50.5, -45)
+        lat = coord(row.get('NR_LATITUDE') or row.get('LATITUDE'), -34 if national else -18.5, 6 if national else -13)
+        lon = coord(row.get('NR_LONGITUDE') or row.get('LONGITUDE'), -74 if national else -50.5, -32 if national else -45)
         return dict(base, name=name[:500], address=(row.get('DS_ENDERECO') or row.get('DS_ENDERECO_LOCAL') or '')[:500],
                     latitude=lat if lon is not None else None, longitude=lon if lat is not None else None)
     office, turn = required(row, 'CD_CARGO'), required(row, 'NR_TURNO')
@@ -186,12 +189,12 @@ class Worker:
                     raise ValueError('Download excede o limite de 4 GiB')
                 f.write(chunk)
                 self.downloaded += len(chunk)
-                self.progress('Baixando ' + task['name'])
+                self.progress('Baixando ' + task['name'], phase='download', current_file=task['name'], phase_done=received, phase_total=total)
             if total and received != total:
                 raise ValueError('Download incompleto')
 
     def import_file(self, task):
-        self.progress('Baixando ' + task['name'], True)
+        self.progress('Baixando ' + task['name'], True, phase='download', current_file=task['name'], phase_done=0, phase_total=0)
         with tempfile.TemporaryDirectory(prefix='ibfc-tse-') as folder:
             archive = Path(folder) / 'official.zip'
             self.download(task, archive)
@@ -209,7 +212,7 @@ class Worker:
                     for row in reader:
                         if None in row or any(v is None for v in row.values()):
                             raise ValueError('CSV com colunas inconsistentes')
-                        n = normalize(row, task['kind'], self.year, self.scopes, self.names)
+                        n = normalize(row, task['kind'], self.year, self.scopes, self.names, self.national)
                         if n:
                             batch.append(n)
                             accepted += 1
@@ -217,14 +220,14 @@ class Worker:
                             self.rpc('batch', dict(import_id=imp, rows=batch))
                             self.rows += len(batch)
                             batch = []
-                        self.progress('Processando ' + task['name'])
+                        self.progress('Processando ' + task['name'], phase='parse', current_file=task['name'], phase_done=stream.tell(), phase_total=files[0].file_size)
                 if batch:
                     self.rpc('batch', dict(import_id=imp, rows=batch))
                     self.rows += len(batch)
                 if not accepted:
                     raise ValueError('Nenhum registro da cobertura escolhido foi encontrado')
                 self.rpc('ready', dict(import_id=imp))
-                self.progress('Arquivo preparado: ' + task['name'], True)
+                self.progress('Arquivo preparado: ' + task['name'], True, phase='prepared', current_file='', phase_done=0, phase_total=0)
 
     @staticmethod
     def encoding(z, info):
@@ -247,6 +250,7 @@ class Worker:
             print('Tarefa já iniciada ou encerrada; nenhuma alteração.')
             return
         self.token, self.year, self.scopes = claim['token'], claim['year'], claim['scopes']
+        self.national = bool(claim.get('national', False))
         self.names = coverage()
         try:
             tasks, missing = plan(self.year, self.scopes)

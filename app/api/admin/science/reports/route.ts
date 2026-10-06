@@ -1,0 +1,5 @@
+import {createHash} from 'node:crypto';
+import {canonicalJson} from '@/lib/science/integrity';
+import {NextRequest,NextResponse} from 'next/server';import {electoralStaff} from '@/lib/electoral/auth';
+export const dynamic='force-dynamic';
+export async function GET(r:NextRequest){const {db,allowed}=await electoralStaff();if(!allowed)return NextResponse.json({error:'Acesso administrativo necessário.'},{status:403});const id=r.nextUrl.searchParams.get('id');const q=db.from('ibfc_science_analyses');const result=id?await q.select('*').eq('id',id).single():await q.select('id,created_at,method_version,parameters,totals,result_sha256').order('created_at',{ascending:false}).limit(50);if(!result.error&&id&&result.data?.result_snapshot)result.data.integrity_verified=createHash('sha256').update(canonicalJson(result.data.result_snapshot)).digest('hex')===result.data.result_sha256;return result.error?NextResponse.json({error:'Relatórios indisponíveis. Confira as migrações.'},{status:500}):NextResponse.json(id?result.data:{rows:result.data},{headers:{'Cache-Control':'no-store'}});}

@@ -1,59 +1,19 @@
-IBFC — CANDIDATOS, PARTIDOS, MAPA E SINCRONIZAÇÃO TSE
+IBFC — CIÊNCIA ELEITORAL 2.0 | IBFC-CE-20261006-02
+PACOTE CUMULATIVO: substitui o pacote anterior do mapa/TSE e Ciência Eleitoral.
 
-Pacote consolidado de atualização do módulo; não é o portal completo.
-Copie estes arquivos na raiz do repositório IBFC, preservando pastas.
-Inclua public/vendor/leaflet-1.9.4 e .github/workflows/ibfc-tse-sync.yml.
-Não copie ZIPs antigos por cima. Faça novo deployment após o commit.
+1. Extraia o ZIP e suba os arquivos na raiz do repositório IBFC, preservando os caminhos app/, components/, lib/, scripts/, public/, supabase/ e .github/.
+   NÃO suba apenas o arquivo ZIP para o GitHub. Não crie uma pasta extra envolvendo os caminhos.
+2. Supabase → SQL Editor: após o schema principal do portal, aplique 20261009, 20261010, 20261011 e 20261012, nesta ordem.
+   Se 09/10 já foram aplicadas, execute apenas 11/12. Se 11 já foi aplicada, execute apenas 12.
+3. Suba também .github/workflows/ibfc-tse-sync.yml e scripts/tse_sync.py na branch principal.
+4. GitHub → Settings → Secrets and variables → Actions → Secrets:
+   SUPABASE_URL e SUPABASE_SERVICE_ROLE_KEY do mesmo projeto Supabase do portal.
+   Secrets do GitHub são separados das variáveis da Vercel.
+5. Vercel → Environment Variables: mantenha GITHUB_TSE_TOKEN, GITHUB_TSE_REPOSITORY (proprietario/repositorio), GITHUB_TSE_REF (main) e as variáveis Supabase existentes. Faça novo deployment.
+6. Acesse /admin/ciencia-eleitoral. Confira Ciência Eleitoral 2.0 e IBFC-CE-20261006-02. Integrações apresenta verificações de instalação.
+7. Tarefa antiga na fila não é reiniciada pelo deployment. Verifique Actions, corrija os Secrets e só então cancele/reinicie a tarefa.
 
-1. SQL — ESCOLHA CONFORME SUA INSTALAÇÃO
-Se já instalou o módulo anterior e o mapa funciona, execute somente:
-supabase/migrations/20261010_ibfc_party_auto_sync.sql
-Este é o novo SQL necessário para consulta por partido e agendamento.
-Preserva votos e locais já importados; não requer reimportação para partidos.
-
-Se está instalando o módulo pela primeira vez, execute somente o SQL
-20261009_ibfc_map_and_tse_sync.sql DESTE ZIP: já inclui a atualização.
-Não é necessário executar ambos. Requer admin_profiles e auth.users do portal.
-Execute no mesmo Supabase configurado na Vercel.
-
-2. CONSULTA
-Administrador > Mapa eleitoral DF e Entorno > Consultar:
-- Candidato específico: selecione partido para filtrar a lista de candidatos 2026.
-- Total do partido: selecione partido de 2026 e, se desejar, partido de 2022.
-O total soma votos nominais e legenda por seção, excluindo brancos/nulos.
-UF, cargo e turno permanecem separados. Não soma coligações/federações.
-Partido é identificado por número eleitoral; nome da legenda quando disponível.
-
-3. BUSCA DIRETA DO TSE (SEM DOWNLOAD/UPLOAD PELO USUÁRIO)
-GitHub > Settings > Secrets and variables > Actions > Secrets:
-SUPABASE_URL e SUPABASE_SERVICE_ROLE_KEY (JWT service_role).
-Vercel > Settings > Environment Variables:
-GITHUB_TSE_TOKEN (token fine-grained Actions Read and write no repositório IBFC),
-GITHUB_TSE_REPOSITORY=tecnologiaagilize-dotcom/ibfc e GITHUB_TSE_REF=main.
-O workflow deve estar na branch padrão. Habilite Actions. Faça redeployment.
-O botão Sincronizar bases oficiais busca, baixa e importa diretamente do TSE.
-Se estiver desativado, o painel lista as variáveis da Vercel ausentes.
-A importação manual continua como alternativa recolhida.
-
-4. AGENDA DIÁRIA OPCIONAL — SEM DEIXAR O PORTAL ABERTO
-GitHub > Settings > Secrets and variables > Actions > Variables:
-IBFC_TSE_AUTO_ENABLED=true
-IBFC_TSE_AUTO_OWNER_ID=UUID de um administrador ativo
-IBFC_TSE_AUTO_SCOPES=DF,GO (ou DF,GO,MG; opcional)
-Para localizar o UUID, consulte no SQL Editor:
-select p.id,u.email from public.admin_profiles p join auth.users u on u.id=p.id
-where p.role='admin';
-O agendamento previsto é 03h17 de Brasília, sujeito à fila do GitHub.
-Requer novo SQL e Secrets do worker. Para suspender, enabled=false.
-Busca 2026, incluindo os turnos que estiverem publicados no recurso oficial.
-2022 é carregado pelo botão. O filtro Turno escolhe o recorte da consulta.
-Não cria resultados ainda indisponíveis nem lê apuração em tempo real.
-Cada execução baixa novamente os arquivos; avalie banda, minutos e retenção.
-
-5. MAPA
-Leaflet + OpenStreetMap preservado, sem chave Google ou cartão.
-As variáveis de .env.electoral.example são opcionais.
-
-Documentação: docs/IBFC-SINCRONIZACAO-TSE.md e docs/IBFC-MAPA-ELEITORAL.md.
-Credenciais não estão no ZIP. Nenhum banco, GitHub ou Vercel de produção foi
-alterado por esta entrega. A ativação depende da configuração descrita acima.
+Instruções e limites: docs/IBFC-CIENCIA-ELEITORAL.md.
+Validação local: docs/IBFC-VALIDACAO-CIENCIA.md.
+Sem credenciais neste ZIP. Não substitui o portal completo nem os dados do Supabase.
+O pacote não foi instalado automaticamente no seu GitHub, Supabase ou Vercel.

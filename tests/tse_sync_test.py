@@ -57,6 +57,13 @@ class Tests(unittest.TestCase):
   with patch.object(m,'plan',return_value=([{}],[])),self.assertRaises(SystemExit):Fake('job','https://test.supabase.co','fake').run()
   self.assertIn('fail',calls);self.assertNotIn('finish',calls)
 
+class NationalTests(unittest.TestCase):
+ def test_full_uf_keeps_outside_ride_coordinates_and_rejects_unknown_uf(self):
+  row=dict(SG_UF='SP',NM_MUNICIPIO='SAO PAULO',ANO_ELEICAO='2026',CD_MUNICIPIO='71072',NR_ZONA='1',NR_LOCAL_VOTACAO='1001',NM_LOCAL_VOTACAO='Escola',NR_LATITUDE='-23.55',NR_LONGITUDE='-46.63')
+  self.assertIsNone(m.normalize(row,'locations',2026,['SP'],m.coverage()))
+  self.assertEqual(m.normalize(row,'locations',2026,['SP'],m.coverage(),True)['latitude'],-23.55)
+  self.assertIsNone(m.normalize(dict(row,SG_UF='XX'),'locations',2026,['XX'],m.coverage(),True))
+
 class ScheduleTests(unittest.TestCase):
  def test_service_enqueue_scopes_and_response(self):
   owner='00000000-0000-0000-0000-000000000001'

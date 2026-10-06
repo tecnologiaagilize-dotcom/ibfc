@@ -18,6 +18,6 @@ export type Comparison = { rows: SectionComparison[]; generated_at: string; sour
 export type LocalComparison = {
   key: string; uf:string; municipality:number; municipality_name:string; zone: number; local: number | null; name: string; address: string;
   latitude: number | null; longitude: number | null; coordinate_year: number | null;
-  sections: SectionComparison[];
+  sections: SectionComparison[]; old_label?:string;new_label?:string;section_count?:number; moved_sections?:number;
 };
 export const candidateKey = (c: ElectionCandidate) => [c.uf, c.year, c.election, c.turn, c.office, c.number, ...(c.kind==="party"?["party"]:[])].join(":");

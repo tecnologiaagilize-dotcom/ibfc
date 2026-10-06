@@ -1,0 +1,339 @@
+{
+  "version": "2.0.0",
+  "build": "IBFC-CE-20261006-02",
+  "type": "cumulative_update",
+  "requires": "Portal IBFC existing source and schema",
+  "migration_order": [
+    "20261009_ibfc_map_and_tse_sync.sql",
+    "20261010_ibfc_party_auto_sync.sql",
+    "20261011_ibfc_science.sql",
+    "20261012_ibfc_science_observatory.sql"
+  ],
+  "files": [
+    {
+      "path": ".env.electoral.example",
+      "sha256": "a35fc48c6c543a3ef2e0da7077a89bf0a6e6df098a432c02f1e81e71a92872f5",
+      "bytes": 343
+    },
+    {
+      "path": ".env.tse-sync.example",
+      "sha256": "cdb09cbb65e96b02b3204fc049c16f75122df8a60192fe962292fba938f09f96",
+      "bytes": 792
+    },
+    {
+      "path": ".github/workflows/ibfc-tse-sync.yml",
+      "sha256": "6a758abeba5ce7f2d8f6c864eca8d027c214606d2507a8c029d88f7c4a07431c",
+      "bytes": 1695
+    },
+    {
+      "path": ".npmrc",
+      "sha256": "a093bb2fed59d699b7f9a62a5203cc196054c624e9c39c6d908c9e7db5dd2464",
+      "bytes": 22
+    },
+    {
+      "path": "LEIA-ME.txt",
+      "sha256": "da3df23e8880c7f5e1088acabe4475dccef2c346f95c712918749eab77bf3894",
+      "bytes": 1681
+    },
+    {
+      "path": "app/admin/ciencia-eleitoral/[view]/page.tsx",
+      "sha256": "98c29afab0b0199b922f963b152f26f068529ea840f619c4609bb113cd1e3814",
+      "bytes": 1219
+    },
+    {
+      "path": "app/admin/ciencia-eleitoral/page.tsx",
+      "sha256": "668b80e100252013a9ba3c158a627fc4f600fec5784e09f9f69e1e2c667dc478",
+      "bytes": 2211
+    },
+    {
+      "path": "app/admin/mapa-eleitoral/page.tsx",
+      "sha256": "8cc3e190170b15a874df6577db4dd08384ca576c28726ff8510f4b0ded6f7da6",
+      "bytes": 117
+    },
+    {
+      "path": "app/api/admin/electoral/import/route.ts",
+      "sha256": "90ad242e9dad87f7781b03c4a621cdf64fbcedde4787d5f0331a050dc0256d73",
+      "bytes": 2682
+    },
+    {
+      "path": "app/api/admin/electoral/route.ts",
+      "sha256": "e31b74eaf61692df5e5aa7c63af19e50061f2dafd4262131e1abca4d5bfbdf5b",
+      "bytes": 2958
+    },
+    {
+      "path": "app/api/admin/electoral/sync/route.ts",
+      "sha256": "e38024d8117547108009dc1e1d7d7a786ffa4f88ee699279179ff581d879da8c",
+      "bytes": 5712
+    },
+    {
+      "path": "app/api/admin/science/evidence/route.ts",
+      "sha256": "27b99df57a35c0cb6c99185fa49fc6e20e150dc15c1645cc6b3f5a7b826bc9ed",
+      "bytes": 4266
+    },
+    {
+      "path": "app/api/admin/science/investigations/route.ts",
+      "sha256": "de194bc3147700e8e1e1d9868c96ef6989765e51389e3da94a1edda55f0435d2",
+      "bytes": 2232
+    },
+    {
+      "path": "app/api/admin/science/reports/route.ts",
+      "sha256": "04be4e551d53a026be5be046ca48021449f2141edb6739b2e728392b2adce1d6",
+      "bytes": 1089
+    },
+    {
+      "path": "app/api/admin/science/route.ts",
+      "sha256": "7a75c272d2c6d294cb5e2210d823d8e5395c59dac61277079b6425836740562d",
+      "bytes": 4324
+    },
+    {
+      "path": "app/api/admin/science/status/route.ts",
+      "sha256": "2fdeef01c60a3cd10e14990986c938c80d4a8b4e4942f27879223a6270049cf0",
+      "bytes": 1592
+    },
+    {
+      "path": "components/admin/AdminShell.tsx",
+      "sha256": "3b8b826e816e59590eddf58e4cfdbcfbfeadb04aa28be96e353653a9aed52770",
+      "bytes": 2611
+    },
+    {
+      "path": "components/admin/admin-science-menu.css",
+      "sha256": "56e4a7ee1a07b1511d60489f02984b9edc59f76bb7b4c520e1ab7570e6537614",
+      "bytes": 722
+    },
+    {
+      "path": "components/electoral/ElectoralDashboard.tsx",
+      "sha256": "1847ed752861a54be0a2ebb038abf9f4ed12d13e5607d726ddd9b8ab40ec02d2",
+      "bytes": 19077
+    },
+    {
+      "path": "components/electoral/ElectoralImport.tsx",
+      "sha256": "961ac14b14b2ea579bfcfa9957c99c03bc9aea6cf5beff9221d69b095edfc995",
+      "bytes": 4421
+    },
+    {
+      "path": "components/electoral/ElectoralSync.tsx",
+      "sha256": "92f70cdb26486f563e31180cbe1cb1a190b3c466753e4bf8237d24b9c39dd843",
+      "bytes": 8692
+    },
+    {
+      "path": "components/electoral/GoogleElectionMap.tsx",
+      "sha256": "9a64a756597bb26e8c14f65c2d3c42baa1e73cf91f9501e49d6ea84f4e8c44fa",
+      "bytes": 92
+    },
+    {
+      "path": "components/electoral/LeafletElectionMap.tsx",
+      "sha256": "f8801f922b695bee0e523be598aa29dc162d9a41a332babd738b33364cd95abb",
+      "bytes": 7530
+    },
+    {
+      "path": "components/electoral/electoral.css",
+      "sha256": "44b59aaa070eb686467092f03ce303dd4bf69c443d27b56470ffbb336bde10ac",
+      "bytes": 6554
+    },
+    {
+      "path": "components/science/Evidence.tsx",
+      "sha256": "60f36515b383544071a6e680c21fe0ac5d498ac1bdf10f5a26762e881bad97c5",
+      "bytes": 2605
+    },
+    {
+      "path": "components/science/Investigations.tsx",
+      "sha256": "f9a570a76e99cdfafe68b8e48e18afb7eb275ac33fa622d1e1a8b4918b5bafec",
+      "bytes": 4479
+    },
+    {
+      "path": "components/science/ScienceExplorer.tsx",
+      "sha256": "d4992b8b7867aa8e16e9697a46bdb0a8730d8c83bf032892517ad58140787589",
+      "bytes": 22097
+    },
+    {
+      "path": "components/science/ScienceIntegrations.tsx",
+      "sha256": "2f4672bbc8a7a3dcf6980778a920b2edae5903dab0d7a14ab6fdd1f0d5b899ef",
+      "bytes": 1056
+    },
+    {
+      "path": "components/science/ScienceNav.tsx",
+      "sha256": "0621083e67addcc07d4fdba50e5df51dacbace18ee2554266f674db4dbdd5fa6",
+      "bytes": 693
+    },
+    {
+      "path": "components/science/ScienceReports.tsx",
+      "sha256": "1d3bac2c95eb8a49457ac81d4225a75ed96bfcf7ba19a417b01ccd462b809c04",
+      "bytes": 4004
+    },
+    {
+      "path": "components/science/ScienceStatus.tsx",
+      "sha256": "d4f148d1bc82141be82c4ef045b39524b6add70e4779d681200a64fc686985e6",
+      "bytes": 1897
+    },
+    {
+      "path": "components/science/science.css",
+      "sha256": "e80267e7ae598516c42efee51bedf67d722e9271f4cf86dd23db1041bdb00967",
+      "bytes": 5779
+    },
+    {
+      "path": "docs/IBFC-CIENCIA-ELEITORAL.md",
+      "sha256": "466ff6b38ad9eddd0bf4d9677461082c1eade28aec704d15678f38ec103b68ce",
+      "bytes": 10905
+    },
+    {
+      "path": "docs/IBFC-MAPA-ELEITORAL.md",
+      "sha256": "e668875f5cec8a02a6147dce47aac12737d4dbb8227fdd664077d6828befe4d9",
+      "bytes": 15383
+    },
+    {
+      "path": "docs/IBFC-SINCRONIZACAO-TSE.md",
+      "sha256": "2b8390bc362fe48d6e684c5f29a1d87a27d5e34536569ef0b8cbc02fe523ab11",
+      "bytes": 11720
+    },
+    {
+      "path": "docs/IBFC-VALIDACAO-CIENCIA.md",
+      "sha256": "5e934516e664f902ee6833ce2ba3f0c47a304a68bd9b4ead46bb978b96db8a7c",
+      "bytes": 2256
+    },
+    {
+      "path": "lib/electoral/analysis.ts",
+      "sha256": "afe5751e67afa59ffcec6a7542c63749b75f41350dc06605038fc99bc7e692a6",
+      "bytes": 3066
+    },
+    {
+      "path": "lib/electoral/auth.ts",
+      "sha256": "c3745dbd60495fa51f1568d97d06a9cafbb37e0dae80db05008d53e67413ea8e",
+      "bytes": 444
+    },
+    {
+      "path": "lib/electoral/csv.ts",
+      "sha256": "6febcea8b4a95f456e64bc47120f8f0a85510e5a9e1281c75650115131a6a788",
+      "bytes": 4784
+    },
+    {
+      "path": "lib/electoral/region-data.json",
+      "sha256": "4ea4f740a1c41465b495433179e882c2d12a2490737d6e16652cf6359bf7c124",
+      "bytes": 776
+    },
+    {
+      "path": "lib/electoral/region.ts",
+      "sha256": "91c29f0537f0d59a9d4e0276ef4a1bc6a286de5cb0965668aafd378845e0c59a",
+      "bytes": 508
+    },
+    {
+      "path": "lib/electoral/types.ts",
+      "sha256": "a946f012dc98b59e03ecc5a258754f060544f244eb0d5257d3a35fdab40d4149",
+      "bytes": 1854
+    },
+    {
+      "path": "lib/science/integrity.ts",
+      "sha256": "ce24ffb0d2e11fd02b2ce8995d780db10b5ceb949fb39b75e6cf5bdd84abb939",
+      "bytes": 426
+    },
+    {
+      "path": "lib/science/progress.ts",
+      "sha256": "cda7b3d8474dbb7f37cf004225f4821ab1c03700a0075f8d91639b4f93b5d2d1",
+      "bytes": 1396
+    },
+    {
+      "path": "lib/science/statistics.ts",
+      "sha256": "346731011c1f38ea660d5a8e776f1cb894c036d369e8a8b5a774b1d23b4b929c",
+      "bytes": 2057
+    },
+    {
+      "path": "lib/science/territory.ts",
+      "sha256": "e588207e3d953bd71f66114794a53a35e46f93a5e0708e0d182081b79844621d",
+      "bytes": 858
+    },
+    {
+      "path": "lib/science/types.ts",
+      "sha256": "34150f6001ab2f4fe63f868cf7bc776b7ef6c7f3817902e07ad40d73ff0d699d",
+      "bytes": 1307
+    },
+    {
+      "path": "lib/science/version.ts",
+      "sha256": "3bbc319b800061ff7475a94ebbc4ee70690d027d6f8a48d41e75e75103b6c797",
+      "bytes": 88
+    },
+    {
+      "path": "public/vendor/leaflet-1.9.4/LICENSE",
+      "sha256": "53e8dc25862014e4324741ca18fbe3611e11d42ef69f59f86ea8c5389647d4cb",
+      "bytes": 1395
+    },
+    {
+      "path": "public/vendor/leaflet-1.9.4/images/layers-2x.png",
+      "sha256": "066daca850d8ffbef007af00b06eac0015728dee279c51f3cb6c716df7c42edf",
+      "bytes": 1259
+    },
+    {
+      "path": "public/vendor/leaflet-1.9.4/images/layers.png",
+      "sha256": "1dbbe9d028e292f36fcba8f8b3a28d5e8932754fc2215b9ac69e4cdecf5107c6",
+      "bytes": 696
+    },
+    {
+      "path": "public/vendor/leaflet-1.9.4/images/marker-icon-2x.png",
+      "sha256": "00179c4c1ee830d3a108412ae0d294f55776cfeb085c60129a39aa6fc4ae2528",
+      "bytes": 2464
+    },
+    {
+      "path": "public/vendor/leaflet-1.9.4/images/marker-icon.png",
+      "sha256": "574c3a5cca85f4114085b6841596d62f00d7c892c7b03f28cbfa301deb1dc437",
+      "bytes": 1466
+    },
+    {
+      "path": "public/vendor/leaflet-1.9.4/images/marker-shadow.png",
+      "sha256": "264f5c640339f042dd729062cfc04c17f8ea0f29882b538e3848ed8f10edb4da",
+      "bytes": 618
+    },
+    {
+      "path": "public/vendor/leaflet-1.9.4/leaflet.css",
+      "sha256": "a7837102824184820dfa198d1ebcd109ff6d0ff9a2672a074b9a1b4d147d04c6",
+      "bytes": 14806
+    },
+    {
+      "path": "public/vendor/leaflet-1.9.4/leaflet.js",
+      "sha256": "db49d009c841f5ca34a888c96511ae936fd9f5533e90d8b2c4d57596f4e5641a",
+      "bytes": 147552
+    },
+    {
+      "path": "scripts/tse_sync.py",
+      "sha256": "175b64aa4430d98293bfb9442b0deb87faff2fab6a711d35c02721eaa96e6ee8",
+      "bytes": 15334
+    },
+    {
+      "path": "supabase/migrations/20261009_ibfc_map_and_tse_sync.sql",
+      "sha256": "acbc3a77e6b402a15ef9c53c63ca5fd7185f16dec53d36c190b20c4b7b8f2f43",
+      "bytes": 30300
+    },
+    {
+      "path": "supabase/migrations/20261010_ibfc_party_auto_sync.sql",
+      "sha256": "e8992a89f28e49f70ffd081cc156eccb0aa553c6dca457c635fbed5635f388c8",
+      "bytes": 7867
+    },
+    {
+      "path": "supabase/migrations/20261011_ibfc_science.sql",
+      "sha256": "644f2ef023457ed203c1f2069e27db267f04d59cfa4905e98669b3e42fd63242",
+      "bytes": 27531
+    },
+    {
+      "path": "supabase/migrations/20261012_ibfc_science_observatory.sql",
+      "sha256": "2b735c56fe11a86b925baaab7b84fab4bb5ac48ef321eb804a73dbdab957eedd",
+      "bytes": 16322
+    },
+    {
+      "path": "tests/electoral.test.cjs",
+      "sha256": "c5ff9f7964ccabccc0d8d71c1a85f12d824a974422c17dc9ec4c1ffe61304341",
+      "bytes": 4430
+    },
+    {
+      "path": "tests/science-sql.test.mjs",
+      "sha256": "bde85902902ae5a9c151a18881453b5ed2e25ce18a94c1adb84a66b040f840ba",
+      "bytes": 6898
+    },
+    {
+      "path": "tests/science.test.cjs",
+      "sha256": "4d271894a33a3088345bcd17657d6a25962b98187069cb75c0953ee94c0c9c04",
+      "bytes": 2047
+    },
+    {
+      "path": "tests/tse_sync_test.py",
+      "sha256": "39b441791e44020ae10cdd4be9116828ae21a13d3e10ba3fedce469995260547",
+      "bytes": 5943
+    }
+  ]
+}

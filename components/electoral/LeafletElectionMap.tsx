@@ -51,7 +51,7 @@ export function LeafletElectionMap({places,onSelect}:{places:LocalComparison[];o
     const position:Position=[place.latitude,place.longitude];positions.push(position);const s=summarize(place.sections);
     const box=document.createElement("div");box.className="electoral-map-info";
     const title=document.createElement("strong");title.textContent=place.name;box.appendChild(title);
-    for(const text of [`${place.municipality_name}/${place.uf} · Zona ${place.zone} · Local ${place.local??"não identificado"}`,place.address,`${place.sections.length} seções com resultado importado`,`2022: ${s.oldAvailable?number(s.oldVotes):"sem dados"} · 2026: ${s.newAvailable?number(s.newVotes):"sem dados"}`,s.movedSections?"Há seções que mudaram de local; conferir continuidade territorial.":"Comparação por chaves de seção; continuidade não verificada."]){const p=document.createElement("p");p.textContent=text;box.appendChild(p);}
+    for(const text of [`${place.municipality_name}/${place.uf} · Zona ${place.zone} · Local ${place.local??"não identificado"}`,place.address,`${place.section_count??place.sections.length} seções com resultado importado`,`${place.old_label??"2022"}: ${s.oldAvailable?number(s.oldVotes):"sem dados"} · ${place.new_label??"2026"}: ${s.newAvailable?number(s.newVotes):"sem dados"}`,(place.moved_sections??s.movedSections)?"Há seções que mudaram de local; conferir continuidade territorial.":"Comparação por chaves de seção; continuidade não verificada."]){const p=document.createElement("p");p.textContent=text;box.appendChild(p);}
     L.circleMarker(position,{radius:9,color:"#ffffff",weight:2,fillOpacity:.95,fillColor:s.delta===null?"#536278":s.delta>0?"#08775b":s.delta<0?"#ac4b35":"#12386b"})
      .addTo(group.current!).bindPopup(box,{maxWidth:300}).bindTooltip(`Zona ${place.zone} · ${escaped(place.name)}`).on("click",()=>onSelect(place.key));
    }
@@ -60,7 +60,7 @@ export function LeafletElectionMap({places,onSelect}:{places:LocalComparison[];o
   }).catch(e=>{if(!disposed)setStatus(e instanceof Error?e.message:"Não foi possível iniciar o mapa.");});
   return()=>{disposed=true;resizeObserver?.disconnect();map.current?.remove();map.current=null;group.current=null;};
  },[places,onSelect,retry]);
- return <><div className="electoral-map-wrap"><div ref={host} className="electoral-map electoral-leaflet-map" role="region" aria-label="Mapa OpenStreetMap dos locais de votação do DF e Entorno"/>
+ return <><div className="electoral-map-wrap"><div ref={host} className="electoral-map electoral-leaflet-map" role="region" aria-label="Mapa OpenStreetMap dos territórios eleitorais"/>
   {status&&<div className="electoral-map-status" role="status">{status}{status.includes("Não foi")||status.includes("demorou")?<p><button onClick={()=>{setStatus("Carregando mapa…");setTileError(false);setRetry(n=>n+1);}}>Tentar novamente</button></p>:null}</div>}</div>
   {tileError&&<p className="electoral-caption" role="status">O mapa de ruas está temporariamente indisponível. Os pontos, a tabela e os relatórios continuam disponíveis.</p>}
   <p className="electoral-caption">Use + e − para aproximar o mapa. No celular, use dois dedos para ajustar o zoom. <a href="https://www.openstreetmap.org/fixthemap" target="_blank" rel="noopener noreferrer">Informar um problema no mapa de ruas</a>.</p></>;

@@ -1,0 +1,2 @@
+export const SCIENCE_VERSION='2.0.0';
+export const SCIENCE_BUILD='IBFC-CE-20261006-02';

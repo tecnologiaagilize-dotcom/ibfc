@@ -1,0 +1,10 @@
+import {redirect} from 'next/navigation';
+import Link from 'next/link';
+import {electoralStaff} from '@/lib/electoral/auth';
+import {AdminShell} from '@/components/admin/AdminShell';
+import {ScienceStatus} from '@/components/science/ScienceStatus';
+import {ScienceNav,SCIENCE_VIEWS} from '@/components/science/ScienceNav';
+import '@/components/electoral/electoral.css';
+import '@/components/science/science.css';
+export const dynamic='force-dynamic';
+export default async function Page(){const {user,allowed}=await electoralStaff();if(!user)redirect('/admin/login');if(!allowed)redirect('/membro');return <AdminShell email={user.email}><div className="science-shell"><ScienceNav view="inicio"/><header className="science-hero"><span className="electoral-eyebrow">IBFC · OBSERVATÓRIO DE DADOS PÚBLICOS</span><h1>Ciência Eleitoral <small>2.0</small></h1><p>Do país à seção eleitoral. Compare resultados, documente hipóteses e avalie padrões com origem e cobertura identificadas.</p></header><div className="science-cards">{Object.entries(SCIENCE_VIEWS).map(([key,label],i)=><Link className="science-card" key={key} href={`/admin/ciencia-eleitoral/${key}`}><span>0{i+1}</span><h2>{label}</h2><p>{({mapa:'Compare eleições e aprofunde do país à seção.',cargos:'Compare cargos no mesmo território, usando denominadores próprios.',investigacoes:'Registre hipóteses, revisões e arquivos de evidência.',relatorios:'Reabra resultados preservados e exporte relatórios.',modelos:'Examine associação territorial e cenários hipotéticos.',integracoes:'Acompanhe importações e verifique a instalação.'} as Record<string,string>)[key]}</p><b>Abrir módulo →</b></Link>)}</div><ScienceStatus/><section className="electoral-panel"><h2>Uma base científica que pode ser auditada</h2><p>Resultados agregados permanecem separados dos cadastros voluntários. O voto individual é secreto. Ausência de dados, mudanças de seção e carga parcial aparecem nos relatórios.</p><p>Previsões futuras exigem séries históricas e avaliação fora da amostra. Esta versão oferece análise descritiva e validação exploratória; os cenários são hipóteses explícitas.</p></section></div></AdminShell>;}
