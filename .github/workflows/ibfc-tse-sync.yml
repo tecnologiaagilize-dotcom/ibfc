@@ -1,0 +1,33 @@
+name: IBFC — sincronização TSE
+on:
+  schedule:
+    - cron: '17 6 * * *'
+  workflow_dispatch:
+    inputs:
+      job_id:
+        description: ID da tarefa criada no portal IBFC
+        required: true
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: ibfc-tse-sync
+  cancel-in-progress: false
+jobs:
+  import:
+    if: github.event_name != 'schedule' || vars.IBFC_TSE_AUTO_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Baixar, validar e importar bases oficiais
+        env:
+          IBFC_TSE_JOB_ID: ${{ inputs.job_id }}
+          IBFC_TSE_AUTO_OWNER_ID: ${{ vars.IBFC_TSE_AUTO_OWNER_ID }}
+          IBFC_TSE_AUTO_SCOPES: ${{ vars.IBFC_TSE_AUTO_SCOPES }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: python scripts/tse_sync.py
