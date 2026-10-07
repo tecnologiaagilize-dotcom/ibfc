@@ -30,13 +30,20 @@ export async function POST(r:NextRequest){
  if(b.scope==='section'&&!filters.section)return fail('Informe a seção.');
  const {data:catalogue,error:catalogueError}=await db.rpc('ibfc_science_catalogue',{p_uf:newer.uf});if(catalogueError)return fail('Catálogo indisponível: confira a migração 20261011.',500);
  const c=catalogue as ScienceCatalogue;
+ let zoneResults=false;
  for(const t of [old,newer]){
   const list=t.kind==='party'||t.kind==='group'?c.parties:c.candidates;
   const numbers=t.kind==='group'?t.numbers:[t.number];
   if(!Array.isArray(numbers)||numbers.length<1||numbers.length>40||new Set(numbers).size!==numbers.length||numbers.some(n=>!list.some(x=>x.number===n&&x.year===t.year&&x.election===t.election&&x.turn===t.turn&&x.office===t.office)))return fail('Seleção ausente no catálogo importado. Atualize os filtros.');
+  const chosen=list.find(x=>x.number===t.number&&x.year===t.year&&x.election===t.election&&x.turn===t.turn&&x.office===t.office&&(!t.candidate_id||x.candidate_id===t.candidate_id));
+  if(t.kind!=='group'&&!chosen)return fail('Identificador da candidatura ausente no catálogo. Atualize a seleção.');
+  if(chosen){t.name=chosen.name;t.result_granularity=chosen.result_granularity;t.candidate_id=chosen.candidate_id;}
+  if(numbers.some(n=>list.some(x=>x.number===n&&x.year===t.year&&x.election===t.election&&x.turn===t.turn&&x.office===t.office&&x.result_granularity==='zone')))zoneResults=true;
+  if(chosen?.destination&&!chosen.destination.startsWith('Válido'))return fail('Votos com destinação '+chosen.destination+': esta análise usa votos válidos.',409);
   if(numbers.some(n=>list.find(x=>x.number===n&&x.year===t.year&&x.election===t.election&&x.turn===t.turn&&x.office===t.office)?.results_available===false))return fail('Candidatura/partido cadastrado pelo TSE, mas sem resultados de votos importados para este recorte.',409);
  }
- const {data,error}=await db.rpc(current?'ibfc_science_current':cross?'ibfc_science_cross':'ibfc_science_compare',{p_old:old,p_new:newer,p_scope:b.scope,p_filters:filters});
+ if(zoneResults&&(cross||!['country','state','municipality','zone'].includes(b.scope)||filters.common_only))return fail('Resultados por zona permitem consulta de ano único e comparação 2022/2026 até zona. Local, seção, chaves comuns e cruzamento de cargos requerem votos por seção.',409);
+ const {data,error}=await db.rpc(zoneResults?'ibfc_science_zone_analysis':current?'ibfc_science_current':cross?'ibfc_science_cross':'ibfc_science_compare',{p_old:old,p_new:newer,p_scope:b.scope,p_filters:filters});
  if(error)return fail('Não foi possível calcular: '+error.message,500);
  const digest=createHash('sha256').update(canonicalJson(data)).digest('hex');
  const {data:record,error:auditError}=await db.from('ibfc_science_analyses').insert({method_version:'ibfc-science-2.0',parameters:{mode:current?'current':cross?'cross':'historical',old:current?{...old,name:'Sem comparação'}:old,new:newer,scope:b.scope,filters},sources:data.sources,totals:data.totals,result_sha256:digest,result_snapshot:data}).select('id').single();

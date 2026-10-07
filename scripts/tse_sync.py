@@ -291,9 +291,20 @@ class Worker:
         try:
             tasks, missing = plan(self.year, self.scopes)
             self.progress('Recursos oficiais localizados', True, files_total=len(tasks))
+            if self.year==2026 and any(m.startswith('votes/') for m in missing):
+                from tse_results import discover, import_task
+                absent=[uf for uf in self.scopes if not any(t['kind']=='votes' and t['target']==uf for t in tasks)]
+                extra=discover(self.year,absent,self.names,self.national) if absent else []
+                tasks.extend(extra)
+                covered={t['target'] for t in extra}
+                missing=[m for m in missing if not any(m.startswith('votes/'+uf+':') for uf in covered) and not (covered and m.startswith('votes/BR:'))]
+                self.progress('ZIPs e resultados JSON oficiais localizados',True,files_total=len(tasks))
             for task in tasks:
-                self.import_file(task)
-            msg = 'Sincronização concluída.' if not missing else 'Carga parcial/aguardando publicação: ' + '; '.join(missing)
+                if task['kind']=='zone_results':
+                    import_task(self,task)
+                else:
+                    self.import_file(task)
+            msg = 'Sincronização concluída. Resultados JSON por zona não fornecem votos individuais por seção; confira a granularidade no relatório.' if any(t['kind']=='zone_results' for t in tasks) and not missing else 'Sincronização concluída.' if not missing else 'Carga parcial/aguardando publicação: ' + '; '.join(missing)
             self.rpc('finish', dict(partial=bool(missing), message=msg))
             print(msg)
         except Exception as e:

@@ -4,7 +4,7 @@ import fs from 'node:fs';import assert from 'node:assert/strict';
 const root=fileURLToPath(new URL('../',import.meta.url));const db=new PGlite();
 await db.exec(`create role anon;create role authenticated;create role service_role;create schema auth;create table auth.users(id uuid primary key);create function auth.uid() returns uuid language sql as $$select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid$$;create table public.admin_profiles(id uuid primary key,role text);insert into auth.users values('00000000-0000-0000-0000-000000000001');insert into admin_profiles values('00000000-0000-0000-0000-000000000001','admin');set request.jwt.claim.sub='00000000-0000-0000-0000-000000000001';grant usage on schema auth to authenticated;grant select on admin_profiles to authenticated;`);
 await db.exec(`create schema storage;create table storage.buckets(id text primary key,name text,public boolean,file_size_limit bigint);create table storage.objects(id uuid primary key default gen_random_uuid(),bucket_id text,name text);alter table storage.objects enable row level security;create function storage.foldername(text) returns text[] language sql immutable as $$select string_to_array($1,'/')$$;grant usage on schema storage to anon,authenticated;grant select,insert,update,delete on storage.objects to anon,authenticated;grant select on admin_profiles to anon;create policy generic_read on storage.objects for select using(true);create policy generic_update on storage.objects for update using(true) with check(true);create policy generic_delete on storage.objects for delete using(true);`);
-for(const file of ['20261009_ibfc_map_and_tse_sync.sql','20261010_ibfc_party_auto_sync.sql','20261011_ibfc_science.sql','20261012_ibfc_science_observatory.sql','20261013_ibfc_map_without_votes.sql','20261014_ibfc_single_year.sql','20261015_ibfc_official_roster.sql']){await db.exec(fs.readFileSync(root+'/supabase/migrations/'+file,'utf8'));console.log('Applied',file);}
+for(const file of ['20261009_ibfc_map_and_tse_sync.sql','20261010_ibfc_party_auto_sync.sql','20261011_ibfc_science.sql','20261012_ibfc_science_observatory.sql','20261013_ibfc_map_without_votes.sql','20261014_ibfc_single_year.sql','20261015_ibfc_official_roster.sql','20261016_ibfc_tse_results_json.sql']){await db.exec(fs.readFileSync(root+'/supabase/migrations/'+file,'utf8'));console.log('Applied',file);}
 await db.exec(fs.readFileSync(root+'/supabase/IBFC_IMPORTAR_CANDIDATOS_2026_DF_GO.sql','utf8'));
 await db.exec(fs.readFileSync(root+'/supabase/IBFC_IMPORTAR_CANDIDATOS_2026_DF_GO.sql','utf8'));
 assert.equal((await db.query('select count(*)::int n from ibfc_science_candidate_roster')).rows[0].n,1520);
@@ -45,5 +45,25 @@ const inv=(await db.query('select id from ibfc_science_investigations limit 1'))
 await db.query("insert into ibfc_science_evidence(investigation_id,filename,mime_type,bytes,sha256,storage_path) values($1,'fixture.txt','text/plain',10,$2,'private/fixture')",[inv,'b'.repeat(64)]);
 await db.exec('set role authenticated');await assert.rejects(()=>db.query("delete from ibfc_science_evidence"));await assert.rejects(()=>db.query("update ibfc_science_analyses set method_version='x'"));await db.exec('reset role');
 await db.exec(`insert into storage.objects(bucket_id,name) values('ibfc-science-evidence','private/fixture');set role authenticated;update storage.objects set name='changed';delete from storage.objects;reset role;`);assert.equal((await db.query('select name from storage.objects')).rows[0].name,'private/fixture');
+
+await db.exec(fs.readFileSync(root+'/supabase/migrations/20261016_ibfc_tse_results_json.sql','utf8'));
+const real=JSON.parse(fs.readFileSync(root+'/tests/fixtures/tse-zone-public.json','utf8'));
+const sj=(await db.query("insert into ibfc_electoral_sync_jobs(year,scopes,created_by,status,worker_token,files_total) values(2026,array['DF'],'00000000-0000-0000-0000-000000000001','running','test-zone-token',1) returning id")).rows[0].id;
+async function zoneWorker(action,data={}){return(await db.query('select ibfc_electoral_sync_worker($1,$2,$3,$4) data',[action,sj,'test-zone-token',data])).rows[0].data;}
+const imp=(await zoneWorker('start_zone',{filename:'EA20 real sample',source_url:real.source_url})).import_id;
+await zoneWorker('zone_batch',{import_id:imp,rows:[real]});await zoneWorker('zone_batch',{import_id:imp,rows:[real]});
+assert.equal((await db.query('select count(*)::int n from ibfc_science_latest_zones')).rows[0].n,0,'Unpublished results invisible');
+await assert.rejects(()=>zoneWorker('ready_zone',{import_id:imp,expected_files:2}));
+await zoneWorker('ready_zone',{import_id:imp,expected_files:1});await zoneWorker('finish');
+const zcat=(await db.query("select ibfc_science_catalogue('DF') data")).rows[0].data;
+const zt={...zcat.candidates.find(x=>x.election===6257&&x.number==='22'),kind:'candidate'};
+assert.equal(zt.results_available,true);assert.equal(zt.result_granularity,'zone');assert.equal(zcat.candidates.filter(x=>x.election===6257&&x.number==='22').length,1);
+const zr=(await db.query('select ibfc_science_zone_analysis($1,$1,$2,$3) data',[zt,'municipality',{municipality:97012}])).rows[0].data;
+assert.equal(zr.totals.new_votes,26996);assert.equal(zr.totals.new_valid,61750);assert.equal(zr.totals.old_votes,null);assert.equal(zr.rows[0].new_sections,281);assert.equal(zr.rows[0].local,null);assert.equal(zr.rows[0].section,0);
+const zh=(await db.query('select ibfc_science_zone_analysis($1,$2,$3,$4) data',[{...target(2022),uf:'DF'},zt,'municipality',{}])).rows[0].data;assert.equal(zh.totals.old_votes,20);assert.equal(zh.totals.new_votes,26996);
+await assert.rejects(()=>db.query('select ibfc_science_zone_analysis($1,$1,$2,$3)',[zt,'location',{}]));
+await assert.rejects(()=>db.query('select ibfc_science_zone_analysis($1,$1,$2,$3)',[zt,'state',{common_only:true}]));
+await db.exec('set role authenticated');await assert.rejects(()=>zoneWorker('zone_batch',{import_id:imp,rows:[real]}));await db.exec('reset role');
+console.log('PASS real EA20 zone totals, idempotent staging, atomic publication, roster replacement, 2022 comparison, no fictional sections');
 await db.exec("set request.jwt.claim.sub='';set role anon");assert.equal((await db.query('select * from storage.objects')).rows.length,0);await assert.rejects(()=>db.query("select ibfc_science_locations('DF','{}')"));await assert.rejects(()=>db.query("select ibfc_science_catalogue('BR')"));await db.exec('reset role');
 console.log('PASS national aggregation, valid denominators, groups with legenda, moved local, compatibility, immutable revisions, anonymous denial');await db.close();

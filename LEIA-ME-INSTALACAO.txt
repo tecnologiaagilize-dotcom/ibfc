@@ -1,0 +1,32 @@
+IBFC — RESULTADOS OFICIAIS JSON POR ZONA + CONSULTA DE ARQUIVOS DE URNA
+Atualização sobre a última versão com candidaturas oficiais, mapa e consulta de ano único.
+
+INSTALAÇÃO — NÃO REQUER NOVOS TOKENS
+1. Confirme que as migrações 20261009 a 20261015 já estão instaladas (o seletor de candidatos deve funcionar).
+2. Execute supabase/migrations/20261016_ibfc_tse_results_json.sql no SQL Editor do Supabase do IBFC. Pode repetir esta migração. Não execute novamente as migrações antigas depois dela, pois elas podem substituir funções atualizadas.
+3. Substitua todos os arquivos deste ZIP nos mesmos caminhos do repositório IBFC. Os arquivos scripts/tse_results.py, app/api/admin/science/urnas/route.ts e components/science/UrnaDocuments.tsx são novos: precisam ser enviados também. Faça commit na branch utilizada pelo workflow e novo deployment na Vercel.
+4. Mantenha o workflow existente ibfc-tse-sync.yml e os Secrets SUPABASE_URL e SUPABASE_SERVICE_ROLE_KEY. Não é necessário novo token ou alteração de .env.
+5. Em Administração > Ciência Eleitoral > Sincronização, inicie NOVA sincronização de 2026 para DF e GO. Uma execução já iniciada utiliza o código do commit anterior; encerre uma tarefa antiga travada antes de iniciar a nova. Aguarde a conclusão/publicação, então clique Atualizar catálogo no Mapa eleitoral.
+6. Selecione Ano 2026, UF, cargo e candidatura. As opções com JSON publicado aparecem como votos por zona. Escolha escopo Município para listar as zonas; escopo Zona para consultar a zona escolhida. A comparação 2022 é opcional. No modo histórico, a candidatura de 2022 precisa ter resultados reais importados.
+
+O QUE FOI IMPLEMENTADO
+- Busca alternativa automática no portal Resultados do TSE quando o CSV por seção da UF não for localizado. Configuração oficial identifica ciclo, pleito, eleição e turno; inventário EA16 fornece municípios e zonas. Os arquivos EA20 fornecem candidaturas, partidos, votos válidos e totais por zona.
+- O worker mantém a cobertura escolhida: no modo regional, DF e municípios do Entorno cadastrados; no modo amplo, os municípios da UF selecionada. Brasil significa somente a cobertura de UFs efetivamente importadas, não pressupõe todo o país.
+- Resultados de simulados, recortes divergentes, contagens ausentes e soma inválida de partidos são rejeitados. Votos partidários incluem nominais válidos + legenda válida. Candidaturas usam SQ_CANDIDATO, evitando atribuição arbitrária por número repetido. A análise de participação recusa destinação anulada/sub judice.
+- Carga preparada permanece invisível até publicar a tarefa inteira. Repetição de um lote substitui o mesmo arquivo, sem duplicar votos. Falhas conservam a última carga publicada.
+- Consulta por Brasil/UF/município/zona; comparação histórica de zonas com 2022 importado por seção (agregado por zona) ou por JSON. Fontes e snapshot são registrados no protocolo da análise.
+- Mapa preserva Leaflet + OpenStreetMap. Pontos de zona são referências médias de coordenadas dos locais importados, não limites oficiais. Se faltam coordenadas, os dados continuam na tabela. Votos de uma zona não são distribuídos ficticiamente entre escolas ou urnas.
+- Novo bloco Arquivos de urna · TSE 2026: selecione candidato, município e zona, consulte seções e escolha a seção. O índice EA18 fornece links oficiais dos arquivos disponíveis, com hash, status e recebimento. Abre BU, RDV, log e outros arquivos disponibilizados diretamente no TSE. Versões retransmitidas são apresentadas com seu status.
+
+LIMITES DESTA ETAPA
+Os BUs .dat, RDVs .dat e logs .jez não são decodificados nem somados automaticamente. Esta atualização permite localizá-los e acessá-los. Votos por seção/local/urna no mapa continuam dependendo do CSV por seção; JSON por zona habilita somente agregações até a zona. Cruzamento entre cargos e comparação de chaves comuns de seção permanecem exigindo resultados por seção. Não identifica quem votou em quem; mudanças de zona/eleitorado exigem avaliação antes de interpretar crescimento.
+A configuração inclui futuros turnos: o worker não solicita pleitos com data posterior ao dia da execução. A publicação do segundo turno depende da atualização do TSE e da efetiva realização da eleição.
+O ZIP contém código e um pequeno fixture de teste; não contém a base completa de votos de DF/GO. Os votos serão baixados e publicados pelo workflow após a instalação. Não executamos alterações no seu Supabase ou deployment remoto nesta sessão.
+
+VALIDAÇÃO
+Testes de PostgreSQL com um resultado real de 2026, publicação atômica, repetição, catálogo, comparação com fixture 2022 e permissões; testes Python de configuração, campos, legenda, simulado e divergência; navegador desktop/mobile com APIs de teste e tiles simulados; compilação de produção. Consultas reais também validaram Presidência e deputado federal no DF, índice de BU/RDV/log e Presidência em Águas Lindas, quando descrito no relatório de execução.
+
+FONTES
+https://www.tse.jus.br/eleicoes/informacoes-tecnicas-sobre-a-divulgacao-de-resultados
+https://resultados.tse.jus.br/oficial/comum/config/ele-c.json
+https://resultados.tse.jus.br/oficial/app/index.html
