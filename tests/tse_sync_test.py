@@ -79,4 +79,44 @@ class ScheduleTests(unittest.TestCase):
   self.assertEqual(m.normalize(row,'votes',2026,['DF'],m.coverage())['turn'],2)
   self.assertEqual(m.normalize(dict(row,NR_TURNO='1'),'votes',2026,['DF'],m.coverage())['turn'],1)
 
+class ZipPartitionTests(unittest.TestCase):
+ def archive(self, names):
+  data=io.BytesIO()
+  with zipfile.ZipFile(data,'w') as z:
+   for name in names:z.writestr(name,'fixture')
+  return zipfile.ZipFile(io.BytesIO(data.getvalue()))
+ def test_location_uf_partitions_exclude_br_and_other_states(self):
+  names=['eleitorado_local_votacao_2026_'+uf+'.csv' for uf in ['DF','GO','SP','BR']]+['leia-me.pdf']
+  with self.archive(names) as z:
+   selected=m.select_csvs(z,{'kind':'locations','name':'Locais'},2026,['DF','GO'])
+   self.assertEqual([i.filename for i in selected],names[:2])
+ def test_location_br_fallback_not_merged_with_uf(self):
+  names=['eleitorado_local_votacao_2026_DF.csv','eleitorado_local_votacao_2026_BR.csv']
+  with self.archive(names) as z:self.assertEqual([i.filename for i in m.select_csvs(z,{'kind':'locations','name':'Locais'},2026,['DF','GO'])],[names[1]])
+ def test_votes_choose_only_requested_partition(self):
+  names=['nested/votacao_secao_2026_'+uf+'.csv' for uf in ['DF','GO','BR']]
+  with self.archive(names) as z:
+   selected=m.select_csvs(z,{'kind':'votes','target':'DF','name':'Votos'},2026,['DF','GO'])
+   self.assertEqual([i.filename for i in selected],[names[0]])
+ def test_ambiguous_missing_and_size_rejected(self):
+  for names in [['a.csv','b.csv'],['leia-me.pdf'],['votacao_secao_2026_DF.csv','nested/votacao_secao_2026_DF.csv']]:
+   with self.archive(names) as z,self.assertRaises(ValueError):m.select_csvs(z,{'kind':'votes','target':'DF','name':'Votos'},2026,['DF'])
+  with self.archive(['official.csv']) as z,patch.object(m,'MAX_UNCOMPRESSED',1),self.assertRaises(ValueError):m.select_csvs(z,{'kind':'locations','name':'Locais'},2026,['DF'])
+ def test_multi_csv_import_lifecycle_excludes_national_duplicate(self):
+  header='SG_UF;NM_MUNICIPIO;ANO_ELEICAO;CD_MUNICIPIO;NR_ZONA;NR_LOCAL_VOTACAO;NM_LOCAL_VOTACAO\n'
+  data=io.BytesIO()
+  with zipfile.ZipFile(data,'w') as z:
+   z.writestr('eleitorado_local_votacao_2026_DF.csv',header+'DF;BRASILIA;2026;97012;1;1001;Escola DF\n')
+   z.writestr('eleitorado_local_votacao_2026_GO.csv',header+'GO;PADRE BERNARDO;2026;12345;1;1001;Escola GO\n')
+   z.writestr('eleitorado_local_votacao_2026_BR.csv',header+'DF;BRASILIA;2026;97012;1;1001;Escola DF\n')
+  calls=[]
+  class Fake(m.Worker):
+   def download(self,task,dest):dest.write_bytes(data.getvalue())
+   def rpc(self,action,payload=None):
+    calls.append((action,payload));return {'import_id':'fixture'} if action=='start_import' else {'ok':True}
+  worker=Fake('job','https://test.supabase.co','fake');worker.year=2026;worker.scopes=['DF','GO'];worker.names=m.coverage();worker.national=False
+  worker.import_file({'kind':'locations','name':'Locais','url':'https://cdn.tse.jus.br/locais.zip'})
+  rows=[r for action,payload in calls if action=='batch' for r in payload['rows']]
+  self.assertEqual(len(rows),2);self.assertEqual([r['uf'] for r in rows],['DF','GO']);self.assertEqual(sum(a=='ready' for a,p in calls),1)
+
 if __name__=='__main__':unittest.main()

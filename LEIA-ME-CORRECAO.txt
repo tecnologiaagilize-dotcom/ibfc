@@ -1,0 +1,14 @@
+IBFC — CORREÇÃO DO IMPORTADOR ZIP TSE
+
+Aplicar sobre o módulo Ciência Eleitoral 2.0 já instalado.
+1. Extraia o ZIP.
+2. No GitHub do IBFC, substitua scripts/tse_sync.py mantendo exatamente esse caminho, na branch utilizada pelo workflow (normalmente main). Suba também tests/tse_sync_test.py.
+3. Salve o commit e inicie NOVA sincronização no portal. Reexecutar um run antigo pode continuar usando o commit antigo.
+Não requer migração SQL, alteração de Secrets nem novo deployment da Vercel para esta correção do worker.
+
+A regra anterior recusava qualquer ZIP com mais de um CSV ou arquivo acima do limite, usando a mesma mensagem.
+A nova seleção aceita um CSV único, ou seleciona partições inequivocamente identificadas por ano/tipo/UF. Para locais, usa todas as UFs solicitadas se disponíveis; caso contrário, usa somente BR. Nunca soma BR às suas cópias estaduais.
+ZIPs ambíguos, CSVs duplicados, cabeçalhos incompatíveis e cargas acima de 40 GiB descompactados continuam recusados com diagnóstico mais específico. Nenhum arquivo é extraído para o disco por nome interno.
+13 testes Python passaram, incluindo ZIPs com múltiplos CSVs, UF/BR sem duplicação, ciclo de importação e falha sem publicação. Testes usaram fixtures, sem envio ao Supabase real. A composição do ZIP da execução informada não foi obtida; o próximo log identifica os CSVs selecionados ou o motivo preciso da recusa.
+
+IBFC_TSE_AUTO_OWNER_ID e IBFC_TSE_AUTO_SCOPES vazios não causam esse erro em uma tarefa manual com IBFC_TSE_JOB_ID preenchido. Configure Variables para o agendamento diário.

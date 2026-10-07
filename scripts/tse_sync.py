@@ -89,6 +89,39 @@ def plan(year, scopes, fetch=package):
     return tasks, missing
 
 
+
+def select_csvs(archive, task, year, scopes):
+    """Select disjoint CSV partitions, never BR plus its state copies."""
+    files = [i for i in archive.infolist() if not i.is_dir() and i.filename.lower().endswith('.csv') and not i.filename.startswith('__MACOSX/')]
+    if not files:
+        raise ValueError('ZIP oficial não contém CSV: ' + task['name'])
+    if len(files) == 1:
+        selected = files
+    else:
+        prefix = 'votacao_secao' if task['kind'] == 'votes' else 'eleitorado_local_votacao'
+        def partition(code):
+            pattern = re.compile(r'^' + prefix + '_' + str(year) + '_' + re.escape(code) + r'\.csv$', re.I)
+            matches = [i for i in files if pattern.fullmatch(Path(i.filename).name)]
+            if len(matches) > 1:
+                raise ValueError('ZIP com partição CSV duplicada: ' + code)
+            return matches
+        if task['kind'] == 'votes':
+            target = task.get('target') or Path(urllib.parse.urlsplit(task['url']).path).stem.rsplit('_', 1)[-1].upper()
+            selected = partition(target)
+        else:
+            # Prefer state partitions only when every requested UF is present.
+            states = [partition(uf) for uf in scopes]
+            selected = [part[0] for part in states] if states and all(states) else partition('BR')
+        if not selected:
+            names = ', '.join(Path(i.filename).name[:120] for i in files[:5])
+            raise ValueError(f'ZIP com {len(files)} CSVs, sem partição inequívoca para a tarefa {task["name"]}. Arquivos: {names}')
+    if any(i.flag_bits & 1 for i in selected):
+        raise ValueError('CSV oficial criptografado não suportado')
+    if sum(i.file_size for i in selected) > MAX_UNCOMPRESSED:
+        raise ValueError('CSVs selecionados excedem o limite descompactado de 40 GiB')
+    return selected
+
+
 def required(row, key):
     value = row.get(key, '').strip()
     if not re.fullmatch(r'[0-9]+', value):
@@ -199,28 +232,31 @@ class Worker:
             archive = Path(folder) / 'official.zip'
             self.download(task, archive)
             with zipfile.ZipFile(archive) as z:
-                files = [i for i in z.infolist() if i.filename.lower().endswith('.csv') and not i.is_dir()]
-                if len(files) != 1 or files[0].file_size > MAX_UNCOMPRESSED:
-                    raise ValueError('ZIP deve conter um único CSV dentro do limite de tamanho')
+                files = select_csvs(z, task, self.year, self.scopes)
+                print(f'{task["name"]}: {len(z.infolist())} itens no ZIP; {len(files)} CSV(s) selecionado(s)')
                 imp = self.rpc('start_import', dict(kind=task['kind'], filename=Path(urllib.parse.urlsplit(task['url']).path).name, source_url=task['url']))['import_id']
-                batch, accepted = [], 0
-                with z.open(files[0]) as stream, io.TextIOWrapper(stream, encoding='utf-8-sig' if self.encoding(z, files[0]) == 'utf8' else 'cp1252', newline='') as text:
-                    reader = csv.DictReader(text, delimiter=';')
-                    required_headers = {'SG_UF', 'NM_MUNICIPIO', 'CD_MUNICIPIO', 'NR_ZONA', 'NR_LOCAL_VOTACAO'}
-                    if not reader.fieldnames or not required_headers.issubset(reader.fieldnames):
-                        raise ValueError('CSV oficial com cabeçalho incompatível')
-                    for row in reader:
-                        if None in row or any(v is None for v in row.values()):
-                            raise ValueError('CSV com colunas inconsistentes')
-                        n = normalize(row, task['kind'], self.year, self.scopes, self.names, self.national)
-                        if n:
-                            batch.append(n)
-                            accepted += 1
-                        if len(batch) == 500:
-                            self.rpc('batch', dict(import_id=imp, rows=batch))
-                            self.rows += len(batch)
-                            batch = []
-                        self.progress('Processando ' + task['name'], phase='parse', current_file=task['name'], phase_done=stream.tell(), phase_total=files[0].file_size)
+                batch, accepted, completed_bytes = [], 0, 0
+                parse_total = sum(info.file_size for info in files)
+                for info in files:
+                    print('Lendo CSV: ' + Path(info.filename).name)
+                    with z.open(info) as stream, io.TextIOWrapper(stream, encoding='utf-8-sig' if self.encoding(z, info) == 'utf8' else 'cp1252', newline='') as text:
+                        reader = csv.DictReader(text, delimiter=';')
+                        required_headers = {'SG_UF', 'NM_MUNICIPIO', 'CD_MUNICIPIO', 'NR_ZONA', 'NR_LOCAL_VOTACAO'}
+                        if not reader.fieldnames or not required_headers.issubset(reader.fieldnames):
+                            raise ValueError('CSV oficial com cabeçalho incompatível: ' + Path(info.filename).name)
+                        for row in reader:
+                            if None in row or any(v is None for v in row.values()):
+                                raise ValueError('CSV com colunas inconsistentes: ' + Path(info.filename).name)
+                            n = normalize(row, task['kind'], self.year, self.scopes, self.names, self.national)
+                            if n:
+                                batch.append(n)
+                                accepted += 1
+                            if len(batch) == 500:
+                                self.rpc('batch', dict(import_id=imp, rows=batch))
+                                self.rows += len(batch)
+                                batch = []
+                            self.progress('Processando ' + task['name'], phase='parse', current_file=Path(info.filename).name, phase_done=completed_bytes + stream.tell(), phase_total=parse_total)
+                    completed_bytes += info.file_size
                 if batch:
                     self.rpc('batch', dict(import_id=imp, rows=batch))
                     self.rows += len(batch)
