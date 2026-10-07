@@ -51,9 +51,15 @@ export function LeafletElectionMap({places,onSelect}:{places:LocalComparison[];o
     const position:Position=[place.latitude,place.longitude];positions.push(position);const s=summarize(place.sections);
     const box=document.createElement("div");box.className="electoral-map-info";
     const title=document.createElement("strong");title.textContent=place.name;box.appendChild(title);
-    for(const text of [`${place.municipality_name}/${place.uf} · Zona ${place.zone}${place.granularity==="zone"?" · referência de zona":` · Local ${place.local??"não identificado"}`}`,place.address,place.sections.length?`${place.section_count??place.sections.length} seções ${place.granularity==="zone"?"totalizadas na zona (votos agregados)":"com resultado importado"}`:`Base de locais ${place.coordinate_year??"sem ano"}; resultados de seções ainda não selecionados`,`${place.old_label??"2022"}: ${s.oldAvailable?number(s.oldVotes):"sem dados"} · ${place.new_label??"2026"}: ${s.newAvailable?number(s.newVotes):"sem dados"}`,place.granularity==="zone"?"Votos agregados por zona; não distribuídos entre locais ou urnas.":(place.moved_sections??s.movedSections)?"Há seções que mudaram de local; conferir continuidade territorial.":"Comparação por chaves de seção; continuidade não verificada."]){const p=document.createElement("p");p.textContent=text;box.appendChild(p);}
+    const description=document.createElement("p");description.textContent=`${place.municipality_name}/${place.uf} · Zona ${place.zone}${place.granularity==="zone"?"":` · Local ${place.local??"—"}`}`;box.appendChild(description);
+    if(place.coordinate_year){const year=document.createElement("p");year.textContent=`Referência cartográfica: ${place.coordinate_year}`;box.appendChild(year);}
+    if(place.address){const address=document.createElement("p");address.textContent=place.address;box.appendChild(address);}
+    const votes=document.createElement("div");votes.className="electoral-popup-votes";
+    const now=document.createElement("strong");now.textContent=`${s.newAvailable?number(s.newVotes):"Sem dados"} votos`;votes.appendChild(now);
+    const detail=document.createElement("span");detail.textContent=place.granularity==="zone"?"Total da zona":`${place.section_count??place.sections.length} seções`;votes.appendChild(detail);box.appendChild(votes);
+    const hint=document.createElement("small");hint.textContent="Veja o painel de detalhes e aprofunde o território.";box.appendChild(hint);
     L.circleMarker(position,{radius:9,color:"#ffffff",weight:2,fillOpacity:.95,fillColor:s.delta===null?"#536278":s.delta>0?"#08775b":s.delta<0?"#ac4b35":"#12386b"})
-     .addTo(group.current!).bindPopup(box,{maxWidth:300}).bindTooltip(`Zona ${place.zone} · ${escaped(place.name)}`).on("click",()=>onSelect(place.key));
+     .addTo(group.current!).bindPopup(box,{minWidth:240,maxWidth:340,maxHeight:210,className:"ibfc-map-popup"}).bindTooltip(`Zona ${place.zone} · ${escaped(place.name)}`).on("click",()=>onSelect(place.key));
    }
    const fit=()=>{if(disposed||!map.current)return;map.current.invalidateSize();if(positions.length===1)map.current.setView(positions[0],14);else if(positions.length>1)map.current.fitBounds(positions,{padding:[25,25],maxZoom:14});else map.current.setView([-15.78,-47.93],9);};
    fit();resizeObserver=new ResizeObserver(fit);resizeObserver.observe(host.current);setStatus(positions.length?"":"Nenhum local com coordenadas neste recorte. Sincronize a base de locais; os registros sem coordenadas permanecem na tabela.");

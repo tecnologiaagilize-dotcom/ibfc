@@ -4,7 +4,7 @@ import fs from 'node:fs';import assert from 'node:assert/strict';
 const root=fileURLToPath(new URL('../',import.meta.url));const db=new PGlite();
 await db.exec(`create role anon;create role authenticated;create role service_role;create schema auth;create table auth.users(id uuid primary key);create function auth.uid() returns uuid language sql as $$select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid$$;create table public.admin_profiles(id uuid primary key,role text);insert into auth.users values('00000000-0000-0000-0000-000000000001');insert into admin_profiles values('00000000-0000-0000-0000-000000000001','admin');set request.jwt.claim.sub='00000000-0000-0000-0000-000000000001';grant usage on schema auth to authenticated;grant select on admin_profiles to authenticated;`);
 await db.exec(`create schema storage;create table storage.buckets(id text primary key,name text,public boolean,file_size_limit bigint);create table storage.objects(id uuid primary key default gen_random_uuid(),bucket_id text,name text);alter table storage.objects enable row level security;create function storage.foldername(text) returns text[] language sql immutable as $$select string_to_array($1,'/')$$;grant usage on schema storage to anon,authenticated;grant select,insert,update,delete on storage.objects to anon,authenticated;grant select on admin_profiles to anon;create policy generic_read on storage.objects for select using(true);create policy generic_update on storage.objects for update using(true) with check(true);create policy generic_delete on storage.objects for delete using(true);`);
-for(const file of ['20261009_ibfc_map_and_tse_sync.sql','20261010_ibfc_party_auto_sync.sql','20261011_ibfc_science.sql','20261012_ibfc_science_observatory.sql','20261013_ibfc_map_without_votes.sql','20261014_ibfc_single_year.sql','20261015_ibfc_official_roster.sql','20261016_ibfc_tse_results_json.sql']){await db.exec(fs.readFileSync(root+'/supabase/migrations/'+file,'utf8'));console.log('Applied',file);}
+for(const file of ['20261009_ibfc_map_and_tse_sync.sql','20261010_ibfc_party_auto_sync.sql','20261011_ibfc_science.sql','20261012_ibfc_science_observatory.sql','20261013_ibfc_map_without_votes.sql','20261014_ibfc_single_year.sql','20261015_ibfc_official_roster.sql','20261016_ibfc_tse_results_json.sql','20261017_ibfc_boletins_secoes.sql']){await db.exec(fs.readFileSync(root+'/supabase/migrations/'+file,'utf8'));console.log('Applied',file);}
 await db.exec(fs.readFileSync(root+'/supabase/IBFC_IMPORTAR_CANDIDATOS_2026_DF_GO.sql','utf8'));
 await db.exec(fs.readFileSync(root+'/supabase/IBFC_IMPORTAR_CANDIDATOS_2026_DF_GO.sql','utf8'));
 assert.equal((await db.query('select count(*)::int n from ibfc_science_candidate_roster')).rows[0].n,1520);
@@ -66,4 +66,28 @@ await assert.rejects(()=>db.query('select ibfc_science_zone_analysis($1,$1,$2,$3
 await db.exec('set role authenticated');await assert.rejects(()=>zoneWorker('zone_batch',{import_id:imp,rows:[real]}));await db.exec('reset role');
 console.log('PASS real EA20 zone totals, idempotent staging, atomic publication, roster replacement, 2022 comparison, no fictional sections');
 await db.exec("set request.jwt.claim.sub='';set role anon");assert.equal((await db.query('select * from storage.objects')).rows.length,0);await assert.rejects(()=>db.query("select ibfc_science_locations('DF','{}')"));await assert.rejects(()=>db.query("select ibfc_science_catalogue('BR')"));await db.exec('reset role');
-console.log('PASS national aggregation, valid denominators, groups with legenda, moved local, compatibility, immutable revisions, anonymous denial');await db.close();
+console.log('PASS national aggregation, valid denominators, groups with legenda, moved local, compatibility, immutable revisions, anonymous denial');await db.exec("set request.jwt.claim.sub='00000000-0000-0000-0000-000000000001'");
+
+const bi=(await db.query("insert into ibfc_electoral_imports(year,kind,filename,source_url,created_by) values(2026,'votes','bweb_fixture','https://cdn.tse.jus.br/bu.zip','00000000-0000-0000-0000-000000000001') returning id")).rows[0].id;
+const meta={aptos:100,comparecimento:80,abstencoes:20,urna:123456,status:'Apurada',agregadas:null,abertura:'2026-10-04 08:00:00',encerramento:'2026-10-04 17:00:00'};
+const br=[];for(const section of [21,22])for(const [number,votes] of [['22',40],['13',35],['95',3],['96',2]])br.push({year:2026,uf:'DF',municipality_name:'Brasília',municipality:97012,zone:1,local:1001,section,election:6257,turn:1,office:1,number,name:'Fixture '+number,office_name:'Presidente',votes,bu_metadata:{...meta,urna:123456+section}});
+await db.query('select ibfc_electoral_batch($1,$2)',[bi,br]);await db.query('select ibfc_electoral_batch($1,$2)',[bi,br]);
+assert.equal((await db.query('select count(*)::int n from ibfc_science_bu_sections where import_id=$1',[bi])).rows[0].n,2);
+await assert.rejects(()=>db.query('select ibfc_electoral_batch($1,$2)',[bi,[{...br[0],bu_metadata:{...br[0].bu_metadata,aptos:999}}]]));
+const bt={uf:'DF',year:2026,election:6257,turn:1,office:1,number:'22',kind:'candidate'};
+assert.equal((await db.query('select ibfc_science_bu_details($1,$2) d',[bt,{}])).rows[0].d.total_rows,0);
+await db.query('select ibfc_electoral_finish($1)',[bi]);
+const bd=(await db.query('select ibfc_science_bu_details($1,$2) d',[bt,{}])).rows[0].d;
+assert.equal(bd.total_rows,2);assert.equal(bd.totals.aptos,200);assert.equal(bd.totals.comparecimento,160);assert.equal(bd.rows[0].brancos,3);assert.equal(bd.rows[0].nulos,2);assert.equal(bd.rows[0].votes,40);assert.equal(bd.rows[0].nominal_legenda,75);
+const bl=(await db.query('select ibfc_science_current($1,$1,$2,$3) d',[bt,'location',{municipality:97012,zone:1,local:1001}])).rows[0].d;
+assert.equal(bl.rows.length,2);assert.equal(bl.totals.new_votes,80);assert.equal(bl.totals.new_valid,150);
+const bs=(await db.query('select ibfc_science_current($1,$1,$2,$3) d',[bt,'section',{municipality:97012,zone:1,local:1001,section:21}])).rows[0].d;assert.equal(bs.totals.new_votes,40);
+const bf=(await db.query('select ibfc_science_bu_details($1,$2) d',[bt,{municipality:97012,zone:1,local:1001,section:21}])).rows[0].d;assert.equal(bf.total_rows,1);assert.equal(bf.totals.aptos,100);
+await db.exec(fs.readFileSync(root+'/supabase/migrations/20261017_ibfc_boletins_secoes.sql','utf8'));
+console.log('BU: staging, dedup electorate, metadata conflicts, local/section votes, filters, repeat migration passed');
+
+
+await db.exec("update ibfc_electoral_locations set latitude=-15.78,longitude=-47.93,year=2022 where uf='DF' and local=1001");
+const geo=(await db.query('select ibfc_science_geocode_rows($1,2026,$2) d',[[{uf:'DF',municipality:97012,zone:1,local:1001,section:21,name:'Local 1001 · Seção 21',latitude:null,longitude:null}],'location'])).rows[0].d;
+assert.equal(geo.rows[0].coordinate_year,2022);assert.equal(geo.rows[0].location_reference,true);assert.ok(geo.rows[0].name.includes('referência 2022'));assert.equal(geo.sources.length,1);
+await db.close();

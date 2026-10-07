@@ -47,7 +47,7 @@ OFFICIAL = urllib.request.build_opener(OfficialRedirect())
 
 
 def package(year, kind):
-    dataset = ('resultados-' if kind == 'votes' else 'eleitorado-') + str(year)
+    dataset = f'resultados-{year}-boletim-de-urna' if kind == 'bu' else ('resultados-' if kind == 'votes' else 'eleitorado-') + str(year)
     url = 'https://dadosabertos.tse.jus.br/api/3/action/package_show?' + urllib.parse.urlencode({'id': dataset})
     try:
         with OFFICIAL.open(url, timeout=90) as response:
@@ -236,6 +236,11 @@ class Worker:
                 print(f'{task["name"]}: {len(z.infolist())} itens no ZIP; {len(files)} CSV(s) selecionado(s)')
                 imp = self.rpc('start_import', dict(kind=task['kind'], filename=Path(urllib.parse.urlsplit(task['url']).path).name, source_url=task['url']))['import_id']
                 batch, accepted, completed_bytes = [], 0, 0
+                seen = None
+                if task.get('format') == 'bu':
+                    import sqlite3
+                    seen = sqlite3.connect(str(Path(folder) / 'section-keys.sqlite'))
+                    seen.execute('create table records (k text primary key, payload text not null)')
                 parse_total = sum(info.file_size for info in files)
                 for info in files:
                     print('Lendo CSV: ' + Path(info.filename).name)
@@ -247,7 +252,21 @@ class Worker:
                         for row in reader:
                             if None in row or any(v is None for v in row.values()):
                                 raise ValueError('CSV com colunas inconsistentes: ' + Path(info.filename).name)
-                            n = normalize(row, task['kind'], self.year, self.scopes, self.names, self.national)
+                            if task.get('format') == 'bu':
+                                from tse_bu import normalize_bu
+                                n = normalize_bu(row, self.year, self.scopes, self.names, self.national)
+                            else:
+                                n = normalize(row, task['kind'], self.year, self.scopes, self.names, self.national)
+                            if n and seen is not None:
+                                key = ':'.join(str(n[k]) for k in ('uf','election','turn','municipality','zone','section','office','number'))
+                                payload = json.dumps(n, sort_keys=True, ensure_ascii=False)
+                                previous = seen.execute('select payload from records where k=?', (key,)).fetchone()
+                                if previous:
+                                    if previous[0] != payload:
+                                        raise ValueError('Boletins divergentes para a mesma seção/cargo/votável; importação interrompida')
+                                    n = None
+                                else:
+                                    seen.execute('insert into records values (?,?)', (key,payload))
                             if n:
                                 batch.append(n)
                                 accepted += 1
@@ -262,6 +281,8 @@ class Worker:
                     self.rows += len(batch)
                 if not accepted:
                     raise ValueError('Nenhum registro da cobertura escolhido foi encontrado')
+                if seen is not None:
+                    seen.close()
                 self.rpc('ready', dict(import_id=imp))
                 self.progress('Arquivo preparado: ' + task['name'], True, phase='prepared', current_file='', phase_done=0, phase_total=0)
 
@@ -290,6 +311,13 @@ class Worker:
         self.names = coverage()
         try:
             tasks, missing = plan(self.year, self.scopes)
+            if self.year == 2026:
+                from tse_bu import discover_bu
+                absent = [uf for uf in self.scopes if not any(t['kind']=='votes' and t['target']==uf for t in tasks)]
+                extra = discover_bu(self.year, absent, package) if absent else []
+                tasks.extend(extra)
+                covered = {t['target'] for t in extra}
+                missing = [m for m in missing if not any(m.startswith('votes/'+uf+':') for uf in covered) and not (covered and m.startswith('votes/BR:'))]
             self.progress('Recursos oficiais localizados', True, files_total=len(tasks))
             if self.year==2026 and any(m.startswith('votes/') for m in missing):
                 from tse_results import discover, import_task

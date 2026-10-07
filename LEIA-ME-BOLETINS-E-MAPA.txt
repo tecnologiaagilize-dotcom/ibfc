@@ -1,0 +1,72 @@
+IBFC — votos por local de votação, seção e urna
+Atualização: IBFC-CE-20261007-BU-SECOES / Ciência Eleitoral 2.1.0
+
+INSTALAÇÃO — somente arquivos novos ou alterados
+1. Copie os arquivos do ZIP para a raiz do repositório IBFC, respeitando as pastas.
+2. No SQL Editor do Supabase, execute:
+   supabase/migrations/20261017_ibfc_boletins_secoes.sql
+   A migração é repetível e exige as migrações anteriores 20261009 a 20261016.
+   Ela preserva resultados existentes e adiciona os metadados dos Boletins de Urna.
+3. Faça commit e aguarde o novo deployment da Vercel.
+4. Em Ciência Eleitoral → Integrações e sincronização, inicie NOVA sincronização de 2026 para DF/GO.
+   Não reutilize uma execução antiga já encerrada. O novo worker buscará o CSV BU oficial
+   quando a base de votação por seção não estiver disponível.
+   Não precisa trocar tokens, Secrets, mapa, API de mapas ou workflow existentes.
+5. Após a conclusão, clique Atualizar catálogo e selecione ano, cargo, turno e candidato/partido.
+6. Consulte a hierarquia: UF → município → zona → local de votação → seção.
+   Use Aprofundar na tabela ou os botões do painel do mapa.
+7. O diagnóstico de Ciência Eleitoral exibe a versão 2.1.0 e verifica a migração 20261017.
+
+O QUE MUDA
+- Importação automática dos CSVs oficiais dos Boletins de Urna de 2026, por UF e turno.
+- Descoberta de versões por data; segundo turno é importado quando publicado no catálogo.
+- Votos por escola/local e por seção, usando o código oficial do local do BU.
+- Identificação da urna efetivada separada do número de seção.
+- Votos do candidato/partido selecionado também na tabela de urnas.
+- Aptos, comparecimento, abstenções, brancos, nulos, legenda e horários.
+- CSV de seções e urnas, busca por código e paginação de 25 linhas.
+- Popups compactos e painel lateral no computador, abaixo do mapa no celular.
+- Seções de uma mesma escola agrupadas em um ponto; acesso às seções no painel.
+- Resultados completos com metadados preservados no relatório e no hash de auditoria.
+
+BASES E LIMITES
+O CSV BU fornece código do local de votação, mas não nome/endereço/coordenadas da escola.
+Esses campos vêm da base oficial de locais de votação. A base do ano consultado tem prioridade.
+Na falta de coordenadas, o código UF/município/zona/local pode ser associado à última
+referência oficial anterior disponível. O ano aparece no mapa/painel e a fonte é arquivada;
+esta referência histórica NÃO comprova que a escola permaneceu no mesmo local em 2026.
+Não são inventados nem obtidos pela distribuição de totais de zona. Locais sem nome aparecem
+pelo código; locais sem qualquer referência cartográfica continuam na tabela. Sincronize/importe também a base
+oficial de locais de 2026. Os mapas de zona são referências agregadas, não limites oficiais.
+
+Seções agregadas continuam juntas no BU; a aplicação não fabrica resultados individuais
+para seções que não tiveram boletim separado. Urnas anuladas/não instaladas não entram
+na base de votos apurados. Tipo de votável não suportado interrompe a importação.
+
+A participação na base BU usa votos nominais + legenda do cargo nos boletins, não uma
+certificação da destinação judicial final dos votos. Pode diferir da totalização de resultados.
+Essa distinção aparece no relatório. Compare anos sempre verificando as fontes/denominadores.
+A votação é agregada: não permite identificar a escolha de uma pessoa.
+
+Deduplicação em disco evita contar novamente registros idênticos. Boletins divergentes para
+uma mesma chave interrompem a carga. Metadados de eleitorado são armazenados uma vez
+por seção/cargo, independentemente da quantidade de candidatos. Publicação é atômica:
+recursos em processamento ficam invisíveis até a tarefa terminar; falhas preservam a base anterior.
+
+FONTES OFICIAIS VERIFICADAS
+https://dadosabertos.tse.jus.br/dataset/resultados-2026-boletim-de-urna
+https://cdn.tse.jus.br/estatistica/sead/eleicoes/eleicoes2026/buweb/bweb_1t_DF_051020261403.zip
+https://cdn.tse.jus.br/estatistica/sead/eleicoes/eleicoes2026/buweb/bweb_1t_GO_051020261403.zip
+Não há arquivos de votos brutos neste ZIP; o worker baixa diretamente do TSE.
+
+VALIDAÇÃO
+31 testes Python e 14 testes de análise JavaScript.
+Migrações testadas em PostgreSQL/PGlite: publicação, filtros, idempotência, deduplicação
+ do eleitorado, conflitos de metadados, votos por local/seção e acesso administrativo.
+Teste de interface: painel, popup compacto, agrupamento por escola, navegação até seção,
+ download CSV, busca por urna e ausência de estouro horizontal no celular.
+CSV real do DF inspecionado: 1.188.269 registros. Para presidente nº 22, zona 1,
+26.996 votos coincidem com o JSON anterior; o denominador físico dos BUs tem 61.751,
+enquanto o JSON de totalização consultado tem 61.750. As fontes não são confundidas.
+Build de produção validado. Nenhuma alteração foi aplicada ao banco/portal de produção
+por esta entrega: execute os passos de instalação acima.

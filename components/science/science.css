@@ -7,3 +7,13 @@
 .science-checks{list-style:none;padding:0;display:grid;gap:8px}.science-checks li{display:flex;align-items:center;gap:16px;padding:12px;border:1px solid #d5e2db;border-radius:8px}.science-checks strong{min-width:125px}.science-evidence{padding:16px 0;border-bottom:1px solid #d5e2db;overflow-wrap:anywhere}.science-hash{overflow-wrap:anywhere;font-size:.8rem}.science-hero h1 small{font-size:.45em;color:#f0d89b}@media(max-width:700px){.science-checks li{align-items:flex-start;flex-direction:column;gap:5px}}
 .science-progress.waiting progress::-webkit-progress-bar{background:repeating-linear-gradient(45deg,#e0ece4,#e0ece4 12px,#c7d9ce 12px,#c7d9ce 24px);background-size:68px 100%;animation:science-wait 1.6s linear infinite}.science-progress.waiting progress{background:repeating-linear-gradient(45deg,#e0ece4,#e0ece4 12px,#c7d9ce 12px,#c7d9ce 24px)}@keyframes science-wait{from{background-position:0 0}to{background-position:68px 0}}@media(prefers-reduced-motion:reduce){.science-progress.waiting progress::-webkit-progress-bar{animation:none}}
 .science-breadcrumb{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 18px}.science-breadcrumb>span{font-size:.9rem;font-weight:650}.science-breadcrumb button{padding:5px 10px;font-size:.85rem}.science-breadcrumb button::before{content:'› ';color:#8b9c91}
+
+.science-map-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,340px);gap:18px;align-items:start}
+.science-map-canvas{min-width:0}.science-map-layout .electoral-map{height:480px}
+.science-map-detail{padding:20px;border:1px solid #dce3e8;border-radius:14px;background:#f7faf9;max-height:480px;overflow:auto;min-width:0}
+.science-map-detail h3{font-size:20px;line-height:1.35;margin:12px 0;overflow-wrap:anywhere}
+.science-map-detail p{font-size:14px}.science-detail-votes{display:flex;flex-direction:column;gap:8px;background:white;border-radius:10px;padding:16px}
+.science-detail-votes strong{font-size:27px;color:#116347}.science-detail-votes span{font-size:13px}
+.science-shell .science-territory-select{padding:0;border:0;background:transparent;color:#165d48;text-align:left;text-decoration:underline;font-weight:600}
+@media(max-width:900px){.science-map-layout{grid-template-columns:1fr}.science-map-layout .electoral-map{height:390px}.science-map-detail{max-height:none}.science-map-detail h3{font-size:18px}}
+@media print{.science-map-layout{display:block}.science-map-detail{max-height:none;overflow:visible}}
