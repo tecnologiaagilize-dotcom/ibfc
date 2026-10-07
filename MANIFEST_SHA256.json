@@ -1,11 +1,18 @@
 {
-  "components/admin/AdminShell.tsx": "c3d4d652bc29c3b99cf0cac4072a6c2b2ad7320b16d69ec8b0bd13ffff16fead",
-  "app/admin/comunidade/atividades/page.tsx": "396368c9d794543ff0ad7858f1925cbcface34bda99582a8504dc00a71933fd6",
-  "app/api/admin/community/activities/route.ts": "35d36f9759d0c312191e1f9020cbdb38e4e1ccee5468d89a7cb31b36d9aacf0b",
-  "app/api/admin/community/route.ts": "5262ee5118cf855c91a47bdb67dd405f286d6050aba2deb78713f102030760a9",
-  "lib/community/activities.ts": "0420db36caebe47c165511f1ae5001b14f49661dc61cab8dc8b7449dfc485d5b",
-  "components/community/ActivityWorkspace.tsx": "5addffd3417e5e5f4fcbd11340090ed4c378bf93a0e73179631b2654760dfe13",
-  "components/community/activities.css": "134af4016023209ce39bbdd484a96c3a4ce823a37533683ec2c81a2506e9763f",
-  "supabase/migrations/20261023_ibfc_community_activities.sql": "66fbfcfeb72bae4968b71dcd3c67195ec84e12e9f1833f4b4c75d64f1cff8f0e",
-  "tests/community-activities.test.cjs": "b63118035784dc281f6f9355126c0cca3282f31692ba6015b6d6e7624ce4d535"
+  "app/api/admin/electoral/sync/route.ts": "ac2fec9c34128a06696b6d877bf3a7e1cba9779b708a995d218cfa6535458e2a",
+  "app/api/admin/science/temporal/route.ts": "3ac8ed2a70d288659be88e6ceba794daa93f98d48660707fa9eb2dc0eec8ac4f",
+  "app/admin/ciencia-eleitoral/page.tsx": "cfd6222b9798115ccda518a45e790f61539e14e53f1974d93470ece6a372757b",
+  "app/admin/ciencia-eleitoral/[view]/page.tsx": "2d497a252eacc56c840e461d140ca8c6a1907c40d30a503dcf944fe8d98fd1c9",
+  "components/electoral/ElectoralSync.tsx": "84842966bd4d7e2bc6fafdff51781ccf5bdc2b26cf57bddef49ba5bc9a8582c9",
+  "components/science/ScienceNav.tsx": "a99b68ae82cb83258addcadc677e45638d117fc517c810c4d9dc27f804ec647b",
+  "components/science/ScienceReports.tsx": "90b457f0e6410e33588527bed98124702592939619cd7316f163031aa9173861",
+  "components/science/TemporalModels.tsx": "c11ef835c81a54425bea963bc37d8b6e0d7ed6640b051fad36cc5dff3f169675",
+  "components/science/TemporalResults.tsx": "3516d364f1c5d658c8be9e8f8b0cf37566579025dfe3ae8ced869d42795825d2",
+  "lib/science/temporal-models.ts": "c9d3b470103e63c0760cab710fea920ed1ccad047fb52d0a0ef051c07c2d14e6",
+  "supabase/migrations/20261026_ibfc_historical_models.sql": "f2009f242b2df6727a3e242ddbded4945156b5798a9b226ff2013c501b5308d6",
+  "docs/IBFC-SERIES-HISTORICAS.md": "0bda596df5bcce718e83a22c113b37abb6b1e359b21bec3f69b474fa1e469805",
+  "docs/IBFC-CIENCIA-ELEITORAL.md": "7191269aaa22b04889882cf24ea907805028e87b4f9c3c12c140e3a5b80f7b8f",
+  "tests/temporal-models.test.cjs": "af8960d47f0879aebd640b0f0b10cb858946a7fc0928e1068b1ff839d12c91d9",
+  "tests/historical-sql.test.mjs": "e9dc662ee3014471ff481536b2891cb7a843aa7bc455f8ac02424a47f72817b6",
+  "tests/tse_sync_test.py": "e7cb54e520b2d5b3062f339aace87d9879938bf325041d4eefff5dc01dd23b2a"
 }

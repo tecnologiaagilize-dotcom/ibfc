@@ -31,7 +31,7 @@ export async function POST(request:NextRequest){
   const {error}=await db.rpc("ibfc_electoral_sync_request",{p_action:"cancel",p_job:b.id});return error?NextResponse.json({error:error.message},{status:400}):NextResponse.json({ok:true});
  }
  if(!configured())return NextResponse.json({error:"Configure GITHUB_TSE_TOKEN e GITHUB_TSE_REPOSITORY na Vercel e os Secrets do worker no GitHub."},{status:503});
- if(![2022,2026].includes(b?.year)||!Array.isArray(b?.scopes)||!b.scopes.length||b.scopes.some((s:unknown)=>!UFS.includes(String(s))))return NextResponse.json({error:"Selecione ano e cobertura."},{status:400});
+ if(![2014,2018,2022,2026].includes(b?.year)||!Array.isArray(b?.scopes)||!b.scopes.length||b.scopes.some((s:unknown)=>!UFS.includes(String(s))))return NextResponse.json({error:"Selecione ano e cobertura."},{status:400});
  if(b.national!==true&&b.scopes.some((uf:string)=>!['DF','GO','MG'].includes(uf)))return NextResponse.json({error:'Para outras UFs selecione cobertura de UF completa.'},{status:400});
  const {data,error}=await db.rpc("ibfc_electoral_sync_request",{p_action:"start",p_year:b.year,p_scopes:[...new Set(b.scopes)]});
  if(error)return NextResponse.json({error:"Não foi possível criar a tarefa. Confira o SQL de sincronização e o perfil administrativo."},{status:500});

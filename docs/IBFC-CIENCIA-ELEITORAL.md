@@ -68,3 +68,8 @@ Próximas etapas técnicas, ainda NÃO implementadas:
 ## Validação local
 
 TypeScript, build Next e testes de importação/cálculo. Testes SQL em PostgreSQL/PGlite aplicam as quatro migrações, reaplicam a nova, exercitam agregação nacional, grupo com legenda, votos válidos, mudança de local, incompatibilidade de cargos, histórico e bloqueio anônimo. Testes de UI usam dados demonstrativos e tiles substituídos, sem consultas reais de votos nem conexões ao Supabase de produção.
+
+
+## Extensão — séries históricas e validação temporal
+
+A migração 20261026 amplia a sincronização para 2014/2018 e adiciona o submenu de séries históricas. O método, instalação, validação cronológica e limitações estão documentados em [IBFC-SERIES-HISTORICAS.md](IBFC-SERIES-HISTORICAS.md). Projeções permanecem exploratórias; esta entrega não constitui modelo probabilístico validado de eleições futuras.

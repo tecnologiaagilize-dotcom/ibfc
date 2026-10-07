@@ -6,8 +6,9 @@ import {ScienceExplorer} from '@/components/science/ScienceExplorer';
 import {Investigations} from '@/components/science/Investigations';
 import {ScienceReports} from '@/components/science/ScienceReports';
 import {LegislativeObservatory} from '@/components/science/LegislativeObservatory';
+import {TemporalModels} from '@/components/science/TemporalModels';
 import {ScienceIntegrations} from '@/components/science/ScienceIntegrations';
 import '@/components/electoral/electoral.css';
 import '@/components/science/science.css';
 export const dynamic='force-dynamic';
-export default async function Page({params}:{params:Promise<{view:string}>}){const {view}=await params;if(!Object.hasOwn(SCIENCE_VIEWS,view))notFound();const {user,allowed}=await electoralStaff();if(!user)redirect('/admin/login');if(!allowed)redirect('/membro');return <AdminShell email={user.email}><div className="science-shell"><ScienceNav view={view}/>{view==='legislativo'?<LegislativeObservatory/>:view==='relatorios'?<ScienceReports/>:view==='investigacoes'?<Investigations/>:view==='integracoes'?<ScienceIntegrations/>:<ScienceExplorer models={view==='modelos'} cross={view==='cargos'}/>}</div></AdminShell>;}
+export default async function Page({params}:{params:Promise<{view:string}>}){const {view}=await params;if(!Object.hasOwn(SCIENCE_VIEWS,view))notFound();const {user,allowed}=await electoralStaff();if(!user)redirect('/admin/login');if(!allowed)redirect('/membro');return <AdminShell email={user.email}><div className="science-shell"><ScienceNav view={view}/>{view==='historico'?<TemporalModels/>:view==='legislativo'?<LegislativeObservatory/>:view==='relatorios'?<ScienceReports/>:view==='investigacoes'?<Investigations/>:view==='integracoes'?<ScienceIntegrations/>:<ScienceExplorer models={view==='modelos'} cross={view==='cargos'}/>}</div></AdminShell>;}

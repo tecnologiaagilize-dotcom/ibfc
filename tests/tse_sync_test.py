@@ -13,6 +13,18 @@ def resource(target,kind='votes'):
  return {'name': 'Eleitorado por local de votação - 2022' if kind=='locations' else target+' - Votação por seção eleitoral - 2022', 'url': 'https://cdn.tse.jus.br/estatistica/'+('locations.zip' if kind=='locations' else 'votacao_secao_2022_'+target+'.zip')}
 
 class Tests(unittest.TestCase):
+ def test_historical_schema_and_zip_partitions(self):
+  for year in (2014,2018):
+   def fetch(y,kind):
+    return [{'name':f'{uf} - Votação por seção eleitoral - {y}', 'url':f'https://cdn.tse.jus.br/estatistica/votacao_secao_{y}_{uf}.zip'} for uf in ('DF','BR')] if kind=='votes' else []
+   tasks,missing=m.plan(year,['DF'],fetch)
+   self.assertEqual([t['target'] for t in tasks],['DF','BR'])
+   row=dict(SG_UF='DF',NM_MUNICIPIO='BRASILIA',ANO_ELEICAO=str(year),CD_MUNICIPIO='97012',NR_ZONA='1',NR_LOCAL_VOTACAO='1001',CD_ELEICAO='1',NR_TURNO='1',CD_CARGO='1',DS_CARGO='PRESIDENTE',NR_SECAO='1',NR_VOTAVEL='22',NM_VOTAVEL='Nome publicado',QT_VOTOS='10')
+   data=m.normalize(row,'votes',year,['DF'],m.coverage())
+   self.assertEqual(data['year'],year);self.assertEqual(data['votes'],10)
+   archive=io.BytesIO()
+   with zipfile.ZipFile(archive,'w') as z:z.writestr(f'votacao_secao_{year}_DF.csv','header')
+   with zipfile.ZipFile(io.BytesIO(archive.getvalue())) as z:self.assertEqual(len(m.select_csvs(z,tasks[0],year,['DF'])),1)
  def test_discovery_and_missing_publication(self):
   fetch=lambda year,kind:[resource('DF'),resource('GO'),resource('BR')] if kind=='votes' else [resource('',kind)]
   tasks,missing=m.plan(2022,['DF','GO'],fetch)
