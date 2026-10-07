@@ -3,14 +3,14 @@ import {useEffect,useRef,useState} from "react";
 import type {LocalComparison} from "@/lib/electoral/types";
 import {number,summarize} from "@/lib/electoral/analysis";
 type Position=[number,number];
-type MapInstance={setView:(position:Position,zoom:number)=>MapInstance;fitBounds:(positions:Position[],options:Record<string,unknown>)=>void;invalidateSize:()=>void;remove:()=>void};
+type MapInstance={setView:(position:Position,zoom:number,options?:Record<string,unknown>)=>MapInstance;fitBounds:(positions:Position[],options:Record<string,unknown>)=>void;invalidateSize:()=>void;remove:()=>void};
 type Group={addTo:(map:MapInstance)=>Group;clearLayers:()=>void};
 type Circle={addTo:(group:Group)=>Circle;bindPopup:(content:HTMLElement,options:Record<string,unknown>)=>Circle;bindTooltip:(content:string,options?:Record<string,unknown>)=>Circle;on:(event:string,callback:()=>void)=>Circle};
 type Tiles={addTo:(map:MapInstance)=>Tiles;on:(event:string,callback:()=>void)=>Tiles};
 type Leaflet={map:(host:HTMLElement,options:Record<string,unknown>)=>MapInstance;tileLayer:(url:string,options:Record<string,unknown>)=>Tiles;layerGroup:()=>Group;circleMarker:(position:Position,options:Record<string,unknown>)=>Circle};
 declare global{interface Window{L?:Leaflet;}}
 let loading:Promise<Leaflet>|null=null;
-function loadLeaflet():Promise<Leaflet>{
+export function loadLeaflet():Promise<Leaflet>{
  if(window.L&&document.getElementById("ibfc-leaflet-css")?.getAttribute("data-loaded")==="true")return Promise.resolve(window.L);
  if(loading)return loading;
  loading=new Promise((resolve,reject)=>{
