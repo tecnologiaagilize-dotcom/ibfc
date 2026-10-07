@@ -1,12 +1,10 @@
 {
-  "components/admin/AdminShell.tsx": "8709ce39b1ea200afc5fb4a16eb393819fd7d7096726eef8406c38ba7f38c05e",
-  "components/electoral/LeafletElectionMap.tsx": "2dcc498b2622cbfa4f96441f806eb7ff55fc2db24e32d83350b44d8938c109ad",
-  "app/admin/comunidade/mapa/page.tsx": "7349cbe6a0e7259f6070a59e7313cde78fb9f3325e418740bcee275d1664cf27",
-  "app/api/admin/community/map/route.ts": "601dd7aca0e72f4f7ef860e5c18217cf546385e0f6210a66f2eafa48a8c7bbae",
-  "lib/community/map.ts": "ad6aac69c8c2c752e3aeec35ea996cff2e12b827b447190463cebb30e78880a2",
-  "components/community/CommunityLeafletMap.tsx": "172f1aedefcb10d4f85ae791b01569ac0e84704eb9eebbfec397f02b414b2ef3",
-  "components/community/CommunityMapWorkspace.tsx": "7d4623dafe6492e7eaff8af56bcb84f831ed4327a1198117ec6162f41637440f",
-  "components/community/community-map.css": "2edd7ea02575a3894ce755d93d1f10d40833cf11a30859bc65a7de0dc032b118",
-  "supabase/migrations/20261021_ibfc_community_map.sql": "f597b8eb5e481c7dbe9ef6cc12d7e359c9ca4b60f84ef8095a4123c172bb7a90",
-  "tests/community-map.test.cjs": "1c8b25b2893f85702c8fe8c87bc1e9cf729c61e17af8b27b3cd1d64db4025c7a"
+  "components/admin/AdminShell.tsx": "493adf7099d7e338241e59092d3d40cbef34bbb34621d30156842af1c6084c8a",
+  "app/admin/comunidade/relatorios/page.tsx": "4c943c8fc5f47cbe1866e0d3573a6052f7579e251eb0cdcee0b3ad7a7ac873bf",
+  "app/api/admin/community/reports/route.ts": "16ec1f4031bcf377b33b6cce71d60c9e46e32fa2f67bc0b87eaf6636571337eb",
+  "lib/community/reports.ts": "ca1ab7e6c091eb6a70228cf097f982a8e6a13f5bb73c746449eb135baffa654b",
+  "components/community/CommunityReports.tsx": "96ad4ef89c6be98490d1e58839ec8a4094752bed961c9b3c80727ec307fe590f",
+  "components/community/community-reports.css": "1a8a39ed6ecbc43d1f34ea2eff3e2a126ffc50a87534810343de6386c0a36cff",
+  "supabase/migrations/20261022_ibfc_community_reports.sql": "e32349ff181fb38ef8fbbb06091c4bbb28c22717fa20989d1e808c22ddb99cf8",
+  "tests/community-reports.test.cjs": "e8abc592a9393cd072bf52f378ff380002e6919528bc5f0db1c3ac9ae25cec44"
 }
