@@ -112,7 +112,9 @@ export async function POST(request: NextRequest, context: RouteContext) {
     return NextResponse.json({
       ok: true,
       message:
-        "Sincronização administrativa do Senado concluída. Os registros permanecem sujeitos à revisão antes de qualquer incorporação.",
+        result.errors > 0
+          ? "Coleta parcial do Senado: ocorreram falhas. Confira os erros e use o Observatório legislativo para votações e proposições atuais."
+          : "Coleta do Senado concluída. Os registros permanecem sujeitos à revisão antes de qualquer incorporação.",
       result,
     });
   } catch (error) {

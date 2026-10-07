@@ -81,6 +81,15 @@ async function request(path: string): Promise<SenadoPayload> {
       });
     }
 
+    // Deprecated services can return HTTP 200 with only metadata and no records.
+    for (const root of Object.values(body as Record<string, unknown>)) {
+      if (!root || typeof root !== "object") continue;
+      const metadata = (root as Record<string, any>).Metadados;
+      const retired = metadata?.Descontinuacao?.DataDesativacaoCompleta;
+      if (typeof retired === "string" && retired <= new Date().toISOString().slice(0, 10)) {
+        throw new SenadoApiError({message: "Serviço do Senado desativado. Use Ciência Eleitoral → Observatório legislativo para os conectores atuais.", url, status: response.status});
+      }
+    }
     return body as SenadoPayload;
   } catch (error) {
     if (error instanceof SenadoApiError) {
