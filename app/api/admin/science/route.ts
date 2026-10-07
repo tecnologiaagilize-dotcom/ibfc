@@ -17,8 +17,8 @@ export async function POST(r:NextRequest){
  const {db,allowed}=await electoralStaff();if(!allowed)return fail('Acesso administrativo necessário.',403);
  if(r.headers.get('origin')!==r.nextUrl.origin)return fail('Origem inválida.',403);
  let b;try{b=await r.json();}catch{return fail('Pedido inválido.');}
- const old=b?.old as Target,newer=b?.new as Target,cross=b?.mode==='cross';
- if(!old||!newer||!Object.hasOwn(SCOPES,b.scope)||old.uf!==newer.uf||(!cross&&old.office!==newer.office)||old.turn!==newer.turn||(!cross&&(old.year!==2022||newer.year!==2026))||(cross&&(old.year!==newer.year||![2022,2026].includes(newer.year))))return fail('Selecione recortes compatíveis para 2022 e 2026.');
+ const newer=b?.new as Target,current=b?.mode==='current',old=(current?newer:b?.old) as Target,cross=b?.mode==='cross';
+ if(!old||!newer||!Object.hasOwn(SCOPES,b.scope)||old.uf!==newer.uf||(!cross&&old.office!==newer.office)||old.turn!==newer.turn||(!cross&&!current&&(old.year!==2022||newer.year!==2026))||(current&&![2022,2026].includes(newer.year))||(cross&&(old.year!==newer.year||![2022,2026].includes(newer.year))))return fail('Selecione recortes compatíveis para 2022 e 2026.');
  if(cross&&(newer.uf==='BR'||b.scope==='country'))return fail('Compare cargos dentro de uma UF e seus territórios.');
  if(newer.uf!=='BR'&&!UFS.includes(newer.uf))return fail('UF inválida.');
  if((b.scope==='country'||newer.uf==='BR')&&(newer.office!==1||b.scope!=='country'||newer.uf!=='BR'))return fail('Brasil permite presidente agregado por UF.');
@@ -35,10 +35,10 @@ export async function POST(r:NextRequest){
   const numbers=t.kind==='group'?t.numbers:[t.number];
   if(!Array.isArray(numbers)||numbers.length<1||numbers.length>40||new Set(numbers).size!==numbers.length||numbers.some(n=>!list.some(x=>x.number===n&&x.year===t.year&&x.election===t.election&&x.turn===t.turn&&x.office===t.office)))return fail('Seleção ausente no catálogo importado. Atualize os filtros.');
  }
- const {data,error}=await db.rpc(cross?'ibfc_science_cross':'ibfc_science_compare',{p_old:old,p_new:newer,p_scope:b.scope,p_filters:filters});
+ const {data,error}=await db.rpc(current?'ibfc_science_current':cross?'ibfc_science_cross':'ibfc_science_compare',{p_old:old,p_new:newer,p_scope:b.scope,p_filters:filters});
  if(error)return fail('Não foi possível calcular: '+error.message,500);
  const digest=createHash('sha256').update(canonicalJson(data)).digest('hex');
- const {data:record,error:auditError}=await db.from('ibfc_science_analyses').insert({method_version:'ibfc-science-2.0',parameters:{mode:cross?'cross':'historical',old,new:newer,scope:b.scope,filters},sources:data.sources,totals:data.totals,result_sha256:digest,result_snapshot:data}).select('id').single();
- if(auditError)return fail('Cálculo concluído, mas o registro científico não foi salvo. Confira a migração 20261011.',500);
+ const {data:record,error:auditError}=await db.from('ibfc_science_analyses').insert({method_version:'ibfc-science-2.0',parameters:{mode:current?'current':cross?'cross':'historical',old:current?{...old,name:'Sem comparação'}:old,new:newer,scope:b.scope,filters},sources:data.sources,totals:data.totals,result_sha256:digest,result_snapshot:data}).select('id').single();
+ if(auditError)return fail('Cálculo concluído, mas o registro científico não foi salvo. Confira as migrações 20261011 e 20261012.',500);
  return NextResponse.json({...data,analysis_id:record.id,result_sha256:digest},{headers:{'Cache-Control':'no-store'}});
 }

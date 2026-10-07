@@ -1,0 +1,25 @@
+IBFC — CONSULTA DE UM ÚNICO ANO + MAPA
+Atualização sobre Ciência Eleitoral 2.0. Inclui a correção de ZIP e do mapa sem votos entregues anteriormente.
+
+1. Extraia e substitua os arquivos na raiz do GitHub IBFC, preservando os caminhos.
+2. Supabase → SQL Editor: depois das migrações 09 a 12 do módulo, execute 20261013_ibfc_map_without_votes.sql e depois 20261014_ibfc_single_year.sql.
+   Se a 13 já foi executada, aplique apenas a 14. Não apaga dados importados.
+3. Faça novo deployment na Vercel.
+4. Abra /admin/ciencia-eleitoral/mapa.
+
+COMO CONSULTAR
+Tipo de consulta: Um único ano (padrão).
+Ano da consulta: 2026 ou 2022.
+Selecione UF, cargo, turno e candidatura/partido do ano escolhido.
+Selecione o escopo e filtros territoriais. Para zonas, use Município → zonas e escolha o município.
+Clique Gerar análise. Candidato que estreou em 2026 não precisa de qualquer candidatura anterior.
+Comparar 2022 e 2026 é um modo separado e opcional; nele as duas seleções são necessárias.
+
+DADOS AUSENTES
+A lista de candidaturas usa resultados oficiais de votos já importados. Os locais e perfis de apoiados não fornecem votos por zona/seção e não são convertidos em resultados oficiais.
+Na última execução verificada, apenas locais DF/GO foram publicados. O catálogo resultados-2026 consultado não apresentou votação por seção. Nesse cenário, o seletor informa Nenhum resultado importado e a geração permanece desabilitada. Isso não indica zero votos nem resolve-se escolhendo um candidato de 2022.
+O worker continua consultando o catálogo oficial em novas tarefas/agendamentos; só poderá importar votos quando encontrar recursos válidos publicados. Não afirma resultados indisponíveis nem gera números demonstrativos em produção.
+O mapa e a tabela de locais ficam acessíveis mesmo sem resultados, sem precisar reimportar locais existentes.
+
+VALIDAÇÃO
+Build Next.js/TypeScript; testes SQL/PGlite: consulta de 2026 sem comparação e recorte Brasil para presidente; filtros, RLS e histórico preservados. Interface Chromium: consulta de ano único sem campo 2022, alternância histórica, mapa antes da análise, comparação entre cargos e layout móvel. UI usa fixtures e tiles mockados. Sem alterações automáticas no GitHub, Supabase ou Vercel do cliente.
