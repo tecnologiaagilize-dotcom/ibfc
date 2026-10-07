@@ -1,10 +1,11 @@
 {
-  "components/admin/AdminShell.tsx": "493adf7099d7e338241e59092d3d40cbef34bbb34621d30156842af1c6084c8a",
-  "app/admin/comunidade/relatorios/page.tsx": "4c943c8fc5f47cbe1866e0d3573a6052f7579e251eb0cdcee0b3ad7a7ac873bf",
-  "app/api/admin/community/reports/route.ts": "16ec1f4031bcf377b33b6cce71d60c9e46e32fa2f67bc0b87eaf6636571337eb",
-  "lib/community/reports.ts": "ca1ab7e6c091eb6a70228cf097f982a8e6a13f5bb73c746449eb135baffa654b",
-  "components/community/CommunityReports.tsx": "96ad4ef89c6be98490d1e58839ec8a4094752bed961c9b3c80727ec307fe590f",
-  "components/community/community-reports.css": "1a8a39ed6ecbc43d1f34ea2eff3e2a126ffc50a87534810343de6386c0a36cff",
-  "supabase/migrations/20261022_ibfc_community_reports.sql": "e32349ff181fb38ef8fbbb06091c4bbb28c22717fa20989d1e808c22ddb99cf8",
-  "tests/community-reports.test.cjs": "e8abc592a9393cd072bf52f378ff380002e6919528bc5f0db1c3ac9ae25cec44"
+  "components/admin/AdminShell.tsx": "c3d4d652bc29c3b99cf0cac4072a6c2b2ad7320b16d69ec8b0bd13ffff16fead",
+  "app/admin/comunidade/atividades/page.tsx": "396368c9d794543ff0ad7858f1925cbcface34bda99582a8504dc00a71933fd6",
+  "app/api/admin/community/activities/route.ts": "35d36f9759d0c312191e1f9020cbdb38e4e1ccee5468d89a7cb31b36d9aacf0b",
+  "app/api/admin/community/route.ts": "5262ee5118cf855c91a47bdb67dd405f286d6050aba2deb78713f102030760a9",
+  "lib/community/activities.ts": "0420db36caebe47c165511f1ae5001b14f49661dc61cab8dc8b7449dfc485d5b",
+  "components/community/ActivityWorkspace.tsx": "5addffd3417e5e5f4fcbd11340090ed4c378bf93a0e73179631b2654760dfe13",
+  "components/community/activities.css": "134af4016023209ce39bbdd484a96c3a4ce823a37533683ec2c81a2506e9763f",
+  "supabase/migrations/20261023_ibfc_community_activities.sql": "66fbfcfeb72bae4968b71dcd3c67195ec84e12e9f1833f4b4c75d64f1cff8f0e",
+  "tests/community-activities.test.cjs": "b63118035784dc281f6f9355126c0cca3282f31692ba6015b6d6e7624ce4d535"
 }

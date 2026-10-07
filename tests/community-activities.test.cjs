@@ -1,0 +1,5 @@
+const test=require('node:test'),assert=require('node:assert/strict');const {validateActivity}=require('../lib/community/activities.ts');
+const good={action:'create',organization_id:'00000000-0000-0000-0000-000000000001',title:'Curso comunitário',objective:'Curso de formação voluntária',venue:'Centro público',start_on:'2026-10-07',end_on:'2026-10-08',capacity:'20'};
+test('atividade válida e datas coerentes',()=>{assert.equal(validateActivity(good),null);assert.ok(validateActivity({...good,start_on:'2026-02-30'}));assert.ok(validateActivity({...good,end_on:'2026-10-06'}));});
+test('capacidade opcional e inteira',()=>{assert.equal(validateActivity({...good,capacity:''}),null);for(const capacity of [0,-1,'1.5',100001,true])assert.ok(validateActivity({...good,capacity}));});
+test('estado e justificativa exigem versão e UUID',()=>{const b={action:'status',id:good.organization_id,version:1,status:'concluida',note:'Ação concluída.'};assert.equal(validateActivity(b),null);assert.ok(validateActivity({...b,version:0}));assert.ok(validateActivity({...b,status:'inventado'}));assert.ok(validateActivity({...b,note:''}));});
