@@ -1,0 +1,5 @@
+import {NextRequest,NextResponse} from 'next/server';
+import {electoralStaff} from '@/lib/electoral/auth';
+import {UFS} from '@/lib/science/territory';
+export const dynamic='force-dynamic';
+export async function GET(r:NextRequest){const {db,allowed}=await electoralStaff();if(!allowed)return NextResponse.json({error:'Acesso administrativo necessário.'},{status:403});const uf=r.nextUrl.searchParams.get('uf')??'DF';if(uf!=='BR'&&!UFS.includes(uf))return NextResponse.json({error:'UF inválida.'},{status:400});const filters:Record<string,number>={};for(const key of ['municipality','zone','local']){const raw=r.nextUrl.searchParams.get(key);if(raw){const n=Number(raw);if(!Number.isSafeInteger(n)||n<1)return NextResponse.json({error:'Filtro inválido.'},{status:400});filters[key]=n;}}const {data,error}=await db.rpc('ibfc_science_locations',{p_uf:uf,p_filters:filters});return NextResponse.json(error?{error:'Aplique a migração 20261013_ibfc_map_without_votes.sql para visualizar locais sem resultados.'}:data,{status:error?500:200,headers:{'Cache-Control':'no-store'}});}

@@ -77,10 +77,10 @@ def plan(year, scopes, fetch=package):
                 path = urllib.parse.urlsplit(r.get('url', '')).path.lower()
                 if kind == 'locations':
                     return 'ELEITORADO' in name and 'LOCAL DE VOTACAO' in name and path.endswith('.zip')
-                return 'VOTACAO POR SECAO' in name and path.endswith(f'_{year}_{target.lower()}.zip')
+                return ('VOTACAO POR SECAO' in name or 'votacao_secao' in path) and (path.endswith(f'_{year}_{target.lower()}.zip') or (path.endswith('.zip') and re.search(r'(^|[^A-Z])'+re.escape(target)+r'([^A-Z]|$)',name) and str(year) in name))
             matches = [r for r in resources if match(r)]
             if len(matches) != 1:
-                missing.append(f'{kind}/{target}: recurso oficial ausente ou ambíguo')
+                missing.append(f'{kind}/{target}: '+('recurso de votação por seção não localizado no catálogo oficial' if not matches else f'{len(matches)} recursos correspondentes; seleção ambígua'))
                 continue
             url = official_url(matches[0]['url'])
             if urllib.parse.urlsplit(url).hostname != 'cdn.tse.jus.br':

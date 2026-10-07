@@ -1,0 +1,22 @@
+IBFC — MAPA VISÍVEL SEM VOTOS + DIAGNÓSTICO TSE
+Atualização sobre Ciência Eleitoral 2.0. Inclui a correção anterior do ZIP do worker.
+
+INSTALAR
+1. Extraia e substitua os arquivos na raiz do GitHub do IBFC, na branch usada pela Vercel e pelo worker, preservando app/, components/, scripts/, tests/, supabase/.
+2. No Supabase → SQL Editor, execute supabase/migrations/20261013_ibfc_map_without_votes.sql. Requer o módulo anterior instalado (migrações 09 a 12). Preserva dados importados; apenas acrescenta uma consulta administrativa.
+3. Faça novo deployment na Vercel.
+4. Acesse /admin/ciencia-eleitoral/mapa. O mapa e a tabela de locais aparecem antes de Gerar análise, sem precisar reimportar os locais existentes.
+5. Se o catálogo oferecer arquivos de votos posteriormente, inicie nova sincronização ou mantenha o agendamento diário configurado. Não reexecute um run de commit antigo esperando código novo.
+
+O QUE MUDA
+- Consulta independente de locais com última base publicada por UF/município/zona/local, mesmo sem candidatos ou resultados.
+- Filtros de UF, município, zona e local; limite de 5.000 locais com total explícito. Sem coordenadas: local permanece na tabela, sem posição inventada.
+- Popup distingue base de locais de resultados de seções; votos ausentes aparecem como sem dados.
+- Descoberta dos votos aceita o padrão oficial de URL e fallback por nome/ano/UF inequívocos. Zero correspondências e múltiplas correspondências têm diagnósticos distintos.
+- Preserva proteção de download oficial, leitura de ZIP com múltiplos CSVs e exclusão de cópias BR/UF duplicadas.
+
+DADOS DE 2026
+Consulta ao catálogo oficial resultados-2026 nesta preparação: 28 recursos, nenhum de votação por seção. O último run do cliente publicou locais DF/GO e indicou carga parcial, sem votos DF/GO/BR. Não há como preencher votos/candidaturas de análise a partir apenas do eleitorado por local. O nome do candidato na seleção vem dos resultados de votos importados, não da lista de apoiados do portal. As comparações históricas atuais requerem resultados de 2022 e 2026 compatíveis. Esta atualização não cria resultados nem certifica prazo de publicação pelo TSE.
+
+VALIDAÇÃO
+14 testes Python; 14 testes Node. SQL/PGlite: migrações, filtros de locais, acesso anônimo negado e preservação das análises. Interface Chromium: mapa e marcador antes de análise, tabela de locais, demais navegações e viewport móvel, APIs/tiles mockados. Build Next.js e TypeScript. Sem credenciais de produção, alterações no Supabase real ou publicação automática.

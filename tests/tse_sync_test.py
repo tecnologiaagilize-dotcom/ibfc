@@ -19,6 +19,10 @@ class Tests(unittest.TestCase):
   self.assertEqual(len(tasks),4);self.assertEqual(missing,[])
   tasks,missing=m.plan(2026,['DF'],lambda y,k:None)
   self.assertEqual(tasks,[]);self.assertEqual(len(missing),2)
+ def test_discovery_fallback_uf_label_and_explicit_missing_reason(self):
+  def fetch(year,kind):
+   return [{'name':'DF - Votação por seção eleitoral - 2026','url':'https://cdn.tse.jus.br/estatistica/arquivo_atualizado.zip'}] if kind=='votes' else []
+  tasks,missing=m.plan(2026,['DF'],fetch);self.assertEqual(len(tasks),1);self.assertEqual(tasks[0]['target'],'DF');self.assertTrue(any('não localizado' in x for x in missing))
  def test_ambiguous_resource_and_malicious_redirect(self):
   tasks,missing=m.plan(2022,['DF'],lambda y,k:[resource('DF'),resource('DF')] if k=='votes' else [])
   self.assertEqual(tasks,[]);self.assertTrue(missing)
