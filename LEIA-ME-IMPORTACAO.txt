@@ -1,0 +1,23 @@
+IBFC — IMPORTAÇÃO OFICIAL DE CANDIDATURAS 2026 — DF E GO
+
+Este pacote inclui as correções anteriores do mapa e da consulta de um único ano. É uma atualização sobre o portal IBFC com Ciência Eleitoral 2.0, não um projeto completo.
+
+INSTALAÇÃO
+1. No Supabase > SQL Editor, confira as migrações 20261009 a 20261012 já instaladas. Execute, nesta ordem, as migrações 20261013, 20261014 e 20261015 incluídas neste ZIP. Elas podem ser executadas novamente.
+2. Execute supabase/IBFC_IMPORTAR_CANDIDATOS_2026_DF_GO.sql no mesmo SQL Editor. Ele importa 1.520 registros oficiais: DF 629, GO 877 e Presidência 14. Executar novamente atualiza registros, sem duplicar identificadores.
+3. Substitua os arquivos do pacote nos mesmos caminhos do repositório IBFC, mantendo os demais arquivos. Faça commit e novo deployment na Vercel.
+4. Acesse Administração > Ciência Eleitoral > Mapa eleitoral. Escolha UF, cargo e turno 1. Em consulta de um único ano, selecione 2026 e escolha o candidato. A seleção de 2022 só é necessária no modo de comparação histórica.
+
+CANDIDATURAS E RESULTADOS SÃO FONTES DISTINTAS
+A candidatura pode constar no TSE antes da publicação de seus votos por seção. O seletor identifica esses registros como votos pendentes e impede relatórios de votação com números inexistentes.
+Os resultados efetivamente importados têm prioridade no catálogo. Números repetidos no cadastro são preservados pelo SQ_CANDIDATO; nenhum nome recebe votos por associação arbitrária. A base de candidaturas não confirma deferimento, eleição ou apoio institucional. O status original do TSE é preservado.
+
+VOTAÇÃO POR ZONA
+A sincronização oficial já incluída no sistema busca os votos por seção, a partir dos quais o módulo calcula votos por zona, local e seção. Na consulta realizada para este pacote, o catálogo de resultados de 2026 não ofereceu recurso de votação por seção compatível; disponibilizou relatórios de totalização. Portanto ESTE PACOTE NÃO CONTÉM VOTOS DE 2026, nem converte ausência de dados em zero voto. A importação do cadastro não inicia por si só a importação de votos. Use Sincronização TSE quando a base por seção estiver disponível; verifique o relatório de arquivos publicados antes de consultar os votos. Para análise por zona, escolha município, zona e o candidato.
+
+FONTE
+https://cdn.tse.jus.br/estatistica/sead/odsele/consulta_cand/consulta_cand_2026.zip
+O SQL contém somente campos necessários ao catálogo público, com URL e SHA256 da origem. Não inclui CPF, email, nascimento ou endereço de candidato. O acesso ao catálogo continua restrito a administradores e editores.
+
+VALIDAÇÃO
+Importação em PostgreSQL de teste, repetição idempotente, identificadores duplicados de número preservados, controle de acesso, agregações existentes, seletor em navegador e layout móvel. Testes não significam deployment ou importação no seu Supabase: essas etapas dependem da instalação acima.

@@ -34,6 +34,7 @@ export async function POST(r:NextRequest){
   const list=t.kind==='party'||t.kind==='group'?c.parties:c.candidates;
   const numbers=t.kind==='group'?t.numbers:[t.number];
   if(!Array.isArray(numbers)||numbers.length<1||numbers.length>40||new Set(numbers).size!==numbers.length||numbers.some(n=>!list.some(x=>x.number===n&&x.year===t.year&&x.election===t.election&&x.turn===t.turn&&x.office===t.office)))return fail('Seleção ausente no catálogo importado. Atualize os filtros.');
+  if(numbers.some(n=>list.find(x=>x.number===n&&x.year===t.year&&x.election===t.election&&x.turn===t.turn&&x.office===t.office)?.results_available===false))return fail('Candidatura/partido cadastrado pelo TSE, mas sem resultados de votos importados para este recorte.',409);
  }
  const {data,error}=await db.rpc(current?'ibfc_science_current':cross?'ibfc_science_cross':'ibfc_science_compare',{p_old:old,p_new:newer,p_scope:b.scope,p_filters:filters});
  if(error)return fail('Não foi possível calcular: '+error.message,500);

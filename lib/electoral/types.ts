@@ -1,6 +1,6 @@
 export type ElectionCandidate = {
   uf: string; year: number; election: number; turn: number; office: number;
-  number: string; name: string; office_name: string; kind?: "candidate" | "party";
+  number: string; name: string; office_name: string; candidate_id?:string;results_available?:boolean;party?:string;status?:string; kind?: "candidate" | "party";
 };
 export type SectionComparison = {
   uf: string; municipality_name: string; municipality: number; zone: number; section: number;
@@ -20,4 +20,4 @@ export type LocalComparison = {
   latitude: number | null; longitude: number | null; coordinate_year: number | null;
   sections: SectionComparison[]; old_label?:string;new_label?:string;section_count?:number; moved_sections?:number;
 };
-export const candidateKey = (c: ElectionCandidate) => [c.uf, c.year, c.election, c.turn, c.office, c.number, ...(c.kind==="party"?["party"]:[])].join(":");
+export const candidateKey = (c: ElectionCandidate) => [c.uf, c.year, c.election, c.turn, c.office, c.number, ...(c.candidate_id?[c.candidate_id]:[]), ...(c.kind==="party"?["party"]:[])].join(":");
