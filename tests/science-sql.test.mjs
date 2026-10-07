@@ -90,4 +90,14 @@ console.log('BU: staging, dedup electorate, metadata conflicts, local/section vo
 await db.exec("update ibfc_electoral_locations set latitude=-15.78,longitude=-47.93,year=2022 where uf='DF' and local=1001");
 const geo=(await db.query('select ibfc_science_geocode_rows($1,2026,$2) d',[[{uf:'DF',municipality:97012,zone:1,local:1001,section:21,name:'Local 1001 · Seção 21',latitude:null,longitude:null}],'location'])).rows[0].d;
 assert.equal(geo.rows[0].coordinate_year,2022);assert.equal(geo.rows[0].location_reference,true);assert.ok(geo.rows[0].name.includes('referência 2022'));assert.equal(geo.sources.length,1);
+
+await db.exec(fs.readFileSync(root+'/supabase/migrations/20261018_ibfc_zone_layers.sql','utf8'));
+await db.exec("insert into ibfc_electoral_locations(import_id,year,uf,municipality,municipality_name,zone,local,name,address,latitude,longitude) values('00000000-0000-0000-0000-000000000010',2026,'DF',97012,'Brasília',2,2001,'Outra escola','Rua B',-15.8,-47.9)");
+const zl=(await db.query('select ibfc_science_zone_layers($1,2026,1,1,$2,$3) d',['DF',bt,{}])).rows[0].d;
+assert.equal(zl.total_rows,2);const one=zl.rows.find(r=>r.zone===1),two=zl.rows.find(r=>r.zone===2);
+assert.equal(one.votes,80);assert.equal(one.sections_count,2);assert.equal(one.urnas_count,2);assert.equal(one.vote_status,'positive');assert.equal(two.votes,null);assert.equal(two.vote_status,'missing');assert.equal(two.urnas_count,null);
+const zfiltered=(await db.query('select ibfc_science_zone_layers($1,2026,1,1,$2,$3) d',['DF',bt,{municipality:97012,zone:2}])).rows[0].d;assert.equal(zfiltered.rows.length,1);assert.equal(zfiltered.rows[0].zone,2);
+const zn=(await db.query('select ibfc_science_zone_layers($1,2026,1,1,null,$2) d',['DF',{}])).rows[0].d;assert.ok(zn.rows.every(r=>r.votes===null));
+await db.exec("set role anon");await assert.rejects(()=>db.query("select ibfc_science_zone_layers('DF',2026,1,1)"));await db.exec('reset role');
+await db.exec(fs.readFileSync(root+'/supabase/migrations/20261018_ibfc_zone_layers.sql','utf8'));console.log('PASS zones: inventory, positive vs missing, hardware counts, filters, anonymous denial, repeat migration');
 await db.close();

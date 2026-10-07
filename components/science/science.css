@@ -17,3 +17,5 @@
 .science-shell .science-territory-select{padding:0;border:0;background:transparent;color:#165d48;text-align:left;text-decoration:underline;font-weight:600}
 @media(max-width:900px){.science-map-layout{grid-template-columns:1fr}.science-map-layout .electoral-map{height:390px}.science-map-detail{max-height:none}.science-map-detail h3{font-size:18px}}
 @media print{.science-map-layout{display:block}.science-map-detail{max-height:none;overflow:visible}}
+
+.science-zone-legend{display:flex;align-items:center;gap:8px;font-size:13px}.science-zone-legend i{display:inline-block;width:18px;height:18px;border-radius:50%}.science-map-detail dt{font-size:12px;color:#516275;margin-top:14px}.science-map-detail dd{margin:4px 0;font-size:18px;font-weight:700}

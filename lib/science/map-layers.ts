@@ -1,0 +1,4 @@
+export type ZonePoint={key:string;uf:string;municipality:number;municipality_name:string;zone:number;name:string;latitude:number|null;longitude:number|null;coordinate_year_min:number|null;coordinate_year_max:number|null;locations_count:number;sections_count:number|null;urnas_count:number|null;votes:number|null;valid:number|null;vote_status:'positive'|'zero'|'missing'};
+export type ZoneMapData={rows:ZonePoint[];total_rows:number;truncated:boolean;notice:string;selection_pending:boolean;selection_name:string|null;generated_at:string};
+export function filterZoneLayer(rows:ZonePoint[],mode:'all'|'votes'){return mode==='votes'?rows.filter(r=>r.votes!==null&&r.votes>0):rows;}
+export function zoneMarkerColor(row:ZonePoint,mode:'all'|'votes'){return mode==='votes'&&row.votes!==null&&row.votes>0?'#c63438':'#2165b5';}

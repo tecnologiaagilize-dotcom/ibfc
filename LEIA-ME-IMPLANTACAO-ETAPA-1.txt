@@ -1,0 +1,48 @@
+IBFC - Caderno técnico master e primeira etapa de implantação
+Código 2.2.0 | IBFC-CE-20261007-MASTER-CAMADAS | 07/10/2026
+
+Este ZIP contém SOMENTE os arquivos novos/alterados da etapa 1, mais o caderno PDF
+ e a fonte editável Markdown. Não substitui o portal inteiro.
+
+REQUISITOS
+Ter instalado os pacotes anteriores até IBFC_VOTOS_POR_LOCAL_SECAO_URNA_E_MAPA.zip,
+com migrações 20261009 a 20261017. As camadas precisam de bases importadas;
+ esta migração não baixa os resultados do TSE por si só.
+
+INSTALAÇÃO
+1. Confirme repositório IBFC e banco corretos. Faça backup.
+2. Execute no SQL Editor do Supabase:
+   supabase/migrations/20261018_ibfc_zone_layers.sql
+3. Copie os arquivos de código do ZIP para o GitHub, preservando pastas.
+4. Faça commit e aguarde deployment da Vercel.
+5. Acesse Ciência Eleitoral -> Mapa e análise territorial, como administrador.
+6. Visualização padrão: Zonas eleitorais - camadas. Camada: Todas as zonas (azul).
+7. Escolha UF/ano/cargo/turno/candidato ou partido; selecione Zonas com votação.
+   Os círculos vermelhos exibem apenas votos positivos, com o total no círculo.
+8. Locais e seções - recorte detalhado preserva a análise e o mapa existentes.
+9. Confira o diagnóstico: versão 2.2.0 e migração 20261018.
+
+SEM novos tokens, Secrets, dependências de mapas ou chaves Google Maps.
+A seleção para a camada eleitoral é do ano consultado, sem obrigar comparação com 2022.
+A camada atual se aplica a candidata/candidato, partido ou grupo manual compatível.
+
+IMPORTANTE
+Todas as zonas significa todas as zonas da cobertura importada, não uma afirmação
+ de inventário nacional completo. Zonas sem coordenadas permanecem na tabela.
+Referências cartográficas usam médias dos locais e mostram os anos. Não são polígonos.
+Seções e urnas físicas não são equivalentes. Urnas só são contadas quando os BUs
+fornecem a identificação; sem esse dado, o campo permanece indisponível.
+
+ESTADO DAS DEMAIS FUNCIONALIDADES
+As camadas de colaboradores, participação voluntária e demandas, além do submenu
+ de comunicação e avaliação, estão especificadas no caderno para etapas seguintes.
+Não há cadastro comunitário novo nem envio ao CRM nesta etapa.
+
+VALIDAÇÃO LOCAL
+Build e TypeScript passaram. 15 testes JavaScript e 31 Python passaram.
+Migrações testadas em PostgreSQL/PGlite: contagens, filtros, publicação, cobertura,
+metadados, proteção contra acesso anônimo e reaplicação das migrações.
+Navegador desktop/celular: círculos azuis/vermelhos, votos dentro do círculo,
+zero versus ausência, painel e tabela, sem estouro horizontal ou erros de página.
+Testes usam dados demonstrativos e tiles simulados, sem tráfego automatizado no OSM.
+Aceite com seus dados reais e implantação em produção ainda precisam dos passos acima.

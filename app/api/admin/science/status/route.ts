@@ -4,11 +4,12 @@ import {SCIENCE_VERSION,SCIENCE_BUILD} from '@/lib/science/version';
 export const dynamic='force-dynamic';
 export async function GET(){
  const {db,allowed}=await electoralStaff();if(!allowed)return NextResponse.json({error:'Acesso administrativo necessário.'},{status:403});
- const [catalogue,investigations,evidence,reports,bu]=await Promise.all([
+ const [catalogue,investigations,evidence,reports,bu,zones]=await Promise.all([
  db.rpc('ibfc_science_catalogue',{p_uf:'DF'}),db.from('ibfc_science_investigations').select('id',{head:true,count:'exact'}),
- db.from('ibfc_science_evidence').select('id',{head:true,count:'exact'}),db.from('ibfc_science_analyses').select('id,result_snapshot').limit(1),db.rpc('ibfc_science_bu_details',{p_target:{uf:'DF',year:2026,election:6257,turn:1,office:1},p_filters:{}})]);
+ db.from('ibfc_science_evidence').select('id',{head:true,count:'exact'}),db.from('ibfc_science_analyses').select('id,result_snapshot').limit(1),db.rpc('ibfc_science_bu_details',{p_target:{uf:'DF',year:2026,election:6257,turn:1,office:1},p_filters:{}}),db.rpc('ibfc_science_zone_layers',{p_uf:'DF',p_year:2026,p_turn:1,p_office:1,p_target:null,p_filters:{}})]);
  return NextResponse.json({version:SCIENCE_VERSION,build:SCIENCE_BUILD,commit:process.env.VERCEL_GIT_COMMIT_SHA?.slice(0,12)??null,checked_at:new Date().toISOString(),checks:[
- {key:'code',label:'Código Ciência Eleitoral · boletins por seção',ok:true},
+ {key:'code',label:'Código Ciência Eleitoral · camadas de zonas',ok:true},
+ {key:'zones',label:'Migração 20261018 / camadas de zonas',ok:!zones.error},
  {key:'bu',label:'Migração 20261017 / Boletins por seção e urna',ok:!bu.error},
  {key:'schema',label:'Catálogo e migração 20261011',ok:!catalogue.error},
  {key:'evidence',label:'Migração 20261012 / evidências',ok:!evidence.error},

@@ -15,3 +15,5 @@ test('operational progress changes with actual download/read bytes and cannot pu
  const parsed=syncProgress({...base,phase:'parse',phase_done:100}).value;
  assert.equal(start,0);assert.ok(downloaded>start);assert.ok(parsed>downloaded);assert.ok(parsed<100);
 });
+const {filterZoneLayer,zoneMarkerColor}=require('../lib/science/map-layers.ts');
+test('map layers retain all inventory and never treat missing as zero',()=>{const rows=[{votes:80},{votes:0},{votes:null}];assert.equal(filterZoneLayer(rows,'all').length,3);assert.deepEqual(filterZoneLayer(rows,'votes'),[rows[0]]);assert.equal(zoneMarkerColor(rows[0],'all'),'#2165b5');assert.equal(zoneMarkerColor(rows[0],'votes'),'#c63438');});

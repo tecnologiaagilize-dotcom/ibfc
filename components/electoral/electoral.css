@@ -14,3 +14,5 @@
 .electoral-popup-votes{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-top:1px solid #dce3e8}
 .electoral-popup-votes strong{font-size:18px}.electoral-popup-votes span{font-size:12px}
 .ibfc-map-popup small{font-size:11px;display:block}
+
+.leaflet-tooltip.ibfc-zone-count{background:transparent;border:0;box-shadow:none;color:#fff;font-size:12px;font-weight:800;padding:0;text-align:center;pointer-events:none;white-space:nowrap}.ibfc-zone-count::before{display:none}

@@ -5,7 +5,7 @@ import {number,summarize} from "@/lib/electoral/analysis";
 type Position=[number,number];
 type MapInstance={setView:(position:Position,zoom:number)=>MapInstance;fitBounds:(positions:Position[],options:Record<string,unknown>)=>void;invalidateSize:()=>void;remove:()=>void};
 type Group={addTo:(map:MapInstance)=>Group;clearLayers:()=>void};
-type Circle={addTo:(group:Group)=>Circle;bindPopup:(content:HTMLElement,options:Record<string,unknown>)=>Circle;bindTooltip:(content:string)=>Circle;on:(event:string,callback:()=>void)=>Circle};
+type Circle={addTo:(group:Group)=>Circle;bindPopup:(content:HTMLElement,options:Record<string,unknown>)=>Circle;bindTooltip:(content:string,options?:Record<string,unknown>)=>Circle;on:(event:string,callback:()=>void)=>Circle};
 type Tiles={addTo:(map:MapInstance)=>Tiles;on:(event:string,callback:()=>void)=>Tiles};
 type Leaflet={map:(host:HTMLElement,options:Record<string,unknown>)=>MapInstance;tileLayer:(url:string,options:Record<string,unknown>)=>Tiles;layerGroup:()=>Group;circleMarker:(position:Position,options:Record<string,unknown>)=>Circle};
 declare global{interface Window{L?:Leaflet;}}
@@ -28,7 +28,7 @@ function loadLeaflet():Promise<Leaflet>{
  return loading;
 }
 const escaped=(text:string)=>text.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
-export function LeafletElectionMap({places,onSelect}:{places:LocalComparison[];onSelect:(key:string)=>void}){
+export function LeafletElectionMap({places,onSelect}:{places:(LocalComparison&{marker_color?:string;marker_label?:string;urnas_count?:number|null})[];onSelect:(key:string)=>void}){
  const host=useRef<HTMLDivElement>(null),map=useRef<MapInstance|null>(null),group=useRef<Group|null>(null);
  const [status,setStatus]=useState("Carregando mapa…"),[tileError,setTileError]=useState(false),[retry,setRetry]=useState(0);
  useEffect(()=>{
@@ -58,8 +58,8 @@ export function LeafletElectionMap({places,onSelect}:{places:LocalComparison[];o
     const now=document.createElement("strong");now.textContent=`${s.newAvailable?number(s.newVotes):"Sem dados"} votos`;votes.appendChild(now);
     const detail=document.createElement("span");detail.textContent=place.granularity==="zone"?"Total da zona":`${place.section_count??place.sections.length} seções`;votes.appendChild(detail);box.appendChild(votes);
     const hint=document.createElement("small");hint.textContent="Veja o painel de detalhes e aprofunde o território.";box.appendChild(hint);
-    L.circleMarker(position,{radius:9,color:"#ffffff",weight:2,fillOpacity:.95,fillColor:s.delta===null?"#536278":s.delta>0?"#08775b":s.delta<0?"#ac4b35":"#12386b"})
-     .addTo(group.current!).bindPopup(box,{minWidth:240,maxWidth:340,maxHeight:210,className:"ibfc-map-popup"}).bindTooltip(`Zona ${place.zone} · ${escaped(place.name)}`).on("click",()=>onSelect(place.key));
+    L.circleMarker(position,{radius:place.marker_label?24:9,color:"#ffffff",weight:2,fillOpacity:.95,fillColor:place.marker_color??(s.delta===null?"#536278":s.delta>0?"#08775b":s.delta<0?"#ac4b35":"#12386b")})
+     .addTo(group.current!).bindPopup(box,{minWidth:240,maxWidth:340,maxHeight:210,className:"ibfc-map-popup"}).bindTooltip(place.marker_label?escaped(place.marker_label):`Zona ${place.zone} · ${escaped(place.name)}`,place.marker_label?{permanent:true,direction:"center",className:"ibfc-zone-count",opacity:1}:undefined).on("click",()=>onSelect(place.key));
    }
    const fit=()=>{if(disposed||!map.current)return;map.current.invalidateSize();if(positions.length===1)map.current.setView(positions[0],14);else if(positions.length>1)map.current.fitBounds(positions,{padding:[25,25],maxZoom:14});else map.current.setView([-15.78,-47.93],9);};
    fit();resizeObserver=new ResizeObserver(fit);resizeObserver.observe(host.current);setStatus(positions.length?"":"Nenhum local com coordenadas neste recorte. Sincronize a base de locais; os registros sem coordenadas permanecem na tabela.");
