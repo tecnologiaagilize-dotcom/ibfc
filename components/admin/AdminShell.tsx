@@ -7,6 +7,7 @@ const items = [
   ["Painel", "/admin", BarChart3],
   ["Ciência Eleitoral", "/admin/ciencia-eleitoral", Vote],
   ["Projeto partidário", "/admin/apoiamento", ShieldCheck],
+  ["Comunidade e participação", "/admin/comunidade", Users],
   ["Membros", "/admin/membros", Users],
   ["Captação", "/admin/captacao", Users],
   ["Trilhas e cursos", "/admin/cursos", GraduationCap],
