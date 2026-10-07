@@ -1,0 +1,10 @@
+{
+  "components/admin/AdminShell.tsx": "01652ce7f5278c21ee8a53d92e2331701182f70cc85ac1c16cdee65fae7aefc3",
+  "app/admin/comunidade/demandas/page.tsx": "b7e5e7114d5a438ba33b5ca9da4a58a18a2607ea054d1de9d3185dd0bb443713",
+  "app/api/admin/community/demands/route.ts": "49692a7f08729052476258d3f40a6c948f5a413bc771f90d7a71e81f1b40d554",
+  "lib/community/demands.ts": "fa4d037b96d259f58c175a206bdfef79e2a88ef28208aec273a905bb1a47be52",
+  "components/community/DemandWorkspace.tsx": "3c5904b28efd8904df835a4b9fcbdd233296c42a4edf4adbce3647c555e6baa1",
+  "components/community/demands.css": "78c16cc1ac68c8f176acc828862ca341e405c375a7dd5132c50b99362877ddb5",
+  "supabase/migrations/20261020_ibfc_community_demands.sql": "a91a0993d4ed389016b1ef568318c93f08d71254c9926f5cb2021db5eb0d025f",
+  "tests/community-demands.test.cjs": "d1dbe768a0055410e46b527860e75cc1d96caf8804c8154d9a1b825916eb39a7"
+}
