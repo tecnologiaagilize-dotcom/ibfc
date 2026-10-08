@@ -1,9 +1,11 @@
 {
-  "components/science/ScienceGuide.tsx": "ee0ea9bfd181441dc92aaecba6c7fd0856b252b1024e15a9a4e5dd09a009396b",
-  "components/science/ScienceNav.tsx": "2845db879059497e67422953e7e7548a0997e655f9e62ef8ae672ad80273a00c",
-  "app/admin/ciencia-eleitoral/[view]/page.tsx": "b3bcb604f0184a78f8ed9d34254cc4bdc988090865ab1d16d42c0db3607cf736",
-  "lib/science/version.ts": "712f9f964af2ddc1311411c265b148085e23b66cdcf761b797f4a2959a838d06",
-  "docs/IBFC-GUIA-OPERACIONAL-FASE7.md": "d5900cba0f0fff3ed98af5d3264c62a555b947b9eac8dbef86e56aecf7de5937",
-  "docs/IBFC-BACKLOG-CONSOLIDADO.md": "5c66a8b06dc9be9132a027f4437397807541a1cd7b901a7108ecf01e0c9e4bea",
-  "docs/IBFC-CADERNO-TECNICO-MASTER.md": "366d6426155cd6e2b30e1aaf2120a3d108686c33b00ead35107d196d9baa6394"
+  "lib/science/data-quality.ts": "395bfbfd577c86d9e2c868fcf1b604983b801e7549f47d1ff7d959e33025b464",
+  "components/science/DataQuality.tsx": "cb1425b97f713d5c010d899e8aafc6a876ac4e91b706eb1d0a6ca6c79b5f352b",
+  "components/science/MultiComparison.tsx": "da3df38d3e0b91f374e8b88408f49df0fca2fbbe3f1e8103e092b7b45075ad76",
+  "components/science/HistoricalTerritory.tsx": "6d19b285074de1dd9d4cb2439c78238161de92142ff24efca32a475cdfc6f7ff",
+  "lib/science/version.ts": "18c664042af5070dd1fc0fd90d30cc3245a44966f96bb3e07c497dd8beb2ae7a",
+  "tests/data-quality.test.cjs": "01c270bee409e56ccb00780bc96d81c1ea6a095157165309b308675ad6ab0515",
+  "docs/IBFC-QUALIDADE-FASE8.md": "09f0be99d0f78f72fff8dd7228be36145036d239662068f5b9b6a5cd4ec2ffdb",
+  "docs/IBFC-BACKLOG-CONSOLIDADO.md": "7d468f0e99a904abe0356eb8b21aa5caeef36b070affa0784a2af88decf2717c",
+  "docs/IBFC-CADERNO-TECNICO-MASTER.md": "83556c26baab7837cbfec782a68bda1d8e181f5e560fa49a153226ee645fa84d"
 }

@@ -1,7 +1,7 @@
-# IBFC — fase 7
+# Fase 8
 
-Instale após a fase 6, mantendo as pastas, e faça novo deployment. Sem SQL.
+Instalar após fase 7 mantendo pastas; fazer novo deployment. Sem SQL.
 
-Local: Ciência eleitoral → Guia de utilização.
+Gerar comparação ou diagnóstico histórico e abrir Qualidade dos dados.
 
-Build e TypeScript aprovados localmente. Não publicado ou homologado em produção.
+Build, TypeScript e quatro testes aprovados localmente. Não implantado em produção.

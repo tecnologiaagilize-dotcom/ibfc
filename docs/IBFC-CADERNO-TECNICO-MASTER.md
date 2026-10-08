@@ -66,3 +66,7 @@ Comparação múltipla e diagnóstico histórico oferecem prévia, HTML portáti
 ## Fase 7 — Guia operacional
 
 Submenu Guia de utilização com busca, cinco roteiros, atalhos e dúvidas frequentes. Reutiliza a autorização existente; não modifica bancos ou importadores. Consulte IBFC-GUIA-OPERACIONAL-FASE7.md.
+
+## Fase 8 — Qualidade dos dados
+
+Comparações e diagnóstico histórico receberam verificação estrutural e download JSON. Não substitui reconciliação com fontes oficiais ou validação criptográfica. Consulte IBFC-QUALIDADE-FASE8.md.
