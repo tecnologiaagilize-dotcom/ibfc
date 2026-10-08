@@ -1,4 +1,13 @@
-FASE 12 — aplicar após a fase 11. Preserve os caminhos na raiz do repositório. Sem SQL, variáveis ou dependências novas.
-Após o deployment: Ciência Eleitoral > Verificar instalação > Baixar diagnóstico JSON. Build esperado IBFC-CE-20261008-VALIDACAO-F12.
-Validação local: build concluído, TypeScript aprovado e 31 testes passaram; após ajuste dos rótulos, TypeScript e 4 testes específicos repetidos sem falhas.
-Validação real permanece pendente. Envie o diagnóstico JSON para identificarmos pendências, sem enviar Secrets. O roteiro completo está em docs/IBFC-VALIDACAO-INTEGRADA-FASE12.md.
+IBFC CIÊNCIA ELEITORAL — ATUALIZAÇÃO CONSOLIDADA 5–13
+
+Aplicar sobre a base IBFC com fases 1–4. Este ZIP reúne os arquivos atualizados das fases 5–12 e o manual da fase 13; dispensa subir novamente os ZIPs separados dessas fases. Não é o repositório completo.
+
+Preserve app/, components/, lib/, tests/ e docs/ na raiz do GitHub. Não coloque dentro de src/ nem em uma pasta com o nome do ZIP. Não reaplique pacotes antigos depois desta consolidação.
+
+Sem SQL novo, dependências ou configurações adicionais. Migrações anteriores continuam necessárias.
+
+Versão: 2.16.0. Build: IBFC-CE-20261008-CONSOLIDADO-F13. Build local concluído e 36 testes aprovados.
+
+Manual: docs/IBFC-MANUAL-ENTREGA-FASE13.md.
+
+Após deployment: Administração > Ciência Eleitoral > Verificar instalação > Baixar diagnóstico JSON. Envie o diagnóstico para continuarmos a homologação. Banco, workers e integrações reais não foram homologados nesta entrega.

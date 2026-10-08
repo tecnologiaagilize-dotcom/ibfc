@@ -79,3 +79,8 @@ Implementados dossiê de até 10 snapshots confirmados, mapas PNG anexados manua
 ## Fase 12 — Diagnóstico integrado
 
 Diagnóstico por consulta, limite de espera, download JSON e roteiro de validação real implementados. Validação no banco/serviços publicados permanece pendente de evidência; não homologada. Consulte IBFC-VALIDACAO-INTEGRADA-FASE12.md.
+
+
+## Fase 13 — Consolidação de entrega
+
+Atualizações 5–13 reunidas e manual de instalação/operação produzido: IBFC-MANUAL-ENTREGA-FASE13.md. Homologação no banco/serviços reais continua pendente; não confundir consolidação de código com aprovação em produção.
