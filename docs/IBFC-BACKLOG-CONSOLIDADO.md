@@ -18,7 +18,7 @@ Auditoria do código enviado em 08/10/2026. Classificação: implementado e vali
 | P2 | Histórico desde 1994 | Novo | Inventário oficial por eleição/cargo, importadores e disponibilidade |
 | P2 | Mapas lado a lado | Implementado na fase 3, com escala comum e enquadramento conjunto | Homologar coordenadas e votos reais; navegação manual independente |
 | P2 | Mapas históricos | Implementado na fase 4 com consultas separadas por ano | Homologar coordenadas por ano; referências antigas podem ser usadas; sem equivalência oficial automática |
-| P2 | Exportação PNG de mapa | Novo | Legenda, créditos e fontes na imagem; respeitar provedor de tiles |
+| P2 | Exportação PNG de mapa | Implementado na fase 5: multicamadas e mapas comparativos/históricos | Homologar navegador e provedor real; captura apenas tiles visíveis; sem ruas como alternativa |
 | P3 | Distribuição de cadeiras | Especificado | Regras legais versionadas por eleição e testes oficiais antes da implementação |
 | P4 | Emendas, transparência e financiamento | Dependência externa / novo | Fontes oficiais, identificadores, limites de API, revisão de dados pessoais |
 | P4 | Câmara/Senado — comissões, proposições e votos | Implementado sem homologação operacional | Identidades verificadas e comparação de amostra com fonte |
@@ -52,3 +52,5 @@ Separar descrição, associação e previsão. Comparar modelos com persistênci
 ## Critério de passagem de fase
 
 Cada item exige: evidência de código, teste local relevante, migração/configuração necessária, teste com fonte real, responsável por homologação e limitações registradas. Implementado não significa implantado. As fases 1–4 entregam núcleo multicamadas, correção do workflow legislativo, comparação múltipla, mapas lado a lado e diagnóstico/mapas históricos. Correspondência territorial oficial, regras de cadeiras, novas fontes financeiras e previsões homologadas continuam pendentes conforme as linhas deste backlog.
+
+Fase 5: exportação PNG validada localmente, sem migração. Não representa implantação ou homologação com banco e provedor de produção.

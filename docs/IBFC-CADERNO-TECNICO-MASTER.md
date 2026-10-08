@@ -54,3 +54,7 @@ Novo submenu `comparacao`, componente `MultiComparison` e cálculo `multi-compar
 ## Incremento fase 4 — cobertura e mapas históricos
 
 `HistoricalTerritory` integra o modo Comparar 2022 e 2026 do explorador. `historical-coverage.ts` classifica cobertura por linha, preserva ausências/zeros e limita proporções ao conjunto retornado. Mapas consultam cada ano separadamente pela API existente, preservando arquivos individuais e projetando apenas coordenadas com ano identificado e não posterior ao ano consultado. Referências futuras/sem ano são ocultadas com aviso; relatórios originais não são alterados. Não é uma tabela oficial de correspondência histórica. Contexto da análise é preservado e consultas antigas são descartadas quando os filtros mudam. Sem migração nova. Instalação e limites: `IBFC-HISTORICO-TERRITORIAL-FASE4.md`.
+
+## Fase 5 — Exportação de mapas PNG
+
+Os mapas multicamadas, comparativos e históricos oferecem download direto da vista atual, com seleção, legenda, cobertura e créditos. A implementação usa canvas e tiles já carregados, sem requisições de exportação adicionais. Protocolo, hash do relatório original e até três fontes ficam nos mapas comparativos; o relatório mantém as fontes completas. A opção sem ruas permite exportar quando tiles estiverem indisponíveis ou sem autorização CORS. Consulte IBFC-EXPORTACAO-PNG-FASE5.md.

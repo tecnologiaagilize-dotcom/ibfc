@@ -16,3 +16,5 @@
 .ibfc-map-popup small{font-size:11px;display:block}
 
 .leaflet-tooltip.ibfc-zone-count{background:transparent;border:0;box-shadow:none;color:#fff;font-size:12px;font-weight:800;padding:0;text-align:center;pointer-events:none;white-space:nowrap}.ibfc-zone-count::before{display:none}
+
+.map-png-controls{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:12px 0}.map-png-controls label{display:flex;align-items:center;gap:8px}.map-png-controls p{flex-basis:100%;margin:0}

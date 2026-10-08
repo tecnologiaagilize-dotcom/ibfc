@@ -2,8 +2,9 @@
 import {useEffect,useRef,useState} from "react";
 import type {LocalComparison} from "@/lib/electoral/types";
 import {number,summarize} from "@/lib/electoral/analysis";
+import {exportMapPng,pngFilename,type MapExportConfig} from "@/lib/electoral/map-png";
 type Position=[number,number];
-type MapInstance={setView:(position:Position,zoom:number,options?:Record<string,unknown>)=>MapInstance;fitBounds:(positions:Position[],options:Record<string,unknown>)=>void;invalidateSize:()=>void;remove:()=>void};
+type MapInstance={latLngToContainerPoint:(p:Position)=>{x:number;y:number};getCenter:()=>{lat:number;lng:number};getZoom:()=>number;setView:(position:Position,zoom:number,options?:Record<string,unknown>)=>MapInstance;fitBounds:(positions:Position[],options:Record<string,unknown>)=>void;invalidateSize:()=>void;remove:()=>void};
 type Group={addTo:(map:MapInstance)=>Group;clearLayers:()=>void};
 type Circle={addTo:(group:Group)=>Circle;bindPopup:(content:HTMLElement,options:Record<string,unknown>)=>Circle;bindTooltip:(content:string,options?:Record<string,unknown>)=>Circle;on:(event:string,callback:()=>void)=>Circle};
 type Tiles={addTo:(map:MapInstance)=>Tiles;on:(event:string,callback:()=>void)=>Tiles};
@@ -28,7 +29,9 @@ export function loadLeaflet():Promise<Leaflet>{
  return loading;
 }
 const escaped=(text:string)=>text.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
-export function LeafletElectionMap({places,onSelect,viewportKey,fitPositions}:{places:(LocalComparison&{marker_color?:string;marker_label?:string;marker_radius?:number;marker_caption?:string;layer_kind?:string;urnas_count?:number|null})[];onSelect:(key:string)=>void;viewportKey?:string;fitPositions?:Position[]}){
+export function LeafletElectionMap({places,onSelect,viewportKey,fitPositions,exportConfig}:{places:(LocalComparison&{marker_color?:string;marker_label?:string;marker_radius?:number;marker_caption?:string;layer_kind?:string;urnas_count?:number|null})[];onSelect:(key:string)=>void;viewportKey?:string;fitPositions?:Position[];exportConfig?:MapExportConfig}){
+ const [exporting,setExporting]=useState(false),[exportError,setExportError]=useState(""),[includeBase,setIncludeBase]=useState(true);const exportEpoch=useRef(0);
+ useEffect(()=>{exportEpoch.current++;setExporting(false);setExportError("");return()=>{exportEpoch.current++;};},[places,exportConfig]);
  const host=useRef<HTMLDivElement>(null),map=useRef<MapInstance|null>(null),group=useRef<Group|null>(null);
  const selectedCallback=useRef(onSelect);selectedCallback.current=onSelect;const fittedKey=useRef<string|null>(null),leaflet=useRef<Leaflet|null>(null);const [ready,setReady]=useState(0);
  const [status,setStatus]=useState("Carregando mapa…"),[tileError,setTileError]=useState(false),[retry,setRetry]=useState(0);
@@ -42,7 +45,7 @@ export function LeafletElectionMap({places,onSelect,viewportKey,fitPositions}:{p
     const custom=tileUrl!=="https://tile.openstreetmap.org/{z}/{x}/{y}.png";
     const credit=process.env.NEXT_PUBLIC_ELECTORAL_TILE_ATTRIBUTION?.trim();if(custom&&!credit)throw new Error("Informe os créditos do provedor em NEXT_PUBLIC_ELECTORAL_TILE_ATTRIBUTION.");
     map.current=L.map(host.current,{scrollWheelZoom:false}).setView([-15.78,-47.93],9);
-    L.tileLayer(tileUrl,{maxZoom:19,attribution:custom?escaped(credit!):'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors',keepBuffer:1,updateWhenIdle:true,referrerPolicy:"strict-origin-when-cross-origin"})
+    L.tileLayer(tileUrl,{maxZoom:19,attribution:custom?escaped(credit!):'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors',crossOrigin:custom?undefined:"anonymous",keepBuffer:1,updateWhenIdle:true,referrerPolicy:"strict-origin-when-cross-origin"})
      .on("tileerror",()=>{if(!disposed)setTileError(true);}).on("tileload",()=>{if(!disposed)setTileError(false);}).addTo(map.current);
     group.current=L.layerGroup().addTo(map.current);
    }
@@ -74,8 +77,10 @@ export function LeafletElectionMap({places,onSelect,viewportKey,fitPositions}:{p
    const key=viewportKey??JSON.stringify(positions);if(fitting.length&&fittedKey.current!==key){fit();fittedKey.current=key;}
    setStatus(positions.length?"":"Nenhum ponto com coordenadas válidas nas camadas e filtros atuais. Consulte a tabela e a cobertura.");return()=>{disposed=true;};
  },[places,ready,viewportKey,fitPositions]);
+ async function downloadPng(){if(!map.current||!host.current||!exportConfig)return;const epoch=exportEpoch.current;setExporting(true);setExportError("");try{const instance=map.current,center=instance.getCenter();const markers=places.flatMap(p=>{if(p.latitude===null||p.longitude===null||!Number.isFinite(p.latitude)||!Number.isFinite(p.longitude)||Math.abs(p.latitude)>90||Math.abs(p.longitude)>180)return [];const xy=instance.latLngToContainerPoint([p.latitude,p.longitude]),s=summarize(p.sections);return [{...xy,radius:p.marker_radius??(p.marker_label?24:9),label:p.marker_label,color:p.marker_color??(s.delta===null?"#536278":s.delta>0?"#08775b":s.delta<0?"#ac4b35":"#12386b")}];});const blob=await exportMapPng(host.current,markers,exportConfig,includeBase,`zoom ${instance.getZoom()} · centro ${center.lat.toFixed(5)}, ${center.lng.toFixed(5)}`);if(epoch!==exportEpoch.current)return;const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=pngFilename(exportConfig.filename);a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}catch(e){if(epoch===exportEpoch.current)setExportError(e instanceof Error?e.message:"Não foi possível exportar.");}finally{if(epoch===exportEpoch.current)setExporting(false);}}
  return <><div className="electoral-map-wrap"><div ref={host} className="electoral-map electoral-leaflet-map" role="region" aria-label="Mapa OpenStreetMap dos territórios eleitorais"/>
   {status&&<div className="electoral-map-status" role="status">{status}{status.includes("Não foi")||status.includes("demorou")?<p><button onClick={()=>{setStatus("Carregando mapa…");setTileError(false);setRetry(n=>n+1);}}>Tentar novamente</button></p>:null}</div>}</div>
+  {exportConfig&&<div className="map-png-controls no-print"><label><input type="checkbox" checked={includeBase} onChange={e=>setIncludeBase(e.target.checked)}/> Incluir mapa de ruas</label><button disabled={!ready||exporting} onClick={downloadPng} aria-label={`Baixar mapa PNG: ${exportConfig.title}`}>{exporting?"Preparando PNG…":"Baixar mapa PNG"}</button>{exportError&&<p role="alert">{exportError}</p>}</div>}
   {tileError&&<p className="electoral-caption" role="status">O mapa de ruas está temporariamente indisponível. Os pontos, a tabela e os relatórios continuam disponíveis.</p>}
   <p className="electoral-caption">Use + e − para aproximar o mapa. No celular, use dois dedos para ajustar o zoom. <a href="https://www.openstreetmap.org/fixthemap" target="_blank" rel="noopener noreferrer">Informar um problema no mapa de ruas</a>.</p></>;
 }
