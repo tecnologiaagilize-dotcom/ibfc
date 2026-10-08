@@ -23,3 +23,5 @@
 .commitment-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:16px}.commitment-form label{display:flex;flex-direction:column;gap:6px;min-width:0}.commitment-form input,.commitment-form select,.commitment-form textarea{width:100%;box-sizing:border-box;padding:10px;border:1px solid #c5d5cf;border-radius:8px;font:inherit}.commitment-card{padding:18px 0;border-bottom:1px solid #d4dfdb;overflow-wrap:anywhere}.commitment-card button{margin:12px 8px 0 0}.commitment-history{max-width:100%;overflow:auto;max-height:440px;white-space:pre-wrap;overflow-wrap:anywhere}
 
 .science-shell fieldset.commitment-form{max-height:none;overflow:visible;margin:0}
+
+.commitment-report-kpis strong{font-variant-numeric:tabular-nums}.commitment-status-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,160px),1fr));gap:12px}.commitment-status-summary>div{display:flex;justify-content:space-between;gap:10px;padding:14px;background:#eff5f1;border-radius:8px}.commitment-status-summary strong{font-variant-numeric:tabular-nums}
