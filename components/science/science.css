@@ -19,3 +19,7 @@
 @media print{.science-map-layout{display:block}.science-map-detail{max-height:none;overflow:visible}}
 
 .science-zone-legend{display:flex;align-items:center;gap:8px;font-size:13px}.science-zone-legend i{display:inline-block;width:18px;height:18px;border-radius:50%}.science-map-detail dt{font-size:12px;color:#516275;margin-top:14px}.science-map-detail dd{margin:4px 0;font-size:18px;font-weight:700}
+
+.commitment-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:16px}.commitment-form label{display:flex;flex-direction:column;gap:6px;min-width:0}.commitment-form input,.commitment-form select,.commitment-form textarea{width:100%;box-sizing:border-box;padding:10px;border:1px solid #c5d5cf;border-radius:8px;font:inherit}.commitment-card{padding:18px 0;border-bottom:1px solid #d4dfdb;overflow-wrap:anywhere}.commitment-card button{margin:12px 8px 0 0}.commitment-history{max-width:100%;overflow:auto;max-height:440px;white-space:pre-wrap;overflow-wrap:anywhere}
+
+.science-shell fieldset.commitment-form{max-height:none;overflow:visible;margin:0}
