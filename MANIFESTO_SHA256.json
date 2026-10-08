@@ -1,12 +1,9 @@
 {
-  "lib/science/print-report.ts": "e4f70df0dccf8112d3f6b997ffb695179747899675f29ee4526ef42154701218",
-  "components/science/ReportExport.tsx": "b36233bd1cf401dee0b277f55a9962a5f1bd91ee738843c9e80c76807e712ff4",
-  "components/science/MultiComparison.tsx": "e9f5a55e271311b81b4b5ef6cb6a31681186ed4aa42c34065984c01f88e486f7",
-  "components/science/HistoricalTerritory.tsx": "ee5eb80695ab6920f1c29726961821e9d15acc1087a5982d06e625e8f72eb976",
-  "components/science/science.css": "7edcf7d7f60d7f91aae03f615fc20b71c86fd26c568d6cf168b269eccf3e670e",
-  "lib/science/version.ts": "2ad6d83cc7209f446a71c5008bf27f49ac2f6f495616aa2858b4643f0c85e8d6",
-  "tests/print-report.test.cjs": "e126a9fe7778f73c5bb19fc9128ca7477830a940fb1bc550cba6fe213f6094fe",
-  "docs/IBFC-RELATORIOS-CONSOLIDADOS-FASE6.md": "d69f755534b1b00f86d71e038b78d4e9896631c381b36259df2a8b65be5a567b",
-  "docs/IBFC-CADERNO-TECNICO-MASTER.md": "10247cd5630fb1361fda3e58479749d9fe03783d812e05c4a159d6108860df00",
-  "docs/IBFC-BACKLOG-CONSOLIDADO.md": "e894f636492159b1628d6237927b4a6d4b7ceba400894ed8a714a4c0edac6a9e"
+  "components/science/ScienceGuide.tsx": "ee0ea9bfd181441dc92aaecba6c7fd0856b252b1024e15a9a4e5dd09a009396b",
+  "components/science/ScienceNav.tsx": "2845db879059497e67422953e7e7548a0997e655f9e62ef8ae672ad80273a00c",
+  "app/admin/ciencia-eleitoral/[view]/page.tsx": "b3bcb604f0184a78f8ed9d34254cc4bdc988090865ab1d16d42c0db3607cf736",
+  "lib/science/version.ts": "712f9f964af2ddc1311411c265b148085e23b66cdcf761b797f4a2959a838d06",
+  "docs/IBFC-GUIA-OPERACIONAL-FASE7.md": "d5900cba0f0fff3ed98af5d3264c62a555b947b9eac8dbef86e56aecf7de5937",
+  "docs/IBFC-BACKLOG-CONSOLIDADO.md": "5c66a8b06dc9be9132a027f4437397807541a1cd7b901a7108ecf01e0c9e4bea",
+  "docs/IBFC-CADERNO-TECNICO-MASTER.md": "366d6426155cd6e2b30e1aaf2120a3d108686c33b00ead35107d196d9baa6394"
 }

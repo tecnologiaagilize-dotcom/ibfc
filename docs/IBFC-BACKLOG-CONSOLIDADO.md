@@ -56,3 +56,5 @@ Cada item exige: evidência de código, teste local relevante, migração/config
 Fase 5: exportação PNG validada localmente, sem migração. Não representa implantação ou homologação com banco e provedor de produção.
 
 Fase 6: relatório consolidado resumido/completo nas comparações e no diagnóstico histórico, HTML portátil e impressão/PDF pelo navegador. Reutiliza cálculos existentes; não adiciona lógica de totais ou novas migrações.
+
+Fase 7: guia operacional pesquisável dentro do menu Ciência Eleitoral, com roteiros e atalhos para as entregas anteriores. Central unificada de exportação, XLSX e integração de mapas nos documentos continuam pendentes.

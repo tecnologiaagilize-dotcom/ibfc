@@ -62,3 +62,7 @@ Os mapas multicamadas, comparativos e históricos oferecem download direto da vi
 ## Fase 6 — Relatórios consolidados
 
 Comparação múltipla e diagnóstico histórico oferecem prévia, HTML portátil e impressão para salvar PDF pelo navegador, com versão resumida ou detalhamento completo retornado. Preservam recorte, protocolo, fontes e hashes originais; totais não são recalculados a partir da tabela. Não incluem mapas automaticamente ou XLSX novo. Consulte IBFC-RELATORIOS-CONSOLIDADOS-FASE6.md para limites e aceitação.
+
+## Fase 7 — Guia operacional
+
+Submenu Guia de utilização com busca, cinco roteiros, atalhos e dúvidas frequentes. Reutiliza a autorização existente; não modifica bancos ou importadores. Consulte IBFC-GUIA-OPERACIONAL-FASE7.md.
