@@ -1,0 +1,25 @@
+begin;
+create or replace function public.ibfc_legislative_report(p_candidate uuid default null,p_provider text default null,p_category text default null,p_offset integer default 0) returns jsonb language plpgsql stable security definer set search_path=public,pg_temp as $$
+declare result jsonb;
+begin
+ if not exists(select 1 from public.admin_profiles where id=auth.uid() and role in('admin','editor')) then raise exception 'Acesso administrativo necessário';end if;
+ if (p_provider is not null and p_provider not in('camara','senado')) or (p_category is not null and p_category not in('committees','propositions','votes','events')) or p_offset is null or p_offset<0 or p_offset>100000 then raise exception 'Filtro inválido';end if;
+ with records as(select * from public.ibfc_legislative_records where (p_candidate is null or candidate_id=p_candidate) and(p_provider is null or provider=p_provider) and(p_category is null or category=p_category)),
+ runs as(select id,candidate_id,provider,external_id,official_name,category,status,queue_status,created_at,updated_at,start_on,end_on from public.ibfc_legislative_runs where(p_candidate is null or candidate_id=p_candidate) and(p_provider is null or provider=p_provider) and(p_category is null or category=p_category)),
+ keys as(select candidate_id,provider,external_id,category from records union select candidate_id,provider,external_id,category from runs),
+ record_counts as(select candidate_id,provider,external_id,category,count(*) as records,min(occurred_on) as first_event,max(occurred_on) as last_event,count(*) filter(where occurred_on is null) as undated,min(fetched_at) as oldest_record_refresh,max(fetched_at) as last_record_refresh from records group by candidate_id,provider,external_id,category),
+ vote_counts as(select candidate_id,provider,external_id,category,jsonb_agg(jsonb_build_object('value',vote_value,'records',n) order by vote_value nulls last) as votes from(select candidate_id,provider,external_id,category,vote_value,count(*) as n from records where category='votes' group by candidate_id,provider,external_id,category,vote_value)v group by candidate_id,provider,external_id,category),
+ run_counts as(select candidate_id,provider,external_id,category,count(*) as runs,count(*) filter(where status='failed' or queue_status='failed') as failed_runs,count(*) filter(where status='partial') as partial_runs,count(*) filter(where status='completed') as completed_runs,count(*) filter(where queue_status in('queued','processing')) as active_runs from runs group by candidate_id,provider,external_id,category),
+ latest as(select distinct on(candidate_id,provider,external_id,category) * from runs order by candidate_id,provider,external_id,category,created_at desc,updated_at desc,id desc),
+ archives as(select r.candidate_id,r.provider,r.external_id,r.category,count(*) as archived_versions,count(distinct s.record_id) as archived_projects,max(s.created_at) as last_archive from public.ibfc_tramitation_snapshots s join records r on r.id=s.record_id group by r.candidate_id,r.provider,r.external_id,r.category),
+ report as(select k.*,c.name as candidate_name,c.state_uf,l.official_name,coalesce(rc.records,0) as records,rc.first_event,rc.last_event,coalesce(rc.undated,0) as undated,rc.oldest_record_refresh,rc.last_record_refresh,coalesce(v.votes,'[]'::jsonb) as votes,
+ coalesce(u.runs,0) as runs,coalesce(u.failed_runs,0) as failed_runs,coalesce(u.partial_runs,0) as partial_runs,coalesce(u.completed_runs,0) as completed_runs,coalesce(u.active_runs,0) as active_runs,l.status as latest_status,l.queue_status as latest_queue_status,l.updated_at as latest_run_update,l.start_on as latest_run_start,l.end_on as latest_run_end,
+ coalesce(a.archived_versions,0) as archived_versions,coalesce(a.archived_projects,0) as archived_projects,a.last_archive
+ from keys k join public.candidates c on c.id=k.candidate_id left join record_counts rc using(candidate_id,provider,external_id,category) left join vote_counts v using(candidate_id,provider,external_id,category) left join run_counts u using(candidate_id,provider,external_id,category) left join latest l using(candidate_id,provider,external_id,category) left join archives a using(candidate_id,provider,external_id,category)),
+ page as(select * from report order by candidate_name,candidate_id,provider,external_id,category limit 100 offset p_offset)
+ select jsonb_build_object('generated_at',statement_timestamp(),'offset',p_offset,'page_size',100,'total_groups',(select count(*) from report),'total_records',(select coalesce(sum(records),0) from report),'failed_runs',(select coalesce(sum(failed_runs),0) from report),'partial_runs',(select coalesce(sum(partial_runs),0) from report),'rows',coalesce((select jsonb_agg(to_jsonb(page) order by candidate_name,candidate_id,provider,external_id,category) from page),'[]'::jsonb)) into result;
+ return result;
+end;$$;
+revoke all on function public.ibfc_legislative_report(uuid,text,text,integer) from public,anon;
+grant execute on function public.ibfc_legislative_report(uuid,text,text,integer) to authenticated;
+commit;

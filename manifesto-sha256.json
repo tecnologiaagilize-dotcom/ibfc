@@ -1,12 +1,12 @@
 {
-  "lib/legislative/compare-tramitation.ts": "8cb2738ceebaef61dd616a76bdd3a3b89953373d95ab49b9a5f454ceb174a985",
-  "app/api/admin/science/tramitation/route.ts": "30f00cfe0ddb7699fe8cf9ce1d39d0b0ec1cee20c5c65836cd8e201fc774c186",
-  "components/science/TramitationArchive.tsx": "8e9a7565ea2cced55b781857c7895324bbfab33deb6b803ba801228de198f04e",
-  "components/science/ProjectTramitation.tsx": "ee4c792ad41f6c9a4b5f91f66cd0d1b5671ffc8d033195766665e2c76bf6870b",
-  "components/science/legislative.css": "68fb9cc33ba0a3bf5a8dc19e19bdf119b439538def2d1776df3653e7662ffbe1",
-  "supabase/migrations/20261028_ibfc_tramitation_archive.sql": "23a4d1accd6eb8cd8d0c2e5b6b78a3a053814ad3b025679032dba3ab5ffd488a",
-  "tests/tramitation-compare.test.cjs": "3650c1a2211a11d6dea9fcab265bc7918840a9cc8c26a003a3960164c4694ab9",
-  "tests/tramitation-archive-api.test.cjs": "97a825fdfc897b74be231086bea9b7622e065278de309e1813d4198e356a0ffd",
-  "tests/tramitation-archive-sql.test.mjs": "b3875db13c6083670283935a696f259277f75ae9cd89f4cc519799c77a32c5f1",
-  "docs/IBFC-ARQUIVO-TRAMITACAO.md": "b4daa6ff68c1d275ce009d886f543d833d61f9e7c506a96ffd3184ecbd7f79e0"
+  "supabase/migrations/20261029_ibfc_legislative_report.sql": "d1347223c8e31d7a66d70b04cc67e7b66ea5c12f8309468557f937b0f2891a99",
+  "app/api/admin/science/legislative-report/route.ts": "4146eded0fd05d46cae277defdd98840d841b54959e3f5fef6e82f0018c27419",
+  "lib/legislative/report-export.ts": "644edf9bac44b0644864332ce3590aaf5b3a9644dbd7ef98c68574b8438e8186",
+  "components/science/LegislativeReport.tsx": "9c9cb11a988779bc75deff63acbe7b5dd0e636d81b705002bd6638c64067b69a",
+  "components/science/ScienceNav.tsx": "a7c5c2bcfff122254ea81f8da2c91cafdac3d7dfeb8b8c1c0b561567982856d7",
+  "app/admin/ciencia-eleitoral/[view]/page.tsx": "62696ff0f8efa86eb56c014c314b31576b80601634338d49120cdfc40ed4a197",
+  "app/admin/ciencia-eleitoral/page.tsx": "42e663aee095567f4ce5dac44103aa2c22b343beca6111a401eb807bc4bba96f",
+  "tests/legislative-report.test.cjs": "dc70c647426e776e3d9d0aecf4b81673e8015d51627b3540f220b0f5d4803dd3",
+  "tests/legislative-report-sql.test.mjs": "e144e3ed74b936477e86dafc869d1d847e683c52dd56970e008bdcf15a38f6b4",
+  "docs/IBFC-RELATORIO-LEGISLATIVO.md": "2b46dc630deddf3c0dd6e3cda1e4a66d68de26a0ff6bc0ff397d6a988fbe5d9f"
 }
