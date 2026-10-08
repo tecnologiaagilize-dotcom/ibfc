@@ -84,3 +84,8 @@ Central paginada com busca por protocolo, CSV/JSON completos e relatório HTML/P
 ## Fase 11 — Dossiês
 
 Implementados dossiê de até 10 snapshots confirmados, mapas PNG anexados manualmente no HTML/PDF e XLSX nativo. Sem soma entre recortes nem persistência do dossiê. Consulte IBFC-DOSSIE-RELATORIOS-FASE11.md. Fases restantes: validação integrada com produção e homologação/consolidação.
+
+
+## Fase 12 — Diagnóstico integrado
+
+Diagnóstico por consulta, limite de espera, download JSON e roteiro de validação real implementados. Validação no banco/serviços publicados permanece pendente de evidência; não homologada. Consulte IBFC-VALIDACAO-INTEGRADA-FASE12.md.

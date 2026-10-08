@@ -1,0 +1,6 @@
+const test=require('node:test'),assert=require('node:assert/strict');
+const {boundedProbe,probeDetails,reportSampleState}=require('../lib/science/installation-check.ts');
+test('resolved response preserved including count zero',async()=>{const r=await boundedProbe(Promise.resolve({data:[],count:0,error:null}));assert.equal(r.count,0);assert.equal(probeDetails([r])[0].status,'available');});
+test('rejection does not stop independent probes',async()=>{const r=await Promise.all([boundedProbe(Promise.reject(Error('secret URL'))),boundedProbe(Promise.resolve({data:[]}))]);assert.equal(r[0].error.code,'REQUEST_FAILED');assert.equal(r[1].error,undefined);assert.equal(JSON.stringify(r).includes('secret'),false);});
+test('timeout bounded and later rejection handled',async()=>{const p=new Promise((_,reject)=>setTimeout(()=>reject(Error('late')),30));const r=await boundedProbe(p,5);assert.equal(r.error.code,'TIMEOUT');await new Promise(resolve=>setTimeout(resolve,35));});
+test('errors and absence remain distinct without fabricated counts',()=>{assert.equal(probeDetails([{error:{code:'42501'}}])[0].count,null);assert.equal(probeDetails([{error:{code:'TIMEOUT'}}])[0].status,'timeout');assert.equal(reportSampleState([]),'empty');assert.equal(reportSampleState([{id:1}]),'metadata_only');assert.equal(reportSampleState([{result_snapshot:{}}]),'snapshot_present');});

@@ -1,4 +1,4 @@
-FASE 11 — Aplicar após a fase 10. Apenas arquivos novos/alterados. Preserve as pastas na raiz do GitHub, sem criar pasta intermediária nem src/.
-Sem SQL, dependências ou variáveis adicionais. Após commit e deployment, abra Administração > Ciência Eleitoral > Relatórios científicos. O campo Montar dossiê e planilha Excel fica ao final da central. Abra uma análise e adicione; anexe os PNG exportados no mapa por protocolo.
-Build esperado: IBFC-CE-20261008-DOSSIE-F11. A seleção fica na sessão, não no banco: baixe antes de recarregar. Mapas entram no HTML/PDF, não no XLSX.
-Consulte docs/IBFC-DOSSIE-RELATORIOS-FASE11.md.
+FASE 12 — aplicar após a fase 11. Preserve os caminhos na raiz do repositório. Sem SQL, variáveis ou dependências novas.
+Após o deployment: Ciência Eleitoral > Verificar instalação > Baixar diagnóstico JSON. Build esperado IBFC-CE-20261008-VALIDACAO-F12.
+Validação local: build concluído, TypeScript aprovado e 31 testes passaram; após ajuste dos rótulos, TypeScript e 4 testes específicos repetidos sem falhas.
+Validação real permanece pendente. Envie o diagnóstico JSON para identificarmos pendências, sem enviar Secrets. O roteiro completo está em docs/IBFC-VALIDACAO-INTEGRADA-FASE12.md.
