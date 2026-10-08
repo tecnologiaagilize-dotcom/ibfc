@@ -1,0 +1,13 @@
+{
+  "components/science/MultiComparison.tsx": "21f3db291c326e0d28451c764048a6396697e1b87f7dd866d19ccbc301775e2b",
+  "components/science/ScienceNav.tsx": "d31fb77739d14abc8fc7308fa992394b6f6c75e0d38c4bf865f9b902a049f1c6",
+  "components/science/science.css": "5f2fa2db8debb7c04b9ca19a039c97b9345fa1a2bb947aa00a04b4814173a135",
+  "app/admin/ciencia-eleitoral/[view]/page.tsx": "7dc13e09ae9ddee2dd3603ec75246608a7e0677febd95c4d8a7d7a8993eefe48",
+  "app/admin/ciencia-eleitoral/page.tsx": "5e6fbfa9bf12e98c1b62915784d7fed2e6b2264a5bef47b605fb52d6e66ffa7b",
+  "lib/science/multi-comparison.ts": "1f805d20106ae74bed1f6e81d7976c46c139ae3ad808d6a8755d9dd947e0447d",
+  "lib/science/version.ts": "e87302138005d5c183de79505c145294da96a29ab88a619646352670a31eb93a",
+  "tests/multi-comparison.test.cjs": "70686e2f75d5103a3d0b1355447abd278f70151d3bd4d85d92a2a27ba9984bd1",
+  "docs/IBFC-COMPARACAO-MULTIPLA-FASE2.md": "530bffb3dc42ba4575300941da33ccf0802d05e7d435506b2b8b3b149d2e3581",
+  "docs/IBFC-BACKLOG-CONSOLIDADO.md": "b093e14ddb7ecbdc21caac10a360c774fe519ddb25d0984c35880c7b580a74ca",
+  "docs/IBFC-CADERNO-TECNICO-MASTER.md": "aa9bfdbb2eebe1ee927422ad16aae127d73a141d098a62073feb4410d69cb23f"
+}
