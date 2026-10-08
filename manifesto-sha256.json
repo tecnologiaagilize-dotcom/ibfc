@@ -1,12 +1,15 @@
 {
-  "supabase/migrations/20261029_ibfc_legislative_report.sql": "d1347223c8e31d7a66d70b04cc67e7b66ea5c12f8309468557f937b0f2891a99",
-  "app/api/admin/science/legislative-report/route.ts": "4146eded0fd05d46cae277defdd98840d841b54959e3f5fef6e82f0018c27419",
-  "lib/legislative/report-export.ts": "644edf9bac44b0644864332ce3590aaf5b3a9644dbd7ef98c68574b8438e8186",
-  "components/science/LegislativeReport.tsx": "9c9cb11a988779bc75deff63acbe7b5dd0e636d81b705002bd6638c64067b69a",
-  "components/science/ScienceNav.tsx": "a7c5c2bcfff122254ea81f8da2c91cafdac3d7dfeb8b8c1c0b561567982856d7",
-  "app/admin/ciencia-eleitoral/[view]/page.tsx": "62696ff0f8efa86eb56c014c314b31576b80601634338d49120cdfc40ed4a197",
-  "app/admin/ciencia-eleitoral/page.tsx": "42e663aee095567f4ce5dac44103aa2c22b343beca6111a401eb807bc4bba96f",
-  "tests/legislative-report.test.cjs": "dc70c647426e776e3d9d0aecf4b81673e8015d51627b3540f220b0f5d4803dd3",
-  "tests/legislative-report-sql.test.mjs": "e144e3ed74b936477e86dafc869d1d847e683c52dd56970e008bdcf15a38f6b4",
-  "docs/IBFC-RELATORIO-LEGISLATIVO.md": "2b46dc630deddf3c0dd6e3cda1e4a66d68de26a0ff6bc0ff397d6a988fbe5d9f"
+  "supabase/migrations/20261030_ibfc_legislative_notices.sql": "0c66c257109f62406f41b5fd615747b2cd840fe13f4e1b43a46af407b045d537",
+  "app/api/admin/science/legislative-notices/route.ts": "b4e1b4aba5f68f010082c584da77675bf929be815341b9244af515e460cabd06",
+  "components/science/LegislativeNotices.tsx": "3d5fb138424bf320e92540268e2dddd1bc5e438b354a3158fd87b46d2551bf93",
+  "components/science/ProjectTramitation.tsx": "9fb1b8df30838dc2221e15e91e00f081e2e003626bcd96cce880f8cb8f59ab18",
+  "components/science/TramitationArchive.tsx": "7b420d7db9756e3d99950ea05625885548ebfa5b415a534cc23f74aa0494c43d",
+  "components/science/LegislativeObservatory.tsx": "5d4564d7a274a7d85d8052d15fe3b43f89137fc300519d6bcc422f4bd30f13f6",
+  "components/science/legislative.css": "3ae41d7b86ab953ebd8963cef1d22c6e73fb893a906bd7f9211cb43c2bbd9a5e",
+  "components/science/ScienceNav.tsx": "c44d64cc8ebdae231e23dd63ff6fb3b3d0f634db4a1694aac2f5cbff3cbdc798",
+  "app/admin/ciencia-eleitoral/[view]/page.tsx": "b31bd10f087c1a30decc291d84a5d2fd62bd8d937d83a0bacbae3a3081055e6e",
+  "app/admin/ciencia-eleitoral/page.tsx": "307d2691aea94b6665161441c5e7ed79067ee2813669bbf4c1c6f739fbb0d86b",
+  "tests/legislative-notices.test.cjs": "c9f9cc30b448acf6ea156090edf474fd61be95befe83b09779cddf798050846f",
+  "tests/legislative-notices-sql.test.mjs": "de65c8db2e7403b4682597bc78caf944cc178ecc9e51eb1412cdb53006975ee7",
+  "docs/IBFC-CENTRAL-ACOMPANHAMENTO.md": "0e7204caa7f56460c8ac37e1571c391699691d6d0ca9c01328ebf09199354797"
 }
