@@ -74,3 +74,8 @@ Comparações e diagnóstico histórico receberam verificação estrutural e dow
 ## Fase 9 — Reconciliação de boletins
 
 Mapa/análise territorial e comparação múltipla receberam conferência interna de BU por chaves do escopo, alertas de duplicidade, contagens e cobertura, busca e CSV/JSON. Total só comparado com conjuntos completos e contagens compatíveis. Verificação independente da origem e revisão das partições ainda pendentes. Consulte IBFC-RECONCILIACAO-BU-FASE9.md.
+
+
+## Fase 10 — Arquivo de análises
+
+Central paginada com busca por protocolo, CSV/JSON completos e relatório HTML/PDF do snapshot verificado. Consulte IBFC-ARQUIVO-RELATORIOS-FASE10.md. Mapas nos documentos, XLSX e agrupamento de protocolos permanecem pendentes.

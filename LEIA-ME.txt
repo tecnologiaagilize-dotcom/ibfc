@@ -1,17 +1,4 @@
-CORREÇÃO DO BUILD — TERRITORIAL LAYERS
-
-Extraia este ZIP e envie o arquivo para a raiz do repositório tecnologiaagilize-dotcom/ibfc, preservando este caminho:
-
-lib/science/territorial-layers.ts
-
-A pasta lib fica no mesmo nível de app e components. Não coloque o arquivo em src/lib nem dentro de uma pasta com o nome do ZIP. Preserve as letras minúsculas e a extensão .ts.
-
-Este arquivo restaura o módulo importado por components/science/ZoneLayers.tsx. Não substitua ZoneLayers nem remova suas funcionalidades.
-
-Após o commit na branch main, aguarde um novo deployment da Vercel. Confira se o deployment usa o novo commit; o log fornecido usa a78e734.
-
-Não precisa executar SQL, criar variáveis de ambiente ou alterar dependências para esta correção.
-
-Validação: os cinco testes locais de territorial-layers passaram. O repositório remoto e o deployment não foram alterados por este pacote.
-
-Este pacote corrige o módulo ausente indicado no log. Outros erros, caso apareçam no próximo build, devem ser avaliados com o novo log.
+Aplicar após os pacotes anteriores, inclusive fase 9. Envie os arquivos para a raiz do GitHub preservando app/, components/, lib/, tests/ e docs/. Não coloque dentro de src/ nem de uma pasta com o nome do ZIP.
+Sem SQL ou configurações novas. Após o commit e deployment, abra Administração > Ciência Eleitoral > Relatórios científicos. Build esperado: IBFC-CE-20261008-ARQUIVO-F10.
+Inclui restauração de lib/science/territorial-layers.ts. Não substitui os demais pacotes anteriores.
+Consulte docs/IBFC-ARQUIVO-RELATORIOS-FASE10.md para validação e limites.
