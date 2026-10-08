@@ -70,3 +70,7 @@ Submenu Guia de utilização com busca, cinco roteiros, atalhos e dúvidas frequ
 ## Fase 8 — Qualidade dos dados
 
 Comparações e diagnóstico histórico receberam verificação estrutural e download JSON. Não substitui reconciliação com fontes oficiais ou validação criptográfica. Consulte IBFC-QUALIDADE-FASE8.md.
+
+## Fase 9 — Reconciliação de boletins
+
+Mapa/análise territorial e comparação múltipla receberam conferência interna de BU por chaves do escopo, alertas de duplicidade, contagens e cobertura, busca e CSV/JSON. Total só comparado com conjuntos completos e contagens compatíveis. Verificação independente da origem e revisão das partições ainda pendentes. Consulte IBFC-RECONCILIACAO-BU-FASE9.md.

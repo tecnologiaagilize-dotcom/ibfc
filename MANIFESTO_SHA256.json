@@ -1,11 +1,12 @@
 {
-  "lib/science/data-quality.ts": "395bfbfd577c86d9e2c868fcf1b604983b801e7549f47d1ff7d959e33025b464",
-  "components/science/DataQuality.tsx": "cb1425b97f713d5c010d899e8aafc6a876ac4e91b706eb1d0a6ca6c79b5f352b",
-  "components/science/MultiComparison.tsx": "da3df38d3e0b91f374e8b88408f49df0fca2fbbe3f1e8103e092b7b45075ad76",
-  "components/science/HistoricalTerritory.tsx": "6d19b285074de1dd9d4cb2439c78238161de92142ff24efca32a475cdfc6f7ff",
-  "lib/science/version.ts": "18c664042af5070dd1fc0fd90d30cc3245a44966f96bb3e07c497dd8beb2ae7a",
-  "tests/data-quality.test.cjs": "01c270bee409e56ccb00780bc96d81c1ea6a095157165309b308675ad6ab0515",
-  "docs/IBFC-QUALIDADE-FASE8.md": "09f0be99d0f78f72fff8dd7228be36145036d239662068f5b9b6a5cd4ec2ffdb",
-  "docs/IBFC-BACKLOG-CONSOLIDADO.md": "7d468f0e99a904abe0356eb8b21aa5caeef36b070affa0784a2af88decf2717c",
-  "docs/IBFC-CADERNO-TECNICO-MASTER.md": "83556c26baab7837cbfec782a68bda1d8e181f5e560fa49a153226ee645fa84d"
+  "lib/science/bu-reconciliation.ts": "bfe8424162245f8c0d77dab2a580b2cb7a3947f34eb24d0c0a8927a12c3eaea0",
+  "components/science/BuReconciliation.tsx": "b23caeaab3ae497eedee7e718afe56a053189a63ec66b52a242688dc9b15a4ab",
+  "components/science/ScienceExplorer.tsx": "21c59b48290c853bee0e02e8b00583fd6fdcb0c686b9c73a725962e3b8324b27",
+  "components/science/MultiComparison.tsx": "60b94ec7d054658ee1798d94c2e23f5e69bfd018d3df42385574e5534a468267",
+  "components/science/ScienceGuide.tsx": "5cfc671af576b63d5f139d28a78905c9983f757e6fd510e97f1ae49a0008eff1",
+  "lib/science/version.ts": "b31bd40278e30e0816b07649ad6fb898292065c6a02b1af0b6be4abe7f854fd8",
+  "tests/bu-reconciliation.test.cjs": "63126dbc1ca4fb45e10ae37aee122018dc623a8417172db156162f95c07669ac",
+  "docs/IBFC-RECONCILIACAO-BU-FASE9.md": "bb16506ffe6a91527355817c9539cbc3e383dd3d2cd1bd1478423bffdc9ab417",
+  "docs/IBFC-BACKLOG-CONSOLIDADO.md": "c199ff3144be4ba0a2c2110a2de29a9958f343bfc763bf4340caa3bd8e8214bf",
+  "docs/IBFC-CADERNO-TECNICO-MASTER.md": "a0b2ab403de9fa2ce94225b9c05f2fa328701fa6db2bab6c38b8735317d17bce"
 }

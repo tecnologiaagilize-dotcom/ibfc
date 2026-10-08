@@ -28,7 +28,7 @@ Auditoria do código enviado em 08/10/2026. Classificação: implementado e vali
 | P5 | CRM e comunicação | Parcial; endpoint existente | Validar contrato, idempotência, autorização e respostas; sem dedução de voto individual |
 | P6 | Estatística e previsão | Parcial; modelos exploratórios existentes | Validação temporal, incerteza, comparação com baseline e registro de versões |
 | P6 | Modelos espaciais/hierárquicos | Novo | Dados suficientes, diagnóstico de resíduos, validação fora da amostra |
-| P6 | Auditoria de BU e fontes | Parcial; documentos e metadados existentes | Reconciliação reproduzível, duplicidades, origem e inconsistências sem conclusão automática de fraude |
+| P6 | Auditoria de BU e fontes | Parcial: fase 9 acrescenta reconciliação interna de agregações, duplicidades, cobertura e CSV/JSON | Confronto independente com fonte oficial, revisões de partição e homologação operacional pendentes |
 | P7 | Central de relatórios PDF/Excel e tutoriais | Parcial: fase 6 adiciona relatório HTML e impressão/PDF às comparações e diagnóstico histórico | Central unificada, XLSX, mapas incorporados, tutoriais e homologação operacional pendentes |
 
 ## Especificação das próximas entregas
@@ -62,3 +62,5 @@ Fase 7: guia operacional pesquisável dentro do menu Ciência Eleitoral, com rot
 ## Fase 8 — Qualidade dos dados
 
 Comparações e diagnóstico histórico receberam verificação estrutural e download JSON. Não substitui reconciliação com fontes oficiais ou validação criptográfica. Consulte IBFC-QUALIDADE-FASE8.md.
+
+Fase 9: reconciliação interna entre análise B e boletins carregados. Não certifica a origem nem pressupõe equivalência de seções por igualdade de contagens. Consulte IBFC-RECONCILIACAO-BU-FASE9.md.
