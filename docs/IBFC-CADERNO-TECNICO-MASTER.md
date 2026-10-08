@@ -1,6 +1,6 @@
 # IBFC — Caderno técnico master de Ciência Eleitoral
 
-Versão 2.5.0 · build IBFC-CE-20261008-COMPARACAO-F2. Consolidado em 08/10/2026 a partir do projeto completo enviado, dos documentos existentes e do contexto de continuidade anexado. Este documento descreve código e requisitos; não certifica a instalação em produção.
+Versão 2.6.0 · build IBFC-CE-20261008-MAPAS-F3. Consolidado em 08/10/2026 a partir do projeto completo enviado, dos documentos existentes e do contexto de continuidade anexado. Este documento descreve código e requisitos; não certifica a instalação em produção.
 
 ## Objetivo e limites
 
@@ -46,3 +46,7 @@ Consulte `IBFC-BACKLOG-CONSOLIDADO.md` para estados e próximas etapas e `IBFC-M
 ## Incremento fase 2 — comparação múltipla
 
 Novo submenu `comparacao`, componente `MultiComparison` e cálculo `multi-comparison.ts`. Duas a dez candidaturas ou partidos no mesmo recorte; relatórios individuais e fontes preservados; progressão por consultas concluídas; cancelamento; tabela paginada e CSV/JSON. Comparação entre denominadores ou granularidades distintos é sinalizada. Totais não são recalculados a partir de tabelas truncadas. Não há migração nova, grupos sobrepostos ou união com cadastros pessoais. Consultas sequenciais não garantem snapshot transacional único. Instalação e limites: `IBFC-COMPARACAO-MULTIPLA-FASE2.md`.
+
+## Incremento fase 3 — mapas lado a lado
+
+`ComparisonMaps` usa os relatórios já consultados, com escala comum e enquadramento conjunto. `comparison-maps.ts` preserva coordenadas próprias, zeros e ausência. `LeafletElectionMap` recebe opcionalmente posições de enquadramento compartilhadas; chamadas anteriores continuam funcionando. Movimento manual independente. Não inclui equivalência histórica nem PNG. Consulte `IBFC-MAPAS-COMPARATIVOS-FASE3.md`.

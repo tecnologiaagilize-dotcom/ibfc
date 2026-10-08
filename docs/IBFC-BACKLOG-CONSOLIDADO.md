@@ -16,7 +16,8 @@ Auditoria do código enviado em 08/10/2026. Classificação: implementado e vali
 | P2 | Comparar até dez candidaturas | Implementado na fase 2: painel lado a lado, consultas individuais arquivadas, CSV/JSON | Homologar resultados reais; consultas sequenciais não são uma transação única |
 | P2 | Correspondência histórica territorial | Parcial; séries históricas existentes | Tabela de correspondência versionada, fonte, qualidade e cobertura |
 | P2 | Histórico desde 1994 | Novo | Inventário oficial por eleição/cargo, importadores e disponibilidade |
-| P2 | Mapas lado a lado, camadas históricas e PNG | Novo | Sincronização de enquadramento, legenda e fontes na imagem |
+| P2 | Mapas lado a lado | Implementado na fase 3, com escala comum e enquadramento conjunto | Homologar coordenadas e votos reais; navegação manual independente |
+| P2 | Camadas históricas e PNG | Novo | Correspondência histórica, legenda, créditos e fontes na imagem |
 | P3 | Distribuição de cadeiras | Especificado | Regras legais versionadas por eleição e testes oficiais antes da implementação |
 | P4 | Emendas, transparência e financiamento | Dependência externa / novo | Fontes oficiais, identificadores, limites de API, revisão de dados pessoais |
 | P4 | Câmara/Senado — comissões, proposições e votos | Implementado sem homologação operacional | Identidades verificadas e comparação de amostra com fonte |

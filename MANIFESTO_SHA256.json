@@ -1,13 +1,12 @@
 {
-  "components/science/MultiComparison.tsx": "21f3db291c326e0d28451c764048a6396697e1b87f7dd866d19ccbc301775e2b",
-  "components/science/ScienceNav.tsx": "d31fb77739d14abc8fc7308fa992394b6f6c75e0d38c4bf865f9b902a049f1c6",
-  "components/science/science.css": "5f2fa2db8debb7c04b9ca19a039c97b9345fa1a2bb947aa00a04b4814173a135",
-  "app/admin/ciencia-eleitoral/[view]/page.tsx": "7dc13e09ae9ddee2dd3603ec75246608a7e0677febd95c4d8a7d7a8993eefe48",
-  "app/admin/ciencia-eleitoral/page.tsx": "5e6fbfa9bf12e98c1b62915784d7fed2e6b2264a5bef47b605fb52d6e66ffa7b",
-  "lib/science/multi-comparison.ts": "1f805d20106ae74bed1f6e81d7976c46c139ae3ad808d6a8755d9dd947e0447d",
-  "lib/science/version.ts": "e87302138005d5c183de79505c145294da96a29ab88a619646352670a31eb93a",
-  "tests/multi-comparison.test.cjs": "70686e2f75d5103a3d0b1355447abd278f70151d3bd4d85d92a2a27ba9984bd1",
-  "docs/IBFC-COMPARACAO-MULTIPLA-FASE2.md": "530bffb3dc42ba4575300941da33ccf0802d05e7d435506b2b8b3b149d2e3581",
-  "docs/IBFC-BACKLOG-CONSOLIDADO.md": "b093e14ddb7ecbdc21caac10a360c774fe519ddb25d0984c35880c7b580a74ca",
-  "docs/IBFC-CADERNO-TECNICO-MASTER.md": "aa9bfdbb2eebe1ee927422ad16aae127d73a141d098a62073feb4410d69cb23f"
+  "components/science/ComparisonMaps.tsx": "c8e251ad5016a95d9cb4dfc7be3f8d2705c6c1333ea64333fa2f9b99cde7e0d0",
+  "components/science/MultiComparison.tsx": "e33bf8f49d9faee4aff0a4b6b23bf96b708312f3518bedf12ddc27ec08b88081",
+  "components/electoral/LeafletElectionMap.tsx": "0712bd84a4579fab6578350c581ea0aa300379b469666ea59487b6c8c54d6f3c",
+  "components/science/science.css": "e6ed4a1a560d0374f6bf7513e0b09a749439428a39f86128513eebe8c126b5c5",
+  "lib/science/comparison-maps.ts": "e57451e4363fef04dd3e77e8e9ad7c00cbf5b7ff319be21a855cdec6c49d970d",
+  "lib/science/version.ts": "1c90274764f9359ce55bc4791d36ce7ffac5bb852e5592fcd7aeac5a73a8f413",
+  "tests/comparison-maps.test.cjs": "b97dc1b4e24ef56625f353b935d8406afb7c7db41bb7dcd876c5129733347a13",
+  "docs/IBFC-MAPAS-COMPARATIVOS-FASE3.md": "276e41a562a289e59397eaf7f406b5a570609db3017b26e5ab357bc99cd4291e",
+  "docs/IBFC-CADERNO-TECNICO-MASTER.md": "370af85d40b30a90f5bc41aea13bd4cc24e8a7e44ae66ad6189c2ea4426b4c2c",
+  "docs/IBFC-BACKLOG-CONSOLIDADO.md": "75f835516862a4102d9cb6e61939005d5741852e51f607775bfbe623d72b6bb4"
 }

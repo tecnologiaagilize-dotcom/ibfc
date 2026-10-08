@@ -1,4 +1,5 @@
 "use client";
+import {ComparisonMaps} from '@/components/science/ComparisonMaps';
 import {useEffect,useRef,useState} from 'react';
 import type {ScienceCatalogue,ScienceReport,Target} from '@/lib/science/types';
 import {candidateKey} from '@/lib/electoral/types';
@@ -49,6 +50,7 @@ export function MultiComparison(){
  <p>{ids.length}/10 selecionados. A busca não remove as seleções existentes.</p>
  <fieldset className="multi-candidates"><legend>Seleções disponíveis</legend>{catalogueLoading?<p>Carregando catálogo…</p>:!visible.length?<p>Nenhuma seleção encontrada neste recorte. Confira a importação ou a busca.</p>:visible.map(t=>{const id=candidateKey(t);return <label className="electoral-checkbox" key={id}><input type="checkbox" checked={ids.includes(id)} disabled={busy||t.results_available===false||(!ids.includes(id)&&ids.length>=10)} onChange={e=>setIds(old=>e.target.checked?[...old,id]:old.filter(x=>x!==id))}/><span>{t.number} · {t.name}{t.party?' · '+t.party:''} · eleição {t.election}{t.results_available===false?' · votos pendentes':''}</span></label>;})}</fieldset>
  <button disabled={busy||catalogueLoading||ids.length<2} onClick={()=>void compare()}>Comparar seleções</button>{busy&&<div role="status"><progress value={progress} max={ids.length}/><span> {progress} de {ids.length} análises concluídas. Cada resultado é arquivado individualmente.</span><button onClick={()=>{active.current?.abort();setBusy(false);setColumns([]);}}>Cancelar</button></div>}{error&&<p role="alert">{error}</p>}</section>
+ {columns.length>0&&<ComparisonMaps key={columns.map(c=>c.report.analysis_id).join(':')} columns={columns}/>}
  {columns.length>0&&<section className="electoral-panel"><h2>Resultados do recorte</h2><p>Posição entre as seleções escolhidas não equivale à classificação geral da eleição. As consultas são sequenciais; seus horários e protocolos são preservados, sem garantia de uma transação única.</p>
  <div className="multi-summary">{columns.map((c,i)=><article key={targetKey(c.target)}><h3>{c.target.name}</h3><strong>{number(totals[i].votes)} votos</strong><p>{percentage(totals[i].share)} · denominador: {number(totals[i].valid)}</p><small>{c.report.generated_at} · {c.report.denominator_basis==='bu_nominal_legenda'?'BU nominal + legenda':'Votos válidos'}</small></article>)}</div>
  {columns.some(c=>c.report.truncated)&&<p role="alert">Há resultados limitados: a tabela e os arquivos incluem apenas as linhas retornadas. Os totais vêm do relatório, não da soma desta tabela.</p>}
