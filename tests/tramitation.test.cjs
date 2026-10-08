@@ -1,0 +1,22 @@
+const test=require('node:test'),assert=require('node:assert/strict');
+const fs=require('node:fs'),ts=require('typescript'),vm=require('node:vm');
+const compiled=ts.transpileModule(fs.readFileSync(require.resolve('../lib/legislative/tramitation.ts'),'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText;
+const exportsObject={};vm.runInNewContext(compiled,{exports:exportsObject,require:id=>id==='./collector'?require('../lib/legislative/collector.ts'):require(id),URL,fetch});
+const {collectTramitation,projectId,officialDocument}=exportsObject;
+const source='https://dadosabertos.camara.leg.br/api/v2/proposicoes/2121442';
+const response=p=>new Response(JSON.stringify(p));
+test('project identifier must come from the exact official source',()=>{assert.equal(projectId(source),'2121442');for(const u of ['https://evil.example/2121442',source+'/tramitacoes',source+'?id=3',source.replace('/2121442','/0002')])assert.throws(()=>projectId(u));});
+test('complete endpoint uses no unsupported pagination; chronological history preserves dispatch and document',async()=>{let url;const r=await collectTramitation(source,async u=>{url=u;return response({dados:[{sequencia:2,dataHora:'2026-03-02T10:00',siglaOrgao:'CCJC',despacho:'Encaminhado',url:'https://www.camara.leg.br/documento'},{sequencia:1,dataHora:'2026-03-01T10:00',descricaoTramitacao:'Apresentação'}],links:[]});});assert.equal(url,source+'/tramitacoes');assert.equal(JSON.stringify(r.steps.map(x=>x.sequence)),'[1,2]');assert.equal(r.steps[1].dispatch,'Encaminhado');assert.equal(r.raw.dados.length,2);});
+test('wrong shape, continuation and failed source cannot become empty successful history',async()=>{await assert.rejects(()=>collectTramitation(source,async()=>response({dados:[]})),/incompatível/);await assert.rejects(()=>collectTramitation(source,async()=>response({dados:[],links:[{rel:'next',href:'https://evil.example'}]})),/continuação/);await assert.rejects(()=>collectTramitation(source,async()=>new Response('',{status:502})),/502/);await assert.rejects(()=>collectTramitation(source,async()=>response({dados:[{}],links:[]})),/sequência/);assert.equal((await collectTramitation(source,async()=>response({dados:[],links:[]}))).steps.length,0);});
+test('documents reject executable links and lookalike hosts',()=>{for(const u of ['javascript:alert(1)','https://www.camara.leg.br.evil.example/doc','http://www.camara.leg.br/doc','https://user:pass@www.camara.leg.br/doc'])assert.equal(officialDocument(u),null);assert.equal(officialDocument('https://www.camara.leg.br/doc'),'https://www.camara.leg.br/doc');});
+test('route requires administrator access and a collected Camara proposition',async()=>{
+ const code=ts.transpileModule(fs.readFileSync(require.resolve('../app/api/admin/science/tramitation/route.ts'),'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText;
+ let allowed=false,called=false,filters=[];
+ const row={id:'11111111-1111-4111-8111-111111111111',title:'Projeto teste',source_url:source};
+ const query={select(){return this},eq(k,v){filters.push([k,v]);return this},async maybeSingle(){return {data:row,error:null}}};
+ const route={};vm.runInNewContext(code,{exports:route,Date,require:id=>id==='next/server'?require('next/server'):id==='node:crypto'?require(id):id.includes('electoral/auth')?{electoralStaff:async()=>({allowed,db:{from(){called=true;return query}}})}:id.includes('legislative/tramitation')?{collectTramitation:async()=>({raw:{dados:[]},steps:[],source,project_id:'2121442'})}:id.includes('science/integrity')?{canonicalJson:JSON.stringify}:null});
+ const request=id=>({nextUrl:new URL('https://portal.example/api?record_id='+id)});
+ assert.equal((await route.GET(request(row.id))).status,403);assert.equal(called,false);
+ allowed=true;assert.equal((await route.GET(request('invalid'))).status,400);assert.equal(called,false);
+ const r=await route.GET(request(row.id)),p=await r.json();assert.equal(r.status,200);assert.equal(r.headers.get('Cache-Control'),'private, no-store');assert.equal(JSON.stringify(filters),JSON.stringify([['id',row.id],['provider','camara'],['category','propositions']]));assert.match(p.source_hash,/^[a-f0-9]{64}$/);
+});

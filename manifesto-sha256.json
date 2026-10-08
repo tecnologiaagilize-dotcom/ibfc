@@ -1,0 +1,9 @@
+{
+  "lib/legislative/tramitation.ts": "453f6164729386b53864d6f49f7b61bdfad5f77337eee644972f4cc32b5bf57a",
+  "app/api/admin/science/tramitation/route.ts": "9a5125dea23dce06d749863b071ba40c1fc0fc5c35cb841992902840eea694af",
+  "components/science/ProjectTramitation.tsx": "ca0a1d45ce993cfcf7a1d3c65c8c4505ab1915e65e0aca19aafb408cf58950bf",
+  "components/science/LegislativeObservatory.tsx": "cc6410f5077869f3be878449b9cc139c6e74258db21ad477acba9a3c97913ab6",
+  "components/science/legislative.css": "799ae529c39d852475460d849ec430b3f0d5e719d34c99ce5ab6bd27dd621b6c",
+  "tests/tramitation.test.cjs": "ce27f2cadfba320c82221b54c834d4859c7870f699215430ba45a81f2b31d9c8",
+  "docs/IBFC-TRAMITACAO-PROJETOS.md": "8664860cf70c46a93d8126531a0130610908c73c2e0f9891b03ba70a37f2b50d"
+}
