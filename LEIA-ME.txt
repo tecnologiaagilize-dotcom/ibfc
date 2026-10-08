@@ -1,19 +1,17 @@
-IBFC — CIÊNCIA ELEITORAL 2.0 | IBFC-CE-20261006-02
-PACOTE CUMULATIVO: substitui o pacote anterior do mapa/TSE e Ciência Eleitoral.
+CORREÇÃO DO BUILD — TERRITORIAL LAYERS
 
-1. Extraia o ZIP e suba os arquivos na raiz do repositório IBFC, preservando os caminhos app/, components/, lib/, scripts/, public/, supabase/ e .github/.
-   NÃO suba apenas o arquivo ZIP para o GitHub. Não crie uma pasta extra envolvendo os caminhos.
-2. Supabase → SQL Editor: após o schema principal do portal, aplique 20261009, 20261010, 20261011 e 20261012, nesta ordem.
-   Se 09/10 já foram aplicadas, execute apenas 11/12. Se 11 já foi aplicada, execute apenas 12.
-3. Suba também .github/workflows/ibfc-tse-sync.yml e scripts/tse_sync.py na branch principal.
-4. GitHub → Settings → Secrets and variables → Actions → Secrets:
-   SUPABASE_URL e SUPABASE_SERVICE_ROLE_KEY do mesmo projeto Supabase do portal.
-   Secrets do GitHub são separados das variáveis da Vercel.
-5. Vercel → Environment Variables: mantenha GITHUB_TSE_TOKEN, GITHUB_TSE_REPOSITORY (proprietario/repositorio), GITHUB_TSE_REF (main) e as variáveis Supabase existentes. Faça novo deployment.
-6. Acesse /admin/ciencia-eleitoral. Confira Ciência Eleitoral 2.0 e IBFC-CE-20261006-02. Integrações apresenta verificações de instalação.
-7. Tarefa antiga na fila não é reiniciada pelo deployment. Verifique Actions, corrija os Secrets e só então cancele/reinicie a tarefa.
+Extraia este ZIP e envie o arquivo para a raiz do repositório tecnologiaagilize-dotcom/ibfc, preservando este caminho:
 
-Instruções e limites: docs/IBFC-CIENCIA-ELEITORAL.md.
-Validação local: docs/IBFC-VALIDACAO-CIENCIA.md.
-Sem credenciais neste ZIP. Não substitui o portal completo nem os dados do Supabase.
-O pacote não foi instalado automaticamente no seu GitHub, Supabase ou Vercel.
+lib/science/territorial-layers.ts
+
+A pasta lib fica no mesmo nível de app e components. Não coloque o arquivo em src/lib nem dentro de uma pasta com o nome do ZIP. Preserve as letras minúsculas e a extensão .ts.
+
+Este arquivo restaura o módulo importado por components/science/ZoneLayers.tsx. Não substitua ZoneLayers nem remova suas funcionalidades.
+
+Após o commit na branch main, aguarde um novo deployment da Vercel. Confira se o deployment usa o novo commit; o log fornecido usa a78e734.
+
+Não precisa executar SQL, criar variáveis de ambiente ou alterar dependências para esta correção.
+
+Validação: os cinco testes locais de territorial-layers passaram. O repositório remoto e o deployment não foram alterados por este pacote.
+
+Este pacote corrige o módulo ausente indicado no log. Outros erros, caso apareçam no próximo build, devem ser avaliados com o novo log.
