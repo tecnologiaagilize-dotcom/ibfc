@@ -4,6 +4,9 @@ import type {ScienceReport,Target} from '@/lib/science/types';
 import type {ComparisonColumn} from '@/lib/science/multi-comparison';
 import {historicalSnapshot,historicalCsv,HISTORICAL_STATUS_LABELS,assertHistoricalRecorte,type HistoricalStatus} from '@/lib/science/historical-coverage';
 import {number,percentage} from '@/lib/electoral/analysis';
+import {ReportExport} from '@/components/science/ReportExport';
+import {historicalPrintHtml} from '@/lib/science/print-report';
+import {SCIENCE_VERSION,SCIENCE_BUILD} from '@/lib/science/version';
 import {ComparisonMaps} from '@/components/science/ComparisonMaps';
 export type HistoricalContext={old:Target;new:Target;scope:string;filters:Record<string,number|boolean>};
 export function HistoricalTerritory({report,context}:{report:ScienceReport;context:HistoricalContext}){
@@ -27,6 +30,7 @@ export function HistoricalTerritory({report,context}:{report:ScienceReport;conte
  <p>Chaves iguais não comprovam continuidade do eleitorado nem equivalência geográfica oficial. Mudanças são detectadas pelos registros importados. Em agregações por município ou local, a classificação descreve o conjunto de seções, não cada endereço.</p>
  {c.truncated&&<p role="alert">Diagnóstico limitado a {c.visible_rows} de {c.total_rows} linhas. As proporções e classificações abaixo descrevem apenas o conjunto retornado. Totais de seções acima vêm do recorte completo.</p>}
  <div className="science-filters"><label>Classificação histórica<select aria-label="Classificação histórica" value={status} onChange={e=>setStatus(e.target.value as typeof status)}><option value="all">Todas</option>{Object.entries(HISTORICAL_STATUS_LABELS).map(([k,v])=><option key={k} value={k}>{v} ({c.counts[k as HistoricalStatus]})</option>)}</select></label><label>Buscar território histórico<input value={search} maxLength={120} onChange={e=>setSearch(e.target.value)}/></label></div>
+ <ReportExport reportKey={JSON.stringify([context,report.analysis_id,report.generated_at])} filename={`IBFC-historico-${context.new.uf}`} buildDocument={details=>historicalPrintHtml(snapshot,report,HISTORICAL_STATUS_LABELS,{details,exportedAt:new Date().toLocaleString('pt-BR'),version:SCIENCE_VERSION+' · '+SCIENCE_BUILD})}/>
  <button onClick={()=>download('csv')}>Baixar diagnóstico CSV</button> <button onClick={()=>download('json')}>Baixar diagnóstico JSON</button><p>Os arquivos preservam todo o diagnóstico retornado, sem aplicar a busca ou a paginação da tela.</p>
  <div className="multi-table"><table><thead><tr><th>Território</th><th>Classificação</th><th>Votos 2022</th><th>Votos 2026</th><th>Diferença de votos</th><th>Variação relativa</th><th>Variação pp</th></tr></thead><tbody>{rows.slice(page*50,(page+1)*50).map(l=><tr key={l.row.key}><th>{l.row.name} · {l.row.uf}</th><td>{HISTORICAL_STATUS_LABELS[l.status]}</td><td>{number(l.row.old_votes)}</td><td>{number(l.row.new_votes)}</td><td>{number(l.delta_votes)}</td><td>{percentage(l.relative_change)}</td><td>{l.delta_points===null?'Não calculável':l.delta_points.toLocaleString('pt-BR',{maximumFractionDigits:2})+' pp'}</td></tr>)}</tbody></table></div>
  {!rows.length&&<p>Nenhuma linha nesta classificação ou busca.</p>}<button disabled={page===0} onClick={()=>setPage(p=>p-1)}>Diagnóstico: anterior</button> <span>{rows.length} registros no filtro</span> <button disabled={(page+1)*50>=rows.length} onClick={()=>setPage(p=>p+1)}>Diagnóstico: próxima</button>

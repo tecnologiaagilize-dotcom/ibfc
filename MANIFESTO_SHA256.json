@@ -1,12 +1,12 @@
 {
-  "lib/electoral/map-png.ts": "5cd87e96ef262b8976e83d83e740acc53a7d908554ce6b2ccc6b5f4ad3d0aa57",
-  "components/electoral/LeafletElectionMap.tsx": "486d519bda723068c7e1692af4401f4942531282350f9616313ab0e529157838",
-  "components/electoral/electoral.css": "934119f74f1251ef2a4905b0c96ba83632139029cffc63fb3dd54814aeca3c1c",
-  "components/science/ComparisonMaps.tsx": "170a272d605a3b71b18e8e396268259020e147956941446f19841c3ec0ed31ef",
-  "components/science/ZoneLayers.tsx": "aac1ce4a59c2141acfe9c9fac67d5b03711f70b7368f23b3e43270fcb1ccdab9",
-  "lib/science/version.ts": "16f1c89ff8835199a30004d43aea23a2372e5b5dd5947787e2a6c53964ce1963",
-  "tests/map-png.test.cjs": "beb1a4af21dfad37fc9d2bec498f19cc770ccb44f4194d7134acae4cc38707fa",
-  "docs/IBFC-EXPORTACAO-PNG-FASE5.md": "c2c4c35ca0c073e11e464d148b84166c8ea6cc3e70e60b6845aeb5514662716a",
-  "docs/IBFC-CADERNO-TECNICO-MASTER.md": "89d8e625b60544b2a776fd4792553093ef426c1a958dd24e99e000477dadcce9",
-  "docs/IBFC-BACKLOG-CONSOLIDADO.md": "21efb56ec5b54a58977a3c75a2193e1ee710f8a60b877387b3f8324b8ebe8455"
+  "lib/science/print-report.ts": "e4f70df0dccf8112d3f6b997ffb695179747899675f29ee4526ef42154701218",
+  "components/science/ReportExport.tsx": "b36233bd1cf401dee0b277f55a9962a5f1bd91ee738843c9e80c76807e712ff4",
+  "components/science/MultiComparison.tsx": "e9f5a55e271311b81b4b5ef6cb6a31681186ed4aa42c34065984c01f88e486f7",
+  "components/science/HistoricalTerritory.tsx": "ee5eb80695ab6920f1c29726961821e9d15acc1087a5982d06e625e8f72eb976",
+  "components/science/science.css": "7edcf7d7f60d7f91aae03f615fc20b71c86fd26c568d6cf168b269eccf3e670e",
+  "lib/science/version.ts": "2ad6d83cc7209f446a71c5008bf27f49ac2f6f495616aa2858b4643f0c85e8d6",
+  "tests/print-report.test.cjs": "e126a9fe7778f73c5bb19fc9128ca7477830a940fb1bc550cba6fe213f6094fe",
+  "docs/IBFC-RELATORIOS-CONSOLIDADOS-FASE6.md": "d69f755534b1b00f86d71e038b78d4e9896631c381b36259df2a8b65be5a567b",
+  "docs/IBFC-CADERNO-TECNICO-MASTER.md": "10247cd5630fb1361fda3e58479749d9fe03783d812e05c4a159d6108860df00",
+  "docs/IBFC-BACKLOG-CONSOLIDADO.md": "e894f636492159b1628d6237927b4a6d4b7ceba400894ed8a714a4c0edac6a9e"
 }

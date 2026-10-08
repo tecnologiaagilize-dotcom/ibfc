@@ -1,4 +1,7 @@
 "use client";
+import {ReportExport} from '@/components/science/ReportExport';
+import {comparisonPrintHtml} from '@/lib/science/print-report';
+import {SCIENCE_VERSION,SCIENCE_BUILD} from '@/lib/science/version';
 import {ComparisonMaps} from '@/components/science/ComparisonMaps';
 import {useEffect,useRef,useState} from 'react';
 import type {ScienceCatalogue,ScienceReport,Target} from '@/lib/science/types';
@@ -55,6 +58,7 @@ export function MultiComparison(){
  <div className="multi-summary">{columns.map((c,i)=><article key={targetKey(c.target)}><h3>{c.target.name}</h3><strong>{number(totals[i].votes)} votos</strong><p>{percentage(totals[i].share)} · denominador: {number(totals[i].valid)}</p><small>{c.report.generated_at} · {c.report.denominator_basis==='bu_nominal_legenda'?'BU nominal + legenda':'Votos válidos'}</small></article>)}</div>
  {columns.some(c=>c.report.truncated)&&<p role="alert">Há resultados limitados: a tabela e os arquivos incluem apenas as linhas retornadas. Os totais vêm do relatório, não da soma desta tabela.</p>}
  {columns.some(c=>c.report.granularity!==columns[0].report.granularity)&&<p role="alert">As fontes têm granularidades diferentes. Territórios ausentes em uma coluna continuam sem dados; não faça comparação direta dessas linhas.</p>}
+ <ReportExport reportKey={JSON.stringify([parameters,columns.map(c=>[c.report.analysis_id,c.report.generated_at])])} filename={`IBFC-comparacao-${uf}-${year}`} buildDocument={details=>comparisonPrintHtml(columns,lines,totals,parameters,{details,exportedAt:new Date().toLocaleString('pt-BR'),version:SCIENCE_VERSION+' · '+SCIENCE_BUILD})}/>
  <button onClick={()=>download('csv')}>Baixar comparação CSV</button> <button onClick={()=>download('json')}>Baixar comparação JSON</button>
  <div className="multi-table"><table><thead><tr><th>Território</th>{columns.map(c=><th key={targetKey(c.target)}>{c.target.name}</th>)}<th>Denominadores</th></tr></thead><tbody>{pageRows.map(l=><tr key={l.key}><th>{l.territory.name} · {l.territory.uf}</th>{l.cells.map((c,i)=><td key={i}>{number(c.votes)}<br/><small>{percentage(c.share)} · base {number(c.valid)}</small></td>)}<td>{l.comparable?'Compatíveis':'Não comparáveis / sem dados'}</td></tr>)}</tbody></table></div>
  <button disabled={page===0} onClick={()=>setPage(p=>p-1)}>Página anterior</button> <span>{lines.length?`${page*50+1}–${Math.min((page+1)*50,lines.length)} de ${lines.length}`:'Nenhuma linha territorial retornada'}</span> <button disabled={(page+1)*50>=lines.length} onClick={()=>setPage(p=>p+1)}>Próxima página</button>

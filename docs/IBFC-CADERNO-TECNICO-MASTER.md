@@ -58,3 +58,7 @@ Novo submenu `comparacao`, componente `MultiComparison` e cálculo `multi-compar
 ## Fase 5 — Exportação de mapas PNG
 
 Os mapas multicamadas, comparativos e históricos oferecem download direto da vista atual, com seleção, legenda, cobertura e créditos. A implementação usa canvas e tiles já carregados, sem requisições de exportação adicionais. Protocolo, hash do relatório original e até três fontes ficam nos mapas comparativos; o relatório mantém as fontes completas. A opção sem ruas permite exportar quando tiles estiverem indisponíveis ou sem autorização CORS. Consulte IBFC-EXPORTACAO-PNG-FASE5.md.
+
+## Fase 6 — Relatórios consolidados
+
+Comparação múltipla e diagnóstico histórico oferecem prévia, HTML portátil e impressão para salvar PDF pelo navegador, com versão resumida ou detalhamento completo retornado. Preservam recorte, protocolo, fontes e hashes originais; totais não são recalculados a partir da tabela. Não incluem mapas automaticamente ou XLSX novo. Consulte IBFC-RELATORIOS-CONSOLIDADOS-FASE6.md para limites e aceitação.

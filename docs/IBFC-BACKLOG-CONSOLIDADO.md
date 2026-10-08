@@ -29,7 +29,7 @@ Auditoria do código enviado em 08/10/2026. Classificação: implementado e vali
 | P6 | Estatística e previsão | Parcial; modelos exploratórios existentes | Validação temporal, incerteza, comparação com baseline e registro de versões |
 | P6 | Modelos espaciais/hierárquicos | Novo | Dados suficientes, diagnóstico de resíduos, validação fora da amostra |
 | P6 | Auditoria de BU e fontes | Parcial; documentos e metadados existentes | Reconciliação reproduzível, duplicidades, origem e inconsistências sem conclusão automática de fraude |
-| P7 | Central de relatórios PDF/Excel e tutoriais | Novo | Reusar cálculos/arquivo existentes; não criar segunda lógica de totais |
+| P7 | Central de relatórios PDF/Excel e tutoriais | Parcial: fase 6 adiciona relatório HTML e impressão/PDF às comparações e diagnóstico histórico | Central unificada, XLSX, mapas incorporados, tutoriais e homologação operacional pendentes |
 
 ## Especificação das próximas entregas
 
@@ -54,3 +54,5 @@ Separar descrição, associação e previsão. Comparar modelos com persistênci
 Cada item exige: evidência de código, teste local relevante, migração/configuração necessária, teste com fonte real, responsável por homologação e limitações registradas. Implementado não significa implantado. As fases 1–4 entregam núcleo multicamadas, correção do workflow legislativo, comparação múltipla, mapas lado a lado e diagnóstico/mapas históricos. Correspondência territorial oficial, regras de cadeiras, novas fontes financeiras e previsões homologadas continuam pendentes conforme as linhas deste backlog.
 
 Fase 5: exportação PNG validada localmente, sem migração. Não representa implantação ou homologação com banco e provedor de produção.
+
+Fase 6: relatório consolidado resumido/completo nas comparações e no diagnóstico histórico, HTML portátil e impressão/PDF pelo navegador. Reutiliza cálculos existentes; não adiciona lógica de totais ou novas migrações.
