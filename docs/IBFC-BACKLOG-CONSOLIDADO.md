@@ -69,3 +69,8 @@ Fase 9: reconciliação interna entre análise B e boletins carregados. Não cer
 ## Fase 10 — Arquivo de análises
 
 Central paginada com busca por protocolo, CSV/JSON completos e relatório HTML/PDF do snapshot verificado. Consulte IBFC-ARQUIVO-RELATORIOS-FASE10.md. Mapas nos documentos, XLSX e agrupamento de protocolos permanecem pendentes.
+
+
+## Fase 11 — Dossiês
+
+Implementados dossiê de até 10 snapshots confirmados, mapas PNG anexados manualmente no HTML/PDF e XLSX nativo. Sem soma entre recortes nem persistência do dossiê. Consulte IBFC-DOSSIE-RELATORIOS-FASE11.md. Fases restantes: validação integrada com produção e homologação/consolidação.
