@@ -73,3 +73,8 @@ TypeScript, build Next e testes de importação/cálculo. Testes SQL em PostgreS
 ## Extensão — séries históricas e validação temporal
 
 A migração 20261026 amplia a sincronização para 2014/2018 e adiciona o submenu de séries históricas. O método, instalação, validação cronológica e limitações estão documentados em [IBFC-SERIES-HISTORICAS.md](IBFC-SERIES-HISTORICAS.md). Projeções permanecem exploratórias; esta entrega não constitui modelo probabilístico validado de eleições futuras.
+
+
+## Extensão — automação legislativa
+
+A migração 20261027 adiciona fila e agendas ao Observatório Legislativo. O worker do GitHub Actions executa o mesmo coletor com checkpoints, concessão temporária e controle de acesso. Instalação, comportamento de retomada e limites estão em [IBFC-AUTOMACAO-LEGISLATIVA.md](IBFC-AUTOMACAO-LEGISLATIVA.md). Não inclui CLDF ou publicação automática.

@@ -1,34 +1,39 @@
-# IBFC — séries históricas e validação temporal
+# IBFC — coleta legislativa em segundo plano
 
-Pacote incremental: somente arquivos novos ou alterados nesta etapa. Aplicar sobre o IBFC com os pacotes anteriores de Ciência Eleitoral já instalados. Não substitui o portal completo.
+Pacote incremental: somente arquivos novos ou alterados nesta etapa. Requer o pacote anterior do Observatório Legislativo e sua migração 20261025. Preserva os módulos de comunidade, mapas e séries históricas.
 
-## Instalar
+## Instalação
 
-1. No Supabase do IBFC, executar `supabase/migrations/20261026_ibfc_historical_models.sql` no SQL Editor. Requer as migrações eleitorais 20261009 a 20261017 anteriores. Preserva os registros existentes e o agendamento diário de 2026.
-2. No repositório IBFC correto, copiar os arquivos nos mesmos caminhos e fazer novo deployment na Vercel. README e manifest são documentação do pacote.
-3. Abrir Ciência Eleitoral → Integrações e sincronização. Agora o seletor inclui 2014, 2018, 2022 e 2026. Importar os anos da janela desejada pelo workflow já configurado. Nenhum token ou Secret novo é necessário.
-4. Abrir Ciência Eleitoral → Séries históricas e validação temporal (`/admin/ciencia-eleitoral/historico`). Escolher UF, cargo, turno, tipo, janela, unidade territorial e a candidatura/partido de cada ano. Confirmar a correspondência e gerar a validação.
-5. O protocolo pode ser baixado em JSON, impresso e reaberto em Relatórios. A exportação CSV dos relatórios compara primeiro/último ano; o JSON contém o protocolo temporal completo.
+1. Executar `supabase/migrations/20261027_ibfc_legislative_background.sql` no SQL Editor do Supabase do IBFC, após a migração 20261025. A migração preserva registros e coletas manuais existentes. Não reaplicar a 20261025 depois dela.
+2. Copiar os arquivos para os mesmos caminhos do repositório IBFC correto. Incluir a pasta `.github/workflows`: o arquivo `ibfc-legislative-sync.yml` precisa estar no GitHub. O cron usa o arquivo da branch padrão do repositório.
+3. Fazer novo deployment na Vercel.
+4. No GitHub → Settings → Secrets and variables → Actions → Secrets, manter `SUPABASE_URL` e `SUPABASE_SERVICE_ROLE_KEY` do IBFC. São os mesmos Secrets do importador TSE.
+5. Na Vercel, reutilizar `GITHUB_TSE_TOKEN`, `GITHUB_TSE_REPOSITORY` e `GITHUB_TSE_REF`. Alternativamente usar `GITHUB_LEGISLATIVE_TOKEN`, `GITHUB_LEGISLATIVE_REPOSITORY` e `GITHUB_LEGISLATIVE_REF`. O token deve acessar o repositório configurado com Actions em leitura/escrita. O fallback da branch é `main`.
+6. Para atualização agendada, GitHub → Settings → Secrets and variables → Actions → Variables → New repository variable:
+   Name: `IBFC_LEGISLATIVE_AUTO_ENABLED`
+   Value: `true`
+   Não incluir espaços no nome. O workflow verifica as agendas às 03h43 de Brasília no fuso atual, sujeito à fila do GitHub.
 
-## O que esta etapa entrega
+## Utilização
 
-- Histórico de 2014/2018 no fluxo de sincronização automático existente.
-- Teste cronológico de persistência e tendência linear, treinando somente nos anos anteriores ao teste.
-- MAE/RMSE por eleição, cobertura comum, exclusões e extrapolação exploratória de um ciclo.
-- Snapshot arquivado, seleções, fontes, denominadores, confirmação e SHA-256.
+Ciência Eleitoral → Observatório legislativo → selecionar parlamentar/fonte/categoria → Verificar perfil oficial → confirmar vínculo → Segundo plano → escolher somente esta coleta, diária ou semanal → Iniciar coleta desta categoria.
 
-Projeções são exploratórias. Com três ou quatro eleições, há apenas uma ou duas eleições de teste. Não existe intervalo de confiança calibrado nem identificação de voto individual. Séries sem dados suficientes, somente por zona ou truncadas são bloqueadas. Mudanças nas fronteiras territoriais, partidos e número de vagas precisam de revisão; códigos iguais não comprovam continuidade.
+A primeira coleta usa as datas do formulário. As futuras usam uma janela móvel de 1 a 90 dias. Comissões mantêm o histórico/composição disponível na fonte sem filtro temporal. Para votos da Câmara, a janela é limitada ao ano corrente.
 
-## Verificação desta entrega
+O bloco Fila e atualização em segundo plano mostra lotes salvos, registros processados, heartbeat, pausas e agendas. Pode fechar o portal. Ao atingir o orçamento de 25 minutos do worker, o checkpoint aguarda a próxima execução agendada ou uma retomada pelo portal. Desativar agenda não pausa o processamento atual.
 
-TypeScript e build de produção aprovados; 26 testes JS de ciência/estatística/cronologia e 32 testes Python do importador aprovados. Migração aplicada/reaplicada em PGlite com cargas sintéticas, catálogo e permissões. Interface validada em desktop/celular com respostas simuladas, exportação e filtros. Cabeçalhos reais das bases DF 2014/2018 conferidos no CDN do TSE.
+## Entrega
 
-Nenhuma migração, implantação ou importação foi executada no seu ambiente de produção. O pacote não inclui resultados eleitorais nem credenciais.
+Worker GitHub Actions com checkpoint, bloqueio temporário de processamento, pausa/retomada, retry de falhas transitórias e prevenção de duplicação após perda de resposta HTTP. A execução manual anterior permanece disponível. As agendas habilitadas no banco dependem do workflow ativo e da Variable global.
 
-Método e limitações: `docs/IBFC-SERIES-HISTORICAS.md`.
+Não adiciona CLDF, tramitação detalhada, planos de governo, publicação automática ou envio de mensagens aos afiliados.
 
-Testes JS: `node --test tests/temporal-models.test.cjs tests/advanced-statistics.test.cjs tests/science.test.cjs` (Node com suporte a TypeScript).
-Testes Python: `python3 -m unittest discover -s tests -p 'tse*_test.py'`.
-Teste SQL: `tests/historical-sql.test.mjs`, requer dependência de desenvolvimento `@electric-sql/pglite`; não é adicionada às dependências de produção.
+## Validação
 
-Próxima etapa: coleta legislativa agendada/background, CLDF e tramitação de projetos. Esses recursos não fazem parte deste ZIP.
+28 testes JS de worker/conectores/estatística/cronologia; migração aplicada e reaplicada em PGlite; isolamento de acesso, token privado, claim exclusivo, commit idempotente, pausa/expiração, agendas e transferência de responsável verificados. YAML, TypeScript e build Next.js de produção aprovados. Interface testada em desktop/celular com respostas simuladas, incluindo reabertura após conclusão e fallback manual.
+
+Nenhuma migração, workflow ou coleta autenticada foi executada no ambiente de produção do usuário. Os testes de worker usam fontes simuladas e não comprovam disponibilidade contínua das instituições.
+
+Método e limites: `docs/IBFC-AUTOMACAO-LEGISLATIVA.md`.
+Testes Node: `node --test tests/legislative-worker.test.cjs tests/legislative.test.cjs` com Node 24.
+Teste SQL: `tests/legislative-background-sql.test.mjs`, requer `@electric-sql/pglite` no ambiente de desenvolvimento. Nenhuma dependência de produção foi adicionada.
