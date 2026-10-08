@@ -1,9 +1,9 @@
 {
-  "lib/legislative/tramitation.ts": "453f6164729386b53864d6f49f7b61bdfad5f77337eee644972f4cc32b5bf57a",
-  "app/api/admin/science/tramitation/route.ts": "9a5125dea23dce06d749863b071ba40c1fc0fc5c35cb841992902840eea694af",
-  "components/science/ProjectTramitation.tsx": "ca0a1d45ce993cfcf7a1d3c65c8c4505ab1915e65e0aca19aafb408cf58950bf",
-  "components/science/LegislativeObservatory.tsx": "cc6410f5077869f3be878449b9cc139c6e74258db21ad477acba9a3c97913ab6",
-  "components/science/legislative.css": "799ae529c39d852475460d849ec430b3f0d5e719d34c99ce5ab6bd27dd621b6c",
-  "tests/tramitation.test.cjs": "ce27f2cadfba320c82221b54c834d4859c7870f699215430ba45a81f2b31d9c8",
-  "docs/IBFC-TRAMITACAO-PROJETOS.md": "8664860cf70c46a93d8126531a0130610908c73c2e0f9891b03ba70a37f2b50d"
+  "lib/legislative/cldf.ts": "961d28bbe9ae2cb30bd03a713c204ef3e4582474862a88785c99e353214f2802",
+  "app/api/admin/science/cldf/route.ts": "d54d65b36a4e68d00d509112c8dc29b4be6e7c639a08d85f38c52ae46645bbe1",
+  "components/science/CldfSourceConsole.tsx": "5edf115ec84c2fa4db326a2acc86990d7b49064d649b96674d8a41197f400904",
+  "components/science/LegislativeObservatory.tsx": "35e43d05909e8f8d557ae1488a99ef4a2af083b6f21a50950bdf8cd1c6718ecf",
+  "components/science/legislative.css": "0171aa396696e3b9e294543f67f78cdaae88b5c61fbb20e1d54e2b43ab2751da",
+  "tests/cldf.test.cjs": "ee8537242d049fc764ae8ae3cb18aee9d046c7ae13b33c9616e71484d4f1c848",
+  "docs/IBFC-CLDF-CONSULTA-OFICIAL.md": "3bc5cad0a1a2c92243d688b487df085153554b53c84650bc0fcfedec60ca55cc"
 }
