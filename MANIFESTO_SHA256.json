@@ -1,12 +1,14 @@
 {
-  "components/science/ComparisonMaps.tsx": "c8e251ad5016a95d9cb4dfc7be3f8d2705c6c1333ea64333fa2f9b99cde7e0d0",
-  "components/science/MultiComparison.tsx": "e33bf8f49d9faee4aff0a4b6b23bf96b708312f3518bedf12ddc27ec08b88081",
-  "components/electoral/LeafletElectionMap.tsx": "0712bd84a4579fab6578350c581ea0aa300379b469666ea59487b6c8c54d6f3c",
-  "components/science/science.css": "e6ed4a1a560d0374f6bf7513e0b09a749439428a39f86128513eebe8c126b5c5",
-  "lib/science/comparison-maps.ts": "e57451e4363fef04dd3e77e8e9ad7c00cbf5b7ff319be21a855cdec6c49d970d",
-  "lib/science/version.ts": "1c90274764f9359ce55bc4791d36ce7ffac5bb852e5592fcd7aeac5a73a8f413",
-  "tests/comparison-maps.test.cjs": "b97dc1b4e24ef56625f353b935d8406afb7c7db41bb7dcd876c5129733347a13",
-  "docs/IBFC-MAPAS-COMPARATIVOS-FASE3.md": "276e41a562a289e59397eaf7f406b5a570609db3017b26e5ab357bc99cd4291e",
-  "docs/IBFC-CADERNO-TECNICO-MASTER.md": "370af85d40b30a90f5bc41aea13bd4cc24e8a7e44ae66ad6189c2ea4426b4c2c",
-  "docs/IBFC-BACKLOG-CONSOLIDADO.md": "75f835516862a4102d9cb6e61939005d5741852e51f607775bfbe623d72b6bb4"
+  "components/science/HistoricalTerritory.tsx": "6f6afa21eada06b66ba0b52dfe54e02362cd7bde68d29243f3391687005f35f9",
+  "components/science/ScienceExplorer.tsx": "ae664499b5198bf7291f582be23b17fc26bd16d578713380397806f52e95ef97",
+  "components/science/ComparisonMaps.tsx": "d8843f33a17026c366c3bcb6fa6a1cee04fbd0da5379b3a2779d6c11c9971435",
+  "lib/science/historical-coverage.ts": "01eeaf7857f05bff6054504592ada13666b18d054de0ea86151a125c9d80e42b",
+  "lib/science/comparison-maps.ts": "a6e107520732c74743efe005dd2d63b0f61520cc44924d3759957aa883daca2a",
+  "lib/science/version.ts": "c288ccac25093dff24582b9ac853f604cfaba2ed32107683b6fb76088c7fc0cd",
+  "app/admin/ciencia-eleitoral/page.tsx": "e996746277bd12573542602edf7d8c660b46ac518ab417c01e728ca34f604616",
+  "tests/historical-coverage.test.cjs": "4b3f02a150ba0a909434f7e2d7a2db074b9b0ff834fa7b1ee2203df11b45bb3c",
+  "tests/comparison-maps.test.cjs": "8925eb77ccb5d7708e09a8a165c845c42b4dd0132e956e9acbc1f5d42e4682cb",
+  "docs/IBFC-HISTORICO-TERRITORIAL-FASE4.md": "1d77b8becdf4041fba28d75014187555201a4caaf20f6a99d38aa497d1e1d5af",
+  "docs/IBFC-CADERNO-TECNICO-MASTER.md": "05426fcd1ee6ffcdc593f204f304b51c47793890933aa67db98c629d7253d8ce",
+  "docs/IBFC-BACKLOG-CONSOLIDADO.md": "a678dbb6ff10aec24d6a6dfb53a7ff4192930d78b3806c9dccd7596891d99bc6"
 }

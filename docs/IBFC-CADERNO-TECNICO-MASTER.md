@@ -1,6 +1,6 @@
 # IBFC — Caderno técnico master de Ciência Eleitoral
 
-Versão 2.6.0 · build IBFC-CE-20261008-MAPAS-F3. Consolidado em 08/10/2026 a partir do projeto completo enviado, dos documentos existentes e do contexto de continuidade anexado. Este documento descreve código e requisitos; não certifica a instalação em produção.
+Versão 2.7.0 · build IBFC-CE-20261008-HISTORICO-F4. Consolidado em 08/10/2026 a partir do projeto completo enviado, dos documentos existentes e do contexto de continuidade anexado. Este documento descreve código e requisitos; não certifica a instalação em produção.
 
 ## Objetivo e limites
 
@@ -50,3 +50,7 @@ Novo submenu `comparacao`, componente `MultiComparison` e cálculo `multi-compar
 ## Incremento fase 3 — mapas lado a lado
 
 `ComparisonMaps` usa os relatórios já consultados, com escala comum e enquadramento conjunto. `comparison-maps.ts` preserva coordenadas próprias, zeros e ausência. `LeafletElectionMap` recebe opcionalmente posições de enquadramento compartilhadas; chamadas anteriores continuam funcionando. Movimento manual independente. Não inclui equivalência histórica nem PNG. Consulte `IBFC-MAPAS-COMPARATIVOS-FASE3.md`.
+
+## Incremento fase 4 — cobertura e mapas históricos
+
+`HistoricalTerritory` integra o modo Comparar 2022 e 2026 do explorador. `historical-coverage.ts` classifica cobertura por linha, preserva ausências/zeros e limita proporções ao conjunto retornado. Mapas consultam cada ano separadamente pela API existente, preservando arquivos individuais e projetando apenas coordenadas com ano identificado e não posterior ao ano consultado. Referências futuras/sem ano são ocultadas com aviso; relatórios originais não são alterados. Não é uma tabela oficial de correspondência histórica. Contexto da análise é preservado e consultas antigas são descartadas quando os filtros mudam. Sem migração nova. Instalação e limites: `IBFC-HISTORICO-TERRITORIAL-FASE4.md`.
