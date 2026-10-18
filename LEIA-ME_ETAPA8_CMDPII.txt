@@ -1,0 +1,13 @@
+ETAPA 8 — PAINEL GERENCIAL CBMDF / CMDP II
+
+Adicionar no GitHub:
+app/admin/cbmdf-cmdpii/financeiro/painel/page.tsx
+
+Rota:
+/admin/cbmdf-cmdpii/financeiro/painel
+
+Dependências: migrações das etapas 3, 4, 5 e 6 e perfis administrativos existentes.
+Não há novo SQL nesta etapa.
+
+Os valores de receitas/despesas são somatórios da amostra dos 1.000 lançamentos mais recentes, não totais históricos. Os totais de registros são contagens do banco.
+A compilação na Vercel e o funcionamento em produção ainda precisam ser validados.
