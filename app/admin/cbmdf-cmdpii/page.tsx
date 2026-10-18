@@ -30,6 +30,7 @@ export default async function CmdpiiPage({ searchParams }: { searchParams: Searc
     <div className="admin-heading"><div><span className="badge">OBSERVATÓRIO INSTITUCIONAL — ACESSO RESTRITO</span><h1>CBMDF / CMDP II</h1><p>Acervo documental, governança, transparência e auditoria com rastreabilidade.</p></div></div>
     {params.sucesso && <p role="status" style={{padding:12,background:"#dcfce7",color:"#14532d"}}>Registro salvo com sucesso.</p>}
     {params.erro && <p role="alert" style={{padding:12,background:"#fee2e2",color:"#7f1d1d"}}>Não foi possível concluir a operação ({params.erro}). Confira os dados e a configuração do Supabase.</p>}
+    <section className="admin-panel" style={{padding:20,marginBottom:20}}><h2>Auditoria financeira da APAM</h2><p>Receitas, despesas, fornecedores e referências de documentos. Os lançamentos são registros de trabalho, não conclusões de irregularidade.</p><a className="btn btn-primary" href="/admin/cbmdf-cmdpii/financeiro">Abrir auditoria financeira</a></section>
     <section className="admin-panel" style={{padding:24,marginBottom:20}}><h2>Novo registro institucional</h2><p>Novos registros são privados e classificados inicialmente como não verificados.</p>
       <form action={createCmdpiiRecord} style={{display:"grid",gap:12,marginTop:16}}>
         <label>Categoria <select name="kind" required style={{display:"block",width:"100%",padding:10}}>{categories.map(([key,label])=><option key={key} value={key}>{label}</option>)}</select></label>

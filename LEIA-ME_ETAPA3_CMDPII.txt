@@ -1,0 +1,23 @@
+IBFC — CBMDF / CMDP II — ETAPA 3: AUDITORIA FINANCEIRA
+
+ATENÇÃO: exige Etapas 1 e 2 instaladas. NÃO executa SQL automaticamente.
+
+SUBSTITUIR:
+app/admin/cbmdf-cmdpii/page.tsx
+
+ADICIONAR:
+app/admin/cbmdf-cmdpii/financeiro/page.tsx
+app/admin/cbmdf-cmdpii/financeiro/actions.ts
+supabase/migrations/20261018_ibfc_cmdpii_financeiro.sql
+
+ORDEM:
+1. Execute o SQL financeiro no Supabase SQL Editor e confirme sucesso.
+2. Envie os três arquivos TSX/TS ao GitHub nos caminhos acima.
+3. Aguarde a Vercel e teste com perfil admin/editor.
+
+SEGURANÇA E LIMITES:
+- Dados restritos por RLS a admin/editor; inserções vinculadas ao usuário.
+- Nenhuma publicação automática; lançamentos entram como 'pendente'.
+- Esta etapa não inclui edição, exclusão, conciliação automática, exportação ou anexos associados diretamente aos lançamentos.
+- Totais refletem no máximo 200 registros retornados; não equivalem a balanço contábil.
+- Não foi executado teste de deploy em produção.
