@@ -1,6 +1,6 @@
 "use client";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { AcademyReadingDayProgress, AcademyReadingEnrollment, AcademyReadingPlan, AcademyReadingPlanDay } from "@/types/domain";
+import type { AcademyReadingDayProgress, AcademyReadingEnrollment, AcademyReadingPlan, AcademyReadingPlanDay } from "../types/domain";
 
 export async function listReadingPlans(sb: SupabaseClient): Promise<AcademyReadingPlan[]> {
   const { data, error } = await sb.from("academy_reading_plans").select("*").eq("is_active", true).order("is_featured", { ascending: false }).order("created_at", { ascending: false });

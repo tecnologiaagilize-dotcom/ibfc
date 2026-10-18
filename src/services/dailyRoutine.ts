@@ -1,6 +1,6 @@
 "use client";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { DailyWord, SpiritualDailyRoutine } from "@/types/domain";
+import type { DailyWord, SpiritualDailyRoutine } from "../types/domain";
 
 export type RoutineStep = "read" | "reflected" | "prayed" | "practiced" | "shared";
 
