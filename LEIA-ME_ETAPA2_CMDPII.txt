@@ -1,0 +1,19 @@
+ETAPA 2 — IBFC / CBMDF-CMDP II
+
+ARQUIVOS NO ZIP E DESTINOS NO GITHUB:
+1. app/admin/cbmdf-cmdpii/page.tsx — SUBSTITUIR
+2. app/admin/cbmdf-cmdpii/actions.ts — ADICIONAR
+3. supabase/migrations/20261018_ibfc_cmdpii_storage.sql — ADICIONAR
+
+ANTES DE USAR:
+1. Confirmar execução da migração inicial 20261018_ibfc_cmdpii_observatory.sql no Supabase.
+2. Executar 20261018_ibfc_cmdpii_storage.sql no SQL Editor do Supabase.
+3. Publicar os dois arquivos de app no GitHub/main e conferir deploy Vercel.
+4. Entrar com usuário com perfil admin ou editor.
+
+ATENÇÃO:
+- Não publica dados automaticamente. Todo registro começa restrito.
+- Arquivos ficam em bucket privado. Download pela interface ainda não foi implementado.
+- Tamanho de upload também depende do limite do servidor Vercel/Next.js; até 10 MB no código, mas em algumas instalações o limite real é menor.
+- Validar permissões e upload no ambiente publicado antes de armazenar material sensível.
+- Não contém mudanças em outros módulos do IBFC.

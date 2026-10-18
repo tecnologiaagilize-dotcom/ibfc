@@ -1,30 +1,56 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { AdminShell } from "@/components/admin/AdminShell";
-import { BookOpen, Building2, FileSearch, Landmark, Scale, ShieldAlert, Users, Wallet } from "lucide-react";
+import { createCmdpiiRecord, uploadCmdpiiDocument } from "./actions";
 
 export const dynamic = "force-dynamic";
-const sections = [
-  { title: "Histórico e unidades", detail: "Cronologia, unidades, atos de criação e expansão.", icon: Building2 },
-  { title: "Legislação e boletins", detail: "Normas, portarias, atos e versões documentais.", icon: Scale },
-  { title: "Convênios e acordos", detail: "Instrumentos, vigências, aditivos e obrigações.", icon: BookOpen },
-  { title: "APAM e COSEA", detail: "Estatutos, assembleias, eleições e competências.", icon: Users },
-  { title: "Prestação de contas", detail: "Receitas, despesas, documentos e conciliações.", icon: Wallet },
-  { title: "Auditoria e evidências", detail: "Achados, hipóteses, fontes e trilha de revisão.", icon: ShieldAlert },
-  { title: "Acervo documental", detail: "Classificação, origem e integridade dos documentos.", icon: FileSearch },
-  { title: "Relatórios", detail: "Resultados auditáveis, pendências e encaminhamentos.", icon: Landmark },
+const categories = [
+  ["historico", "Histórico e unidades"], ["legislacao", "Legislação e boletins"],
+  ["convenio", "Convênios e acordos"], ["governanca", "Governança"],
+  ["apam", "APAM"], ["cosea", "COSEA"], ["financeiro", "Prestação de contas"],
+  ["auditoria", "Auditoria e evidências"], ["documento", "Acervo documental"],
 ];
-export default async function CmdpiiPage() {
+const statuses: Record<string,string> = {
+  relato_nao_verificado: "Relato não verificado", documento_recebido: "Documento recebido",
+  evidencia_verificada: "Evidência verificada", conclusao_fundamentada: "Conclusão fundamentada",
+};
+type SearchParams = Promise<{ erro?: string; sucesso?: string; tipo?: string }>;
+export default async function CmdpiiPage({ searchParams }: { searchParams: SearchParams }) {
   const db = await createClient();
   const { data: { user } } = await db.auth.getUser();
   if (!user) redirect("/admin/login");
-  const { data: admin } = await db.from("admin_profiles").select("id,role").eq("id",user.id).maybeSingle();
-  if (!admin || !["admin","editor"].includes(admin.role)) redirect("/admin");
-  const { data, error } = await db.from("ibfc_cmdpii_records").select("id,kind,title,status,created_at").order("created_at",{ascending:false}).limit(12);
+  const { data: admin } = await db.from("admin_profiles").select("role").eq("id",user.id).maybeSingle();
+  if (!admin || !["admin", "editor"].includes(admin.role)) redirect("/admin");
+  const params = await searchParams;
+  const filter = categories.some(([k]) => k === params.tipo) ? params.tipo : "";
+  let query = db.from("ibfc_cmdpii_records").select("id,kind,title,status,source_reference,event_date,created_at").order("created_at",{ascending:false}).limit(100);
+  if (filter) query = query.eq("kind",filter);
+  const { data, error } = await query;
   return <AdminShell email={user.email}>
-    <div className="admin-heading"><div><span className="badge">OBSERVATÓRIO INSTITUCIONAL</span><h1>CBMDF / CMDP II</h1><p>Governança, transparência, acervo documental e auditoria com rastreabilidade de evidências.</p></div></div>
-    <section className="admin-panel" style={{padding:24,marginBottom:20}}><h2>Áreas de trabalho</h2><div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(230px,1fr))",gap:16,marginTop:16}}>{sections.map(({title,detail,icon:Icon})=><div key={title} style={{border:"1px solid var(--border,#d9dfe6)",borderRadius:12,padding:18}}><Icon size={23}/><h3 style={{margin:"12px 0 6px"}}>{title}</h3><p>{detail}</p></div>)}</div></section>
-    <section className="admin-panel" style={{padding:24}}><h2>Registros recentes</h2>{error?<p>Banco de dados ainda não configurado. Aplique a migração <code>20261018_ibfc_cmdpii_observatory.sql</code> no Supabase para ativar os registros.</p>:data?.length?<div style={{overflowX:"auto"}}><table style={{width:"100%",textAlign:"left",borderCollapse:"collapse"}}><thead><tr><th>Título</th><th>Tipo</th><th>Situação</th><th>Data</th></tr></thead><tbody>{data.map(r=><tr key={r.id}><td style={{padding:8}}>{r.title}</td><td>{r.kind}</td><td>{r.status}</td><td>{new Date(r.created_at).toLocaleDateString("pt-BR")}</td></tr>)}</tbody></table></div>:<p>Nenhum registro cadastrado. O acervo inicia vazio para evitar dados presumidos ou acusações não verificadas.</p>}<p style={{marginTop:16}}>Classificação obrigatória: relato não verificado, documento recebido, evidência verificada ou conclusão fundamentada. Informações pessoais e materiais sensíveis não devem ser publicados.</p><Link href="/admin" className="btn btn-secondary">Voltar ao painel</Link></section>
+    <div className="admin-heading"><div><span className="badge">OBSERVATÓRIO INSTITUCIONAL — ACESSO RESTRITO</span><h1>CBMDF / CMDP II</h1><p>Acervo documental, governança, transparência e auditoria com rastreabilidade.</p></div></div>
+    {params.sucesso && <p role="status" style={{padding:12,background:"#dcfce7",color:"#14532d"}}>Registro salvo com sucesso.</p>}
+    {params.erro && <p role="alert" style={{padding:12,background:"#fee2e2",color:"#7f1d1d"}}>Não foi possível concluir a operação ({params.erro}). Confira os dados e a configuração do Supabase.</p>}
+    <section className="admin-panel" style={{padding:24,marginBottom:20}}><h2>Novo registro institucional</h2><p>Novos registros são privados e classificados inicialmente como não verificados.</p>
+      <form action={createCmdpiiRecord} style={{display:"grid",gap:12,marginTop:16}}>
+        <label>Categoria <select name="kind" required style={{display:"block",width:"100%",padding:10}}>{categories.map(([key,label])=><option key={key} value={key}>{label}</option>)}</select></label>
+        <label>Título <input name="title" minLength={5} maxLength={250} required style={{display:"block",width:"100%",padding:10}} /></label>
+        <label>Descrição / contexto <textarea name="description" rows={4} maxLength={10000} style={{display:"block",width:"100%",padding:10}} /></label>
+        <label>Referência da fonte / número do processo <input name="source_reference" maxLength={2000} style={{display:"block",width:"100%",padding:10}} /></label>
+        <label>Data do fato (opcional) <input type="date" name="event_date" style={{display:"block",padding:10}} /></label>
+        <button className="btn btn-primary" type="submit">Salvar registro restrito</button>
+      </form>
+    </section>
+    <section className="admin-panel" style={{padding:24,marginBottom:20}}><h2>Anexar documento</h2><p>PDF, JPG, PNG ou TXT, até 10 MB. Arquivos armazenados em bucket privado, sem link público.</p>
+      <form action={uploadCmdpiiDocument} encType="multipart/form-data" style={{display:"grid",gap:12,marginTop:16}}>
+        <label>Título do documento <input name="title" minLength={5} maxLength={250} required style={{display:"block",width:"100%",padding:10}} /></label>
+        <label>Origem / referência <input name="source_reference" maxLength={2000} style={{display:"block",width:"100%",padding:10}} /></label>
+        <label>Arquivo <input name="file" type="file" accept=".pdf,.jpg,.jpeg,.png,.txt" required style={{display:"block",padding:10}} /></label>
+        <button className="btn btn-primary" type="submit">Enviar documento restrito</button>
+      </form>
+    </section>
+    <section className="admin-panel" style={{padding:24}}><h2>Acervo e registros</h2><p>Até 100 registros recentes. A consulta é protegida pelas políticas de acesso do Supabase.</p>
+      <form method="get" style={{margin:"14px 0"}}><label>Filtrar categoria <select name="tipo" defaultValue={filter} style={{padding:8,marginLeft:8}}><option value="">Todas</option>{categories.map(([key,label])=><option key={key} value={key}>{label}</option>)}</select></label> <button type="submit" className="btn btn-secondary">Filtrar</button></form>
+      {error ? <p role="alert">Tabela indisponível. Aplique a migração inicial <code>20261018_ibfc_cmdpii_observatory.sql</code> no Supabase.</p> : data?.length ? <div style={{overflowX:"auto"}}><table style={{width:"100%",textAlign:"left",borderCollapse:"collapse"}}><thead><tr><th>Título</th><th>Categoria</th><th>Verificação</th><th>Fonte</th><th>Cadastro</th></tr></thead><tbody>{data.map(r=><tr key={r.id}><td style={{padding:8}}>{r.title}</td><td>{categories.find(([key])=>key===r.kind)?.[1] ?? r.kind}</td><td>{statuses[r.status] ?? r.status}</td><td>{r.source_reference || "—"}</td><td>{new Date(r.created_at).toLocaleDateString("pt-BR")}</td></tr>)}</tbody></table></div> : <p>Nenhum registro cadastrado nesta categoria.</p>}
+    </section>
   </AdminShell>;
 }
