@@ -1,0 +1,14 @@
+IBFC — Etapa 4: conciliação bancária APAM
+
+ARQUIVOS (somente novos ou modificados):
+1. supabase/migrations/20261018_ibfc_cmdpii_conciliacao.sql — NOVO. Executar no SQL Editor após migração financeira da Etapa 3.
+2. app/admin/cbmdf-cmdpii/financeiro/conciliacao/actions.ts — NOVO.
+3. app/admin/cbmdf-cmdpii/financeiro/conciliacao/page.tsx — NOVO.
+4. app/admin/cbmdf-cmdpii/financeiro/page.tsx — SUBSTITUIR (adiciona link para conciliação).
+
+ORDEM: executar SQL; publicar 3 arquivos TS/TSX; testar importação com CSV fictício e revisão; verificar RLS com conta sem privilégio.
+CSV: cabeçalho data;descricao;valor, datas YYYY-MM-DD, valores 1234.56 ou 1.234,56, negativos para despesas.
+Até 500 registros por importação, 1 MB por arquivo. A importação não armazena o CSV original: guarde o original em acervo protegido com cadeia de custódia.
+A identificação de duplicados utiliza conta, data, descrição, valor, nome do arquivo e número da linha; arquivos renomeados podem duplicar registros.
+Não é conciliação automática: o operador deve selecionar lançamento correspondente e verificar documentação. A interface lista no máximo 100 movimentações e 200 lançamentos; registros fora desses limites exigirão paginação futura.
+Migração e build NÃO executados em produção. Não presumir conclusão das etapas anteriores.

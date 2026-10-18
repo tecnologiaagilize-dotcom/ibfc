@@ -20,7 +20,7 @@ export default async function FinanceiroPage({ searchParams }: { searchParams: P
   const total = (kind: string) => rows.filter(r => r.entry_type === kind).reduce((sum, r) => sum + Number(r.amount), 0);
   const money = (value: number) => value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
   return <AdminShell email={user.email}>
-    <div className="admin-heading"><div><span className="badge">ACESSO RESTRITO</span><h1>Auditoria financeira — APAM</h1><p>Registro de movimentações para conferência documental. Nenhum lançamento implica, por si só, irregularidade.</p><a href="/admin/cbmdf-cmdpii">← Voltar ao observatório</a></div></div>
+    <div className="admin-heading"><div><span className="badge">ACESSO RESTRITO</span><h1>Auditoria financeira — APAM</h1><p>Registro de movimentações para conferência documental. Nenhum lançamento implica, por si só, irregularidade.</p><a href="/admin/cbmdf-cmdpii">← Voltar ao observatório</a> · <a href="/admin/cbmdf-cmdpii/financeiro/conciliacao">Abrir conciliação bancária →</a></div></div>
     {params.sucesso && <p role="status">Lançamento registrado.</p>}
     {params.erro && <p role="alert">Não foi possível salvar ({params.erro}). Verifique os campos e a migração financeira no Supabase.</p>}
     <section className="admin-panel" style={{padding:24,marginBottom:20}}><h2>Novo lançamento</h2>
