@@ -1,0 +1,20 @@
+IBFC — Etapa 5: alertas de auditoria
+
+ARQUIVOS NOVOS:
+1. supabase/migrations/20261018_ibfc_cmdpii_alertas.sql
+2. app/admin/cbmdf-cmdpii/financeiro/alertas/actions.ts
+3. app/admin/cbmdf-cmdpii/financeiro/alertas/page.tsx
+
+INSTALAÇÃO:
+1. Confirme que as migrações financeiras e de conciliação das etapas 3 e 4 foram aplicadas.
+2. Execute o SQL desta etapa no Supabase SQL Editor.
+3. Adicione os dois arquivos TSX/TS na pasta indicada, preservando as pastas.
+4. Commit na branch main e acompanhe o deploy na Vercel.
+5. Acesse /admin/cbmdf-cmdpii/financeiro/alertas
+
+ATENÇÃO:
+- Os alertas são triagem, não provas de ilícitos.
+- Limite de amostragem: 500 lançamentos e 500 transações, 150 alertas visíveis.
+- Não há IA externa, OCR, exportação de relatório ou conciliação automática nesta entrega.
+- É necessário testar permissões, migrations e comportamento em produção.
+- A revisão registra histórico no banco, mas não há interface para consultar o histórico nesta etapa.
