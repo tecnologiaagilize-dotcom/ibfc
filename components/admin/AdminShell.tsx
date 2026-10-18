@@ -2,7 +2,7 @@ import "./admin-science-menu.css";
 import { SCIENCE_VIEWS } from "@/components/science/ScienceNav";
 import Image from "next/image";
 import Link from "next/link";
-import { BarChart3, Users, GraduationCap, FileText, Settings, ExternalLink, CalendarDays, Vote, Bell, ShieldCheck, ScrollText } from "lucide-react";
+import { BarChart3, Users, GraduationCap, FileText, Settings, ExternalLink, CalendarDays, Vote, Bell, ShieldCheck, ScrollText, School } from "lucide-react";
 
 const items = [
   ["Painel", "/admin", BarChart3],
@@ -17,6 +17,7 @@ const items = [
   ["Conteúdo", "/admin/conteudo", FileText],
   ["Notificações", "/admin/notificacoes", Bell],
   ["Auditoria", "/admin/auditoria", ScrollText],
+  ["CBMDF / CMDP II", "/admin/cbmdf-cmdpii", School],
   ["Configurações", "/admin/configuracoes", Settings],
 ] as const;
 
