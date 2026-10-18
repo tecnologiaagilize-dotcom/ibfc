@@ -1,0 +1,16 @@
+ETAPA 7 — RELATÓRIO IMPRIMÍVEL / PDF DOS DOSSIÊS
+
+Arquivo novo:
+app/admin/cbmdf-cmdpii/financeiro/dossies/[id]/relatorio/page.tsx
+
+NÃO substitua o page.tsx da listagem de dossiês. NÃO é necessário SQL novo.
+
+Após o deploy, abra /admin/cbmdf-cmdpii/financeiro/dossies e copie o ID de um dossiê.
+Acesse /admin/cbmdf-cmdpii/financeiro/dossies/ID_DO_DOSSIE/relatorio
+No navegador, Ctrl+P > Destino: Salvar como PDF.
+
+O relatório consulta o banco ao abrir, valida a sessão e o perfil admin/editor e inclui evidências, conclusão e trilha de eventos. NÃO inclui o conteúdo binário dos documentos e NÃO assina digitalmente o relatório. Não compartilhe PDFs sensíveis sem revisão e autorização.
+
+Limite de segurança: se houver mais de 1000 evidências ou eventos, o relatório é explicitamente marcado como PARCIAL. Não utilize como relatório completo.
+
+Pré-requisito: migração SQL da Etapa 6 aplicada e políticas de acesso em funcionamento. Build/produção ainda não validados.
