@@ -1,0 +1,22 @@
+IBFC — ETAPA 6 — DOSSIÊS DOCUMENTAIS
+
+Arquivos novos (preservar as pastas):
+- app/admin/cbmdf-cmdpii/financeiro/dossies/page.tsx
+- app/admin/cbmdf-cmdpii/financeiro/dossies/actions.ts
+- supabase/migrations/20261018_ibfc_cmdpii_dossies.sql
+
+Implantação:
+1. Confirme que as migrações das Etapas 1 a 5 foram executadas com sucesso.
+2. Execute o SQL desta etapa no SQL Editor do Supabase.
+3. Adicione os arquivos ao GitHub (branch main), mantendo os caminhos.
+4. Confira o deploy da Vercel.
+5. Acesse /admin/cbmdf-cmdpii/financeiro/dossies com perfil admin/editor.
+6. Teste criação de dossiê, vínculo de referência, alteração de situação e histórico.
+
+Limitações:
+- O vínculo é uma referência textual ao documento ou registro existente; não é upload, nem valida automaticamente o ID informado.
+- Não há geração de PDF nem assinatura digital nesta etapa.
+- A trilha de eventos é somente de acréscimo para usuários comuns, mas não substitui auditoria externa do banco.
+- O bloqueio de alteração após encerramento está nas ações da interface, não é uma restrição universal de banco; integrações externas precisam respeitar a mesma regra.
+- As listas são limitadas a 100 dossiês e 1.000 evidências/eventos. Não devem ser tratadas como auditoria exaustiva.
+- Não testado em Vercel/Supabase de produção. Validar antes de armazenar informações sensíveis.
