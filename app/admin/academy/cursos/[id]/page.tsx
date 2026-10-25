@@ -1,0 +1,23 @@
+import {redirect,notFound} from "next/navigation";
+import {createClient} from "@/lib/supabase/server";
+import {AdminShell} from "@/components/admin/AdminShell";
+import {addAcademyModule,addAcademyLesson,addAcademyResource,changeAcademyCourseStatus} from "@/app/admin/academy/actions";
+export default async function Page({params}:{params:Promise<{id:string}>}){
+ const {id}=await params, db=await createClient(),{data:{user}}=await db.auth.getUser();
+ if(!user)redirect("/admin/login");
+ const {data:staff}=await db.from("admin_profiles").select("role").eq("id",user.id).maybeSingle();
+ if(!staff||!["admin","editor"].includes(staff.role))redirect("/membro");
+ const {data:course}=await db.from("academy_courses").select("*").eq("id",id).maybeSingle();
+ if(!course)notFound();
+ const {data:mods}=await db.from("academy_modules").select("id,title,position").eq("course_id",id).order("position");
+ const ids=(mods??[]).map(x=>x.id);
+ const {data:lessons}=ids.length?await db.from("academy_lessons").select("id,module_id,title,status").in("module_id",ids):{data:[]};
+ return <AdminShell email={user.email}><h1>{course.title}</h1><p>Nova IBFC Academy — {course.status}</p>
+ <section className="admin-panel" style={{padding:20,marginBottom:20}}><h2>Publicação</h2>
+ <form action={changeAcademyCourseStatus}><input type="hidden" name="id" value={id}/><select name="status" className="field" defaultValue={course.status}><option value="draft">Rascunho</option><option value="published">Publicado</option><option value="archived">Arquivado</option></select><button className="btn btn-primary">Salvar</button></form></section>
+ <section className="admin-panel" style={{padding:20,marginBottom:20}}><h2>Adicionar módulo</h2><form action={addAcademyModule}><input type="hidden" name="course_id" value={id}/><input className="field" name="title" placeholder="Semana 1" required/><input className="field" name="position" type="number" min={0} defaultValue={(mods??[]).length+1}/><button className="btn btn-primary">Criar módulo</button></form></section>
+ {(mods??[]).map(m=><section className="admin-panel" style={{padding:20,marginBottom:20}} key={m.id}><h2>{m.position}. {m.title}</h2>
+ <form action={addAcademyLesson} className="course-form"><input type="hidden" name="course_id" value={id}/><input type="hidden" name="module_id" value={m.id}/><label>Título<input className="field" name="title" required/></label><label>Ordem<input className="field" name="position" type="number" min={0} defaultValue={1}/></label><label>Duração (minutos)<input className="field" type="number" name="duration_minutes" defaultValue={20}/></label><label>Provedor<select className="field" name="video_provider"><option value="">Sem vídeo</option><option value="youtube">YouTube</option><option value="vimeo">Vimeo</option><option value="external">Externo</option></select></label><label>Identificador do vídeo<input className="field" name="video_id"/></label><label>URL do vídeo<input className="field" name="video_url" type="url"/></label><label>Conteúdo da aula<textarea className="field" name="content_md"/></label><button className="btn btn-primary">Adicionar aula</button></form>
+ {(lessons??[]).filter(l=>l.module_id===m.id).map(l=><div key={l.id}><h3>{l.title} ({l.status})</h3><form action={addAcademyResource}><input type="hidden" name="course_id" value={id}/><input type="hidden" name="lesson_id" value={l.id}/><input className="field" name="title" placeholder="Nome da referência" required/><input className="field" name="resource_url" type="url" placeholder="https://..." required/><select className="field" name="resource_type"><option value="reading">Leitura</option><option value="video">Vídeo</option><option value="exercise">Exercício</option><option value="repository">Repositório</option><option value="document">Documento</option></select><input className="field" name="attribution" placeholder="Fonte"/><input className="field" name="license_notes" placeholder="Licença"/><button className="btn btn-secondary">Adicionar material</button></form></div>)}</section>)}
+ </AdminShell>;
+}
