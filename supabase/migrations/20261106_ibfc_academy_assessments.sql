@@ -51,7 +51,7 @@ drop policy if exists academy_certificates_read on public.academy_certificates;
 create policy academy_certificates_read on public.academy_certificates for select to authenticated using(user_id=(select auth.uid()));
 -- Functions run with definer privileges, do not leak correct_option to the client.
 create or replace function public.academy_get_questions(p_assessment uuid)
-returns table(id uuid, position integer, prompt text, options jsonb)
+returns table(id uuid, "position" integer, prompt text, options jsonb)
 language plpgsql security definer set search_path='' as $$
 begin
  if auth.uid() is null then raise exception 'Não autenticado'; end if;
