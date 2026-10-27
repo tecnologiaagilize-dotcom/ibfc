@@ -87,3 +87,19 @@ export async function updateAcademyLesson(data:FormData){
  if(error)throw new Error(error.message);
  revalidatePath("/admin/academy/cursos/"+courseId);redirect(resultPath("Aula atualizada.",courseId));
 }
+
+export async function createAcademyAssessment(form:FormData){
+ const db=await staffClient(),course_id=field(form,"course_id"),title=field(form,"title"),passing_score=positive(form,"passing_score");
+ if(!uuid(course_id)||!title||passing_score>100)throw new Error("Avaliação inválida.");
+ const {error}=await db.from("academy_assessments").insert({course_id,title,passing_score,status:"draft"});
+ if(error)throw new Error(error.message);
+ revalidatePath("/admin/academy/cursos/"+course_id);redirect(resultPath("Avaliação criada.",course_id));
+}
+export async function addAcademyQuestion(form:FormData){
+ const db=await staffClient(),course=field(form,"course_id"),assessment=field(form,"assessment_id"),prompt=field(form,"prompt");
+ const options=[0,1,2,3].map(i=>field(form,"option_"+i)),correct_option=positive(form,"correct_option");
+ if(!uuid(course)||!uuid(assessment)||!prompt||options.some(o=>!o)||correct_option>3)throw new Error("Questão inválida.");
+ const {error}=await db.from("academy_questions").insert({assessment_id:assessment,prompt,options,correct_option,position:positive(form,"position")});
+ if(error)throw new Error(error.message);
+ revalidatePath("/admin/academy/cursos/"+course);redirect(resultPath("Questão criada.",course));
+}
