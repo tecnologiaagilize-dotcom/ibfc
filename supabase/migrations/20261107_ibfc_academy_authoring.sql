@@ -1,0 +1,10 @@
+begin;
+drop policy if exists academy_staff_assessments_select on public.academy_assessments;
+create policy academy_staff_assessments_select on public.academy_assessments for select to authenticated using (exists(select 1 from public.admin_profiles p where p.id=auth.uid() and p.role in ('admin','editor')));
+drop policy if exists academy_staff_assessments_insert on public.academy_assessments;
+create policy academy_staff_assessments_insert on public.academy_assessments for insert to authenticated with check (exists(select 1 from public.admin_profiles p where p.id=auth.uid() and p.role in ('admin','editor')));
+drop policy if exists academy_staff_questions_select on public.academy_questions;
+create policy academy_staff_questions_select on public.academy_questions for select to authenticated using (exists(select 1 from public.admin_profiles p where p.id=auth.uid() and p.role in ('admin','editor')));
+drop policy if exists academy_staff_questions_insert on public.academy_questions;
+create policy academy_staff_questions_insert on public.academy_questions for insert to authenticated with check (exists(select 1 from public.admin_profiles p where p.id=auth.uid() and p.role in ('admin','editor')));
+commit;
