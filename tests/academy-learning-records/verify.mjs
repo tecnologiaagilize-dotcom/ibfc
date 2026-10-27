@@ -1,0 +1,24 @@
+import {PGlite} from '@electric-sql/pglite';
+import fs from 'node:fs';
+const db=new PGlite();
+await db.exec(`create role anon; create role authenticated; create schema auth; create table auth.users(id uuid primary key); create function auth.uid() returns uuid language sql as $$select nullif(current_setting('app.uid',true),'')::uuid$$;create table academy_courses(id uuid primary key,status text);create table academy_modules(id uuid primary key,course_id uuid);create table academy_lessons(id uuid primary key,module_id uuid,status text);create table academy_progress(user_id uuid,lesson_id uuid);create table academy_enrollments(course_id uuid,user_id uuid);`);
+const r=new URL('../../',import.meta.url).pathname;
+await db.exec(fs.readFileSync(r+'supabase/migrations/20261106_ibfc_academy_assessments.sql','utf8'));
+await db.exec(fs.readFileSync(r+'supabase/migrations/20261108_ibfc_academy_learning_records.sql','utf8'));
+const u='10000000-0000-4000-8000-000000000001',c='20000000-0000-4000-8000-000000000001',a='30000000-0000-4000-8000-000000000001',q='40000000-0000-4000-8000-000000000001',request='50000000-0000-4000-8000-000000000001';
+await db.exec(`insert into auth.users values('${u}');insert into academy_courses values('${c}','published');insert into academy_enrollments values('${c}','${u}');insert into academy_assessments(id,course_id,title,status) values('${a}','${c}','Teste','published');insert into academy_questions(id,assessment_id,prompt,options,correct_option) values('${q}','${a}','Exemplo','["A","B"]',1);select set_config('app.uid','${u}',false);`);
+const submit=async(key,answers,mode='practice')=>(await db.query('select * from academy_submit_assessment($1,$2::jsonb,$3,$4)',[a,JSON.stringify(answers),key,mode])).rows[0];
+const first=await submit(request,{[q]:0});const repeat=await submit(request,{[q]:0});if(first.attempt_id!==repeat.attempt_id)throw Error('duplicate attempt');
+if((await db.query('select * from academy_certificates')).rows.length)throw Error('practice certificate');
+if((await db.query('select * from academy_responses where not is_correct')).rows.length!==1)throw Error('missing error');
+for(const answers of [{wrong:0},{[q]:2},{[q]:'1'},{[q]:null}]){let rejected=false;try{await submit(crypto.randomUUID(),answers)}catch{rejected=true}if(!rejected)throw Error('invalid accepted');}
+await db.exec(`update academy_questions set prompt='Alterado',correct_option=0 where id='${q}';`);
+const snapshot=(await db.query('select prompt,correct_option from academy_responses')).rows[0];if(snapshot.prompt!=='Exemplo'||snapshot.correct_option!==1)throw Error('snapshot changed');
+await db.exec(`insert into academy_modules values('60000000-0000-4000-8000-000000000001','${c}');insert into academy_lessons values('70000000-0000-4000-8000-000000000001','60000000-0000-4000-8000-000000000001','published');`);
+let blocked=false;try{await submit(crypto.randomUUID(),{[q]:0},'assessment')}catch{blocked=true}if(!blocked)throw Error('incomplete certified');
+await db.exec(`insert into academy_progress values('${u}','70000000-0000-4000-8000-000000000001');`);
+const cert=await submit(crypto.randomUUID(),{[q]:0},'assessment');if(!cert.certificate_code)throw Error('missing certificate');
+await db.exec(`grant usage on schema auth to authenticated; set role authenticated; select set_config('app.uid','10000000-0000-4000-8000-000000000002',false);`);
+if((await db.query('select * from academy_responses')).rows.length)throw Error('RLS leak');
+console.log('PASS: SQL migration, grading, replay, input rejection, practice, snapshots, certificate, RLS');
+await db.close();
