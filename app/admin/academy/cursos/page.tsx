@@ -3,6 +3,7 @@ import {redirect} from "next/navigation";
 import {AdminShell} from "@/components/admin/AdminShell";
 import {createClient} from "@/lib/supabase/server";
 import {createAcademyCourse} from "@/app/admin/academy/actions";
+import {installAcademyPilotCourse} from "@/app/admin/academy/install-pilot";
 export const dynamic="force-dynamic";
 export default async function Courses({searchParams}:{searchParams:Promise<{message?:string}>}){
  const db=await createClient(),{data:{user}}=await db.auth.getUser();
@@ -14,6 +15,7 @@ export default async function Courses({searchParams}:{searchParams:Promise<{mess
  return <AdminShell email={user.email}><div className="admin-heading"><div><span className="badge">IBFC ACADEMY</span><h1>Cursos e disciplinas</h1><p>Nova estrutura acadêmica academy_*, sem tabelas antigas.</p></div></div>
  {message&&<p role="status">{message}</p>}
  {error&&<p role="alert">Falha no catálogo: {error.message}. Verifique as políticas de acesso e a migração.</p>}
+ <section className="admin-panel" style={{padding:24,marginBottom:24}}><span className="badge">CURSO INAUGURAL</span><h2>Empreendedorismo Digital, Vendas e Automação com IA</h2><p>240 horas · 12 disciplinas · laboratório Agilize CRM. Instale o currículo inicial como rascunho no banco de dados para começar a produzir as aulas.</p><form action={installAcademyPilotCourse}><button type="submit" className="btn btn-primary">Instalar curso-piloto e 12 módulos</button></form><small>Operação manual, disponível apenas para administradores e editores. Não publica o curso nem envia mensagens a alunos.</small></section>
  <section className="admin-panel" style={{padding:24,marginBottom:24}}><h2>Criar curso</h2><form action={createAcademyCourse} className="course-form">
  <label>Título<input className="field" name="title" required/></label><label>Identificador (opcional)<input className="field" name="slug" placeholder="introducao-tecnologia-ia"/></label>
  <label>Descrição<textarea className="field" name="summary"/></label>
