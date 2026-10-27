@@ -65,6 +65,9 @@ export async function addAcademyResource(data:FormData){
  if(!uuid(lessonId)||!uuid(courseId)||!title||!["reading","video","exercise","repository","document"].includes(type))throw new Error("Recurso inválido.");
  let url:URL;try{url=new URL(value)}catch{throw new Error("URL inválida");}
  if(!["https:","http:"].includes(url.protocol))throw new Error("URL não permitida.");
+ const {data:lesson}=await db.from("academy_lessons").select("module_id").eq("id",lessonId).maybeSingle();
+ const {data:parent}=lesson?await db.from("academy_modules").select("id").eq("id",lesson.module_id).eq("course_id",courseId).maybeSingle():{data:null};
+ if(!parent)throw new Error("A aula não pertence ao curso.");
  const {error}=await db.from("academy_resources").insert({lesson_id:lessonId,title,resource_url:url.toString(),resource_type:type,attribution:field(data,"attribution"),license_notes:field(data,"license_notes"),checked_at:new Date().toISOString()});
  if(error)redirect(resultPath(error.message,courseId));
  revalidatePath("/admin/academy/cursos/"+courseId);redirect(resultPath("Material adicionado.",courseId));
@@ -99,6 +102,8 @@ export async function addAcademyQuestion(form:FormData){
  const db=await staffClient(),course=field(form,"course_id"),assessment=field(form,"assessment_id"),prompt=field(form,"prompt");
  const options=[0,1,2,3].map(i=>field(form,"option_"+i)),correct_option=positive(form,"correct_option");
  if(!uuid(course)||!uuid(assessment)||!prompt||options.some(o=>!o)||correct_option>3)throw new Error("Questão inválida.");
+ const {data:parent}=await db.from("academy_assessments").select("id").eq("id",assessment).eq("course_id",course).maybeSingle();
+ if(!parent)throw new Error("A avaliação não pertence ao curso.");
  const {error}=await db.from("academy_questions").insert({assessment_id:assessment,prompt,options,correct_option,position:positive(form,"position")});
  if(error)throw new Error(error.message);
  revalidatePath("/admin/academy/cursos/"+course);redirect(resultPath("Questão criada.",course));
