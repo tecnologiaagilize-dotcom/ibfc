@@ -69,3 +69,21 @@ export async function addAcademyResource(data:FormData){
  if(error)redirect(resultPath(error.message,courseId));
  revalidatePath("/admin/academy/cursos/"+courseId);redirect(resultPath("Material adicionado.",courseId));
 }
+
+export async function updateAcademyCourse(data:FormData){
+ const db=await staffClient(),id=field(data,"course_id"),title=field(data,"title");
+ if(!uuid(id)||!title)throw new Error("Dados inválidos.");
+ const {error}=await db.from("academy_courses").update({title,summary:field(data,"summary"),estimated_hours:positive(data,"estimated_hours"),updated_at:new Date().toISOString()}).eq("id",id);
+ if(error)throw new Error(error.message);
+ revalidatePath("/admin/academy/cursos/"+id);redirect(resultPath("Curso atualizado.",id));
+}
+export async function updateAcademyLesson(data:FormData){
+ const db=await staffClient(),id=field(data,"lesson_id"),courseId=field(data,"course_id"),title=field(data,"title");
+ if(!uuid(id)||!uuid(courseId)||!title)throw new Error("Dados inválidos.");
+ const {data:modules}=await db.from("academy_modules").select("id").eq("course_id",courseId);
+ const ids=(modules??[]).map(m=>m.id);
+ if(!ids.length)throw new Error("Curso inválido.");
+ const {error}=await db.from("academy_lessons").update({title,description:field(data,"description"),content_md:field(data,"content_md"),duration_minutes:positive(data,"duration_minutes")}).eq("id",id).in("module_id",ids);
+ if(error)throw new Error(error.message);
+ revalidatePath("/admin/academy/cursos/"+courseId);redirect(resultPath("Aula atualizada.",courseId));
+}
