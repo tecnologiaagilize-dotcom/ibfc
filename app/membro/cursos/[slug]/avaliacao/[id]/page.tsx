@@ -1,9 +1,11 @@
+import {randomUUID} from "node:crypto";
 import Link from "next/link";
 import {notFound,redirect} from "next/navigation";
 import {createClient} from "@/lib/supabase/server";
 import {submitAcademyAssessment} from "./submit";
 export const dynamic="force-dynamic";
-export default async function Assessment({params}:{params:Promise<{slug:string,id:string}>}){
+export default async function Assessment({params,searchParams}:{params:Promise<{slug:string,id:string}>,searchParams:Promise<{error?:string}>}){
+ const errorMessage=(await searchParams).error;
  const {slug,id}=await params,db=await createClient(),{data:{user}}=await db.auth.getUser();
  if(!user)redirect("/entrar");
  const {data:course}=await db.from("academy_courses").select("id,title").eq("slug",slug).eq("status","published").maybeSingle();
@@ -15,7 +17,9 @@ export default async function Assessment({params}:{params:Promise<{slug:string,i
  const {data:questions,error}=await db.rpc("academy_get_questions",{p_assessment:id});
  if(error)return <main className="member-area"><p role="alert">Não foi possível carregar a avaliação: {error.message}</p></main>;
  return <main className="member-area"><header className="member-top"><Link href={`/membro/cursos/${slug}`} className="member-logo">IBFC <small>ACADEMY</small></Link></header><section className="member-content"><div className="academy-hero"><span className="badge">AVALIAÇÃO</span><h1>{assessment.title}</h1><p>Nota mínima: {assessment.passing_score}%</p></div>
+ {errorMessage&&<p role="alert">{errorMessage.slice(0,300)}</p>}
  <form action={submitAcademyAssessment} className="member-panel" style={{padding:24}}>
+ <input type="hidden" name="request_id" value={randomUUID()}/><label>Modalidade <select name="mode" defaultValue="practice"><option value="practice">Prática — sem certificado</option><option value="assessment">Avaliação certificadora — requer aulas concluídas</option></select></label>
  <input type="hidden" name="assessment_id" value={id}/><input type="hidden" name="slug" value={slug}/>
  {(questions??[]).map((q:{id:string;position:number;prompt:string;options:string[]})=><fieldset key={q.id} style={{border:0,marginBottom:24}}><legend><strong>{q.position}. {q.prompt}</strong></legend>{q.options.map((option,index)=><label key={index} style={{display:"block",marginTop:10}}><input type="radio" name={q.id} value={index} required/> {option}</label>)}</fieldset>)}
  {questions?.length?<button className="btn btn-primary">Enviar avaliação</button>:<p>Ainda não há questões publicadas.</p>}
