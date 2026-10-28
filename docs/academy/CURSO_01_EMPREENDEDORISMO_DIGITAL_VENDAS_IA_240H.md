@@ -52,3 +52,7 @@ Respostas de bots devem se identificar como automatizadas quando necessário, in
 5. Publicar por coortes após teste com aluno piloto.
 
 **Distinção:** 40 horas é adequado para uma introdução; 240 horas é uma proposta mais coerente para formação prática avançada, embora proficiência especializada dependa também de experiência contínua e resultados demonstrados.
+
+### Produção pedagógica entregue — Disciplina 1
+
+A [Disciplina 1 — Mentalidade Empreendedora e Modelos de Negócios](disciplina-01/README.md) possui oito aulas completas de 150 minutos de dedicação ativa (20 h), 16 questões formativas comentadas, laboratório da oferta CRM, caderno preenchível, critérios de avaliação e fontes consultadas. O [registro de implementação](disciplina-01/IMPLEMENTACAO.md) distingue código, instalação em rascunho e publicação. A existência desses arquivos não comprova cadastro no Supabase. As disciplinas 2–12 continuam como matriz a produzir.
