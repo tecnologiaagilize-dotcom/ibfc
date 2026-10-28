@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "tsc --noEmit",
-    "check": "tsc --noEmit"
+    "check": "tsc --noEmit",
+    "test:academy-discipline-one": "node scripts/academy/build-discipline-one.mjs --check && node tests/academy-discipline-one/verify.mjs",
+    "content:academy-discipline-one": "node scripts/academy/build-discipline-one.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.7.0",
@@ -22,6 +24,7 @@
     "react-simple-maps": "^3.0.0"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "^0.5.12",
     "@tailwindcss/postcss": "^4.1.0",
     "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",

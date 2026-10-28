@@ -1,0 +1,61 @@
+import {PGlite} from '@electric-sql/pglite';
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+const root=new URL('../../',import.meta.url);
+const read=p=>fs.readFileSync(new URL(p,root),'utf8');
+const db=new PGlite();
+try {
+ await db.exec(`create role anon; create role authenticated; create schema auth;
+ create table auth.users(id uuid primary key);
+ create function auth.uid() returns uuid language sql as $$select nullif(current_setting('app.uid',true),'')::uuid$$;
+ create table admin_profiles(id uuid primary key,role text);
+ grant usage on schema public,auth to anon,authenticated;
+ grant select on admin_profiles to authenticated;`);
+ await db.exec(read('supabase/migrations/20261103_ibfc_academy_foundation.sql'));
+ await db.exec(read('supabase/migrations/20261104_ibfc_academy_staff_policies.sql'));
+ await db.exec(`grant select,insert,update,delete on all tables in schema public to authenticated;`);
+ await db.exec(read('supabase/migrations/20261109_ibfc_academy_discipline_one.sql'));
+ const payload=JSON.parse(read('lib/academy/discipline-one.json'));
+ const admin='10000000-0000-4000-8000-000000000001',editor='10000000-0000-4000-8000-000000000002',student='10000000-0000-4000-8000-000000000003';
+ const course='20000000-0000-4000-8000-000000000001',mod='30000000-0000-4000-8000-000000000001';
+ await db.exec(`insert into auth.users values('${admin}'),('${editor}'),('${student}');insert into admin_profiles values('${admin}','admin'),('${editor}','editor');
+ insert into academy_courses(id,slug,title,status) values('${course}','empreendedorismo-digital-vendas-automacao-ia','Piloto','draft');
+ insert into academy_modules(id,course_id,title,position) values('${mod}','${course}','01 — Mentalidade empreendedora e modelos de negócios',1);
+ set role authenticated;`);
+ const asUser=async u=>db.query("select set_config('app.uid',$1,false)",[u]);
+ const install=async(c=course,p=payload)=>(await db.query('select academy_install_discipline_one($1,$2::jsonb) as result',[c,JSON.stringify(p)])).rows[0].result;
+ await asUser(student);await assert.rejects(install(),/permissão/i);
+ await db.exec('set role anon');await assert.rejects(install(),/permission denied/i);await db.exec('set role authenticated');
+ await asUser(admin);await assert.rejects(install(course,{...payload,lessons:[]}),/Pacote/i);
+ // A conflict at the last position must roll back the first seven inserts.
+ await db.exec(`insert into academy_lessons(module_id,position,title,content_md) values('${mod}',8,'Autoral','Não substituir');`);
+ await assert.rejects(install(),/Conflito/i);
+ assert.equal((await db.query('select count(*)::int as n from academy_lessons')).rows[0].n,1);
+ await db.exec(`delete from academy_lessons where module_id='${mod}';`);
+ const legacy=read('app/admin/academy/install-pilot.ts').match(/const lessonText=`([\s\S]*?)`;/)[1];
+ await db.query(`insert into academy_lessons(module_id,position,title,content_md,status,duration_minutes,description) values($1,1,$2,$3,'draft',60,'Conceitos, estudo de caso Agilize CRM, exercícios e ficha de diagnóstico.')`,[mod,'Aula 1 — Diagnóstico do negócio e proposta de valor',legacy]);
+ const legacyId=(await db.query('select id from academy_lessons')).rows[0].id;
+ // Legacy lesson with learner history must never be replaced.
+ await db.exec('reset role');await db.query('insert into academy_progress(user_id,lesson_id) values($1,$2)',[student,legacyId]);await db.exec('set role authenticated');
+ await assert.rejects(install(),/Conflito/i);
+ await db.exec('reset role');await db.exec('delete from academy_progress');await db.exec('set role authenticated');
+ const first=await install();assert.equal(first.inserted,7);assert.equal(first.upgraded,1);
+ const count=async table=>(await db.query(`select count(*)::int as n from ${table}`)).rows[0].n;
+ assert.equal(await count('academy_lessons'),8);
+ assert.equal((await db.query('select sum(duration_minutes)::int as n from academy_lessons')).rows[0].n,1200);
+ assert.equal((await db.query("select count(*)::int as n from academy_lessons where status <> 'draft'")).rows[0].n,0);
+ assert.equal((await db.query('select id from academy_lessons where position=1')).rows[0].id,legacyId);
+ const resourceCount=await count('academy_resources');assert.ok(resourceCount>0);
+ await asUser(editor);const second=await install();assert.equal(second.inserted,0);assert.equal(second.unchanged,8);assert.equal(await count('academy_resources'),resourceCount);
+ // Existing author edits are protected, including a draft at position 8.
+ await db.exec(`update academy_lessons set content_md='Edição do professor' where position=8;`);
+ await assert.rejects(install(),/Conflito/i);
+ assert.equal((await db.query('select content_md from academy_lessons where position=8')).rows[0].content_md,'Edição do professor');
+ await db.exec(`update academy_courses set status='published' where id='${course}';`);
+ await assert.rejects(install(),/rascunho/i);
+ await db.exec(`update academy_courses set status='draft' where id='${course}';insert into academy_courses(id,slug,title) values('20000000-0000-4000-8000-000000000002','outro','Outro');`);
+ await assert.rejects(install('20000000-0000-4000-8000-000000000002'),/rascunho/i);
+ await asUser(student);assert.equal(await count('academy_lessons'),0);assert.equal(await count('academy_resources'),0);
+ assert.equal((await db.query("select to_regclass('public.academy_assessments') as t")).rows[0].t,null);
+ console.log('PASS: admin/editor, anonymous/student denial, payload, transactional rollback, legacy/history protection, 8 drafts/1200min, idempotency, edit protection, course guard and RLS.');
+} finally {await db.close();}
