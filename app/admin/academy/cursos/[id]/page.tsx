@@ -2,7 +2,9 @@ import {redirect,notFound} from "next/navigation";
 import {createClient} from "@/lib/supabase/server";
 import {AdminShell} from "@/components/admin/AdminShell";
 import {addAcademyModule,addAcademyLesson,addAcademyResource,changeAcademyCourseStatus,updateAcademyCourse,updateAcademyLesson,createAcademyAssessment,addAcademyQuestion} from "@/app/admin/academy/actions";
-export default async function Page({params}:{params:Promise<{id:string}>}){
+import {installAcademyDisciplineOne} from "@/app/admin/academy/install-discipline-one";
+export default async function Page({params,searchParams}:{params:Promise<{id:string}>,searchParams:Promise<{message?:string}>}){
+ const {message}=await searchParams;
  const {id}=await params, db=await createClient(),{data:{user}}=await db.auth.getUser();
  if(!user)redirect("/admin/login");
  const {data:staff}=await db.from("admin_profiles").select("role").eq("id",user.id).maybeSingle();
@@ -14,6 +16,13 @@ export default async function Page({params}:{params:Promise<{id:string}>}){
  const {data:lessons}=ids.length?await db.from("academy_lessons").select("id,module_id,title,status,description,content_md,duration_minutes").in("module_id",ids):{data:[]};
  const {data:assessments}=await db.from("academy_assessments").select("id,title,status,passing_score").eq("course_id",id);
  return <AdminShell email={user.email}><h1>{course.title}</h1><p>Nova IBFC Academy — {course.status}</p>
+ {message&&<p role="status">{message.slice(0,500)}</p>}
+ {course.slug==="empreendedorismo-digital-vendas-automacao-ia"&&<section className="admin-panel" style={{padding:20,marginBottom:20}}>
+ <h2>Disciplina 1 — Mentalidade Empreendedora e Modelos de Negócios</h2>
+ <p>8 aulas completas · 20 horas de estudo e prática · 16 questões formativas · caderno do laboratório e fontes. O instalador preserva edições e interrompe a operação em caso de conflito.</p>
+ <p>Requer a migração 20261109 validada e o curso em rascunho. Não publica aulas nem emite certificado.</p>
+ <form action={installAcademyDisciplineOne}><input type="hidden" name="course_id" value={id}/><button className="btn btn-primary" disabled={course.status!=="draft"}>Instalar Disciplina 1 em rascunho</button></form>
+ </section>}
  <section className="admin-panel" style={{padding:20,marginBottom:20}}><h2>Editar curso</h2><form action={updateAcademyCourse}><input type="hidden" name="course_id" value={id}/><input className="field" name="title" defaultValue={course.title} required/><textarea className="field" name="summary" defaultValue={course.summary??""}/><input className="field" name="estimated_hours" type="number" min={0} defaultValue={course.estimated_hours}/><button className="btn btn-secondary">Salvar alterações</button></form></section><section className="admin-panel" style={{padding:20,marginBottom:20}}><h2>Publicação</h2>
  <form action={changeAcademyCourseStatus}><input type="hidden" name="id" value={id}/><select name="status" className="field" defaultValue={course.status}><option value="draft">Rascunho</option><option value="published">Publicado</option><option value="archived">Arquivado</option></select><button className="btn btn-primary">Salvar</button></form></section>
  <section className="admin-panel" style={{padding:20,marginBottom:20}}><h2>Adicionar módulo</h2><form action={addAcademyModule}><input type="hidden" name="course_id" value={id}/><input className="field" name="title" placeholder="Semana 1" required/><input className="field" name="position" type="number" min={0} defaultValue={(mods??[]).length+1}/><button className="btn btn-primary">Criar módulo</button></form></section>
